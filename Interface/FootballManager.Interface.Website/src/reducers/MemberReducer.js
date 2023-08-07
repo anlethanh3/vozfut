@@ -1,7 +1,10 @@
 const initState = {
     data: undefined,
     isLoading: true,
-    selectedIndex: -1,
+    isShowAdd: false,
+    isShowUpdate: false,
+    isShowDelete: false,
+    selectedId: 0,
     pageIndex: 0,
     pageSize: 10,
     totalPage: undefined,
@@ -23,6 +26,12 @@ const memberReducer = (state, action) => {
             return { ...state, pageIndex: action.pageIndex }
         case 'size':
             return { ...state, pageSize: action.pageSize }
+        case 'showAdd':
+            return { ...state, isShowAdd: action.isShowAdd }
+        case 'showUpdate':
+            return { ...state, isShowUpdate: action.isShowUpdate, selectedId: action.selectedId }
+        case 'showDelete':
+            return { ...state, isShowDelete: action.isShowDelete, selectedId: action.selectedId }
         default:
             return state;
     }

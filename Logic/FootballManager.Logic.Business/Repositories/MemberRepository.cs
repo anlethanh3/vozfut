@@ -28,6 +28,19 @@ public class MemberRepository : IMemberRepository
         return member;
     }
 
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var member = await GetAsync(id);
+        if (member is null)
+        {
+            return false;
+        }
+        member.IsDeleted = true;
+        member.ModifiedDate = DateTime.Now;
+        _ = entityDbContext.SaveChanges();
+        return true;
+    }
+
     public async Task<Member?> GetAsync(int id)
     {
         return entityDbContext.Members.FirstOrDefault(m => m.Id == id);
@@ -36,5 +49,20 @@ public class MemberRepository : IMemberRepository
     public async Task<IEnumerable<Member>> GetAsync()
     {
         return entityDbContext.Members.Where(x => x.IsDeleted == false).ToList();
+    }
+
+    public async Task<bool> UpdateAsync(Member member)
+    {
+        var record = await GetAsync(member.Id);
+        if (record is null)
+        {
+            return false;
+        }
+        record.Name = member.Name;
+        record.Description = member.Description;
+        record.Elo = member.Elo;
+        record.ModifiedDate = DateTime.Now;
+        _ = entityDbContext.SaveChanges();
+        return true;
     }
 }

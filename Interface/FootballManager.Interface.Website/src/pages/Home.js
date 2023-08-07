@@ -1,8 +1,12 @@
 import { useEffect, useReducer } from "react";
-import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, Container } from "react-bootstrap";
+import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown } from "react-bootstrap";
 import { memberReducer, initState } from "../reducers/MemberReducer";
-import { paging } from '../providers/MemberApiProvider'
+import { paging, add, remove, update } from '../providers/MemberApiProvider'
 import moment from 'moment'
+import AddMember from "../components/AddMember"
+import UpdateMember from "../components/UpdateMember"
+import Confirmation from "../components/Confirmation"
+
 function Home() {
     const sizes = [10, 20, 30]
     const [state, dispatch] = useReducer(memberReducer, initState)
@@ -22,9 +26,38 @@ function Home() {
     const onChangePageSize = (pageSize) => {
         dispatch({ type: 'size', pageSize: pageSize })
     }
+    const onShowAdd = (isShowAdd) => {
+        dispatch({ type: 'showAdd', isShowAdd: isShowAdd })
+    }
+    const onShowUpdate = (isShowUpdate, id) => {
+        dispatch({ type: 'showUpdate', isShowUpdate: isShowUpdate, selectedId: id })
+    }
+    const onShowDelete = (isShowDelete, id) => {
+        dispatch({ type: 'showDelete', isShowDelete: isShowDelete, selectedId: id })
+    }
+
+    const onSubmitAdd = async (member) => {
+        dispatch({ type: 'showAdd', isShowAdd: false })
+        const abortController = new AbortController()
+        await add(abortController.signal, member)
+        await fetchData(abortController.signal)
+    }
+    const onSubmitUpdate = async (member) => {
+        dispatch({ type: 'showUpdate', isShowUpdate: false })
+        const abortController = new AbortController()
+        await update(abortController.signal, member)
+        await fetchData(abortController.signal)
+    }
+    const onDelete = async () => {
+        dispatch({ type: 'showDelete', isShowDelete: false })
+        const abortController = new AbortController()
+        await remove(abortController.signal, state.selectedId)
+        await fetchData(abortController.signal)
+    }
     useEffect(() => {
-        const abortController = new AbortController();
+        const abortController = new AbortController()
         fetchData(abortController.signal)
+        console.log('effect', state)
         return () => {
             console.log('unmount', state)
             abortController.abort()
@@ -37,9 +70,26 @@ function Home() {
                 state.isLoading &&
                 <Alert color='primary'>Loading...</Alert>
             }
+            {
+                state.isShowAdd &&
+                <AddMember show={state.isShowAdd} onSubmit={onSubmitAdd} onClose={() => onShowAdd(false)} />
+            }
+            {
+                state.isShowUpdate &&
+                <UpdateMember initData={state.data.find(x => x.id === state.selectedId)} show={state.isShowUpdate} onSubmit={onSubmitUpdate} onClose={() => onShowUpdate(false)} />
+            }
+            {
+                state.isShowDelete &&
+                <Confirmation
+                    show={state.isShowDelete}
+                    title={"Confirmation"}
+                    content={"Are you sure you want to permanently delete this member?"}
+                    onSubmit={onDelete}
+                    onClose={() => onShowDelete(false, 0)} />
+            }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
-                    <Button variant="primary">Add Member</Button><div className="mx-2" />
+                    <Button variant="primary" onClick={() => onShowAdd(true)}>Add Member</Button><div className="mx-2" />
                     <Button variant="secondary">Import CSV</Button>
                 </Col>
             </Row>
@@ -56,16 +106,16 @@ function Home() {
                 </thead>
                 <tbody>
                     {
-                        state.data && state.data.map(element =>
-                            <tr key={`key-${element.id}`}>
-                                <td>{element.id}</td>
-                                <td>{element.name}</td>
-                                <td>{element.description}</td>
-                                <td>+{element.elo}</td>
-                                <td>{element.modifiedDate && moment(element.modifiedDate).format()}</td>
+                        state.data && state.data.map(value =>
+                            <tr key={`key-${value.id}`}>
+                                <td>{value.id}</td>
+                                <td>{value.name}</td>
+                                <td>{value.description}</td>
+                                <td>+{value.elo}</td>
+                                <td>{value.modifiedDate && moment(value.modifiedDate).format()}</td>
                                 <td>
-                                    <Button variant="warning">Edit</Button>{' '}
-                                    <Button variant="danger">Delete</Button>{' '}
+                                    <Button variant="warning" onClick={() => onShowUpdate(true, value.id)}>Edit</Button>{' '}
+                                    <Button variant="danger" onClick={() => onShowDelete(true, value.id)}>Delete</Button>{' '}
                                 </td>
                             </tr>
                         )
@@ -80,7 +130,7 @@ function Home() {
                             <DropdownButton className="d-inline" size="md" variant="secondary" id="dropdown-basic-button" title={state.pageSize}>
                                 {
                                     sizes.map(element =>
-                                        <Dropdown.Item onClick={() => onChangePageSize(element)}>{element}</Dropdown.Item>
+                                        <Dropdown.Item key={`ditem-${element}`} onClick={() => onChangePageSize(element)}>{element}</Dropdown.Item>
                                     )
                                 }
                             </DropdownButton> <p className="d-inline">Records Page {state.pageIndex + 1} of {state.totalPage}</p></Col>

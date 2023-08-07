@@ -1,11 +1,11 @@
 import './App.css';
 import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Home from './components/Home';
 import Layout from './components/Layout';
-import History from './components/History';
-import Rolling from './components/Rolling';
-import ErrorPage from './components/ErrorPage';
+import Home from './pages/Home';
+import History from './pages/History';
+import Rolling from './pages/Rolling';
+import ErrorPage from './pages/ErrorPage';
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(

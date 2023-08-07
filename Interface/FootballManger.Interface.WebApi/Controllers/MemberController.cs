@@ -51,12 +51,43 @@ public class MemberController : ControllerBase
         var result = await unitOfWork.MemberRepository.GetAsync(id);
         return Ok(result);
     }
+    /// <summary>
+    /// Add a member
+    /// </summary>
+    /// <param name="member">Member model</param>
+    /// <returns>Member info</returns>
     [HttpPost]
     public async Task<ActionResult> Add(Member member)
     {
         var result = await unitOfWork.MemberRepository.AddAsync(member);
         return Ok(result);
     }
+    /// <summary>
+    /// Update a member information
+    /// </summary>
+    /// <param name="member">member model</param>
+    /// <returns>true: success, false: failure</returns>
+    [HttpPut]
+    public async Task<ActionResult> Update(Member member)
+    {
+        var result = await unitOfWork.MemberRepository.UpdateAsync(member);
+        return Ok(result);
+    }
+    /// <summary>
+    /// Delete a member
+    /// </summary>
+    /// <param name="id">member id</param>
+    /// <returns>true: deleted, false: error</returns>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var result = await unitOfWork.MemberRepository.DeleteAsync(id);
+        return Ok(result);
+    }
+    /// <summary>
+    /// Import members from csv
+    /// </summary>
+    /// <returns>true: success, false: fail</returns>
     [HttpGet("import")]
     public async Task<ActionResult> Import()
     {
