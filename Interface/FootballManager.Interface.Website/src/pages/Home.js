@@ -1,14 +1,15 @@
 import { useEffect, useReducer } from "react";
-import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown } from "react-bootstrap";
+import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, } from "react-bootstrap";
 import { memberReducer, initState } from "../reducers/MemberReducer";
 import { paging, add, remove, update } from '../providers/MemberApiProvider'
 import moment from 'moment'
 import AddMember from "../components/AddMember"
 import UpdateMember from "../components/UpdateMember"
 import Confirmation from "../components/Confirmation"
+import SearchMember from "../components/SearchMember";
 
 function Home() {
-    const sizes = [10, 20, 30]
+    const sizes = [10, 50, 100]
     const [state, dispatch] = useReducer(memberReducer, initState)
     moment.defaultFormat = 'YYYY-MM-DD HH:mm:ss'
     const fetchData = async (signal) => {
@@ -87,12 +88,16 @@ function Home() {
                     onSubmit={onDelete}
                     onClose={() => onShowDelete(false, 0)} />
             }
+
+            <SearchMember/>
+
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
                     <Button variant="primary" onClick={() => onShowAdd(true)}>Add Member</Button><div className="mx-2" />
                     <Button variant="secondary">Import CSV</Button>
                 </Col>
             </Row>
+
             <Table striped bordered hover>
                 <thead>
                     <tr>

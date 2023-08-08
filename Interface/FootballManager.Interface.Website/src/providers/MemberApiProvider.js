@@ -1,4 +1,4 @@
-var url = "http://localhost:5000/member"
+const url = `${process.env.REACT_APP_API_URL}/member`
 
 const get = async (signal) => {
     var response = await fetch(url, { signal: signal })
