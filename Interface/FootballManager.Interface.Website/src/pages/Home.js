@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, } from "react-bootstrap";
 import { memberReducer, initState } from "../reducers/MemberReducer";
-import { paging, add, remove, update } from '../providers/MemberApiProvider'
+import { add, remove, update, search } from '../providers/MemberApiProvider'
 import moment from 'moment'
 import AddMember from "../components/AddMember"
 import UpdateMember from "../components/UpdateMember"
@@ -15,7 +15,7 @@ function Home() {
     const fetchData = async (signal) => {
         try {
             dispatch({ type: 'fetch' })
-            var data = await paging(state.pageIndex, state.pageSize, signal)
+            var data = await search({ pageIndex: state.pageIndex, pageSize: state.pageSize, name: state.search.name }, signal)
             dispatch({ type: 'success', payload: data })
         } catch (ex) {
             dispatch({ type: 'failure', error: ex })
@@ -55,6 +55,15 @@ function Home() {
         await remove(abortController.signal, state.selectedId)
         await fetchData(abortController.signal)
     }
+    const onSearch = async ({ name: name }) => {
+        const abortController = new AbortController()
+        await fetchData(abortController.signal)
+    }
+
+    const onSearchChanged = (search) => {
+        dispatch({ type: 'search', search: { ...search } })
+    }
+
     useEffect(() => {
         const abortController = new AbortController()
         fetchData(abortController.signal)
@@ -89,7 +98,7 @@ function Home() {
                     onClose={() => onShowDelete(false, 0)} />
             }
 
-            <SearchMember/>
+            <SearchMember onSearchChanged={onSearchChanged} onSubmit={onSearch} />
 
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">

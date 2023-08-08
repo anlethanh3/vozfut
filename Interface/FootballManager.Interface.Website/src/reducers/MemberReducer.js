@@ -8,6 +8,7 @@ const initState = {
     pageIndex: 0,
     pageSize: 10,
     totalPage: undefined,
+    search: { name: '' }
 }
 
 const memberAction = {
@@ -22,6 +23,8 @@ const memberReducer = (state, action) => {
             return { ...state, isLoading: false, ...action.payload }
         case 'failure':
             return { ...state, isLoading: false }
+        case 'loading':
+            return { ...state, isLoading: action.isLoading }
         case 'page':
             return { ...state, pageIndex: action.pageIndex }
         case 'size':
@@ -32,6 +35,8 @@ const memberReducer = (state, action) => {
             return { ...state, isShowUpdate: action.isShowUpdate, selectedId: action.selectedId }
         case 'showDelete':
             return { ...state, isShowDelete: action.isShowDelete, selectedId: action.selectedId }
+        case 'search':
+            return { ...state, search: { ...action.search } }
         default:
             return state;
     }

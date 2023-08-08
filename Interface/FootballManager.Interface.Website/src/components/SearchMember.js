@@ -1,12 +1,22 @@
 import { useState } from "react"
 import { Button, Accordion, Form, FormGroup, FloatingLabel } from "react-bootstrap";
 
-const SearchMember = () => {
+const SearchMember = ({ onSearchChanged: onSearchChanged, onSubmit }) => {
 
     const [name, setName] = useState('')
 
     const onChanged = (e) => {
-        setName(e.target.value)
+        const value = e.target.value
+        onSearchChanged({ name: name })
+        setName(value)
+    }
+
+    const onSearch = () => {
+        onSubmit({ name: name })
+    }
+
+    const onClear = () => {
+        setName('')
     }
 
     return (
@@ -21,10 +31,10 @@ const SearchMember = () => {
                             </FloatingLabel>
                         </FormGroup>
                     </Form>
-                    <Button className="me-2" variant="primary" onClick={null}>
+                    <Button className="me-2" variant="primary" onClick={onSearch}>
                         Search
                     </Button>
-                    <Button variant="secondary" onClick={null}>
+                    <Button variant="secondary" onClick={onClear}>
                         Clear
                     </Button>
                 </Accordion.Body>

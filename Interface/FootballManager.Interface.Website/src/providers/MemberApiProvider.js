@@ -18,6 +18,23 @@ const paging = async (pageIndex, pageSize, signal) => {
     return response.json()
 }
 
+const search = async ({ pageIndex, pageSize, name }, signal) => {
+    var response = await fetch(`${url}/search`,
+        {
+            signal: signal,
+            method: 'POST',
+            body: JSON.stringify({
+                pageIndex,
+                pageSize,
+                name
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    return response.json()
+}
+
 const add = async (signal, member) => {
     var response = await fetch(`${url}`, {
         signal: signal,
@@ -51,4 +68,4 @@ const update = async (signal, member) => {
     return response
 }
 
-export { get, paging, add, remove, update}
+export { get, paging, add, remove, update, search }

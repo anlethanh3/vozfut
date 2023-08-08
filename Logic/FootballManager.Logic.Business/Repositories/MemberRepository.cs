@@ -51,6 +51,11 @@ public class MemberRepository : IMemberRepository
         return entityDbContext.Members.Where(x => x.IsDeleted == false).ToList();
     }
 
+    public async Task<IEnumerable<Member>> SearchAsync(string name)
+    {
+        return entityDbContext.Members.Where(m => m.Name.ToLower().Contains(name.ToLower())).ToList();
+    }
+
     public async Task<bool> UpdateAsync(Member member)
     {
         var record = await GetAsync(member.Id);

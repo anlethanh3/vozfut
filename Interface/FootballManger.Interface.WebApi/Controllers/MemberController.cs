@@ -1,5 +1,6 @@
 using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.Entities;
+using FootballManager.Data.Entities.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballManger.Controllers;
@@ -61,6 +62,24 @@ public class MemberController : ControllerBase
     {
         var result = await unitOfWork.MemberRepository.AddAsync(member);
         return Ok(result);
+    }
+    /// <summary>
+    /// Search members with name
+    /// </summary>
+    /// <param name="request">Search model</param>
+    /// <returns>Paging members</returns>
+    [HttpPost("search")]
+    public async Task<ActionResult> Search(SearchPagingRequest request)
+    {
+        var members = await unitOfWork.MemberRepository.SearchAsync(request.Name);
+        var result = members.Skip(request.PageIndex * request.PageSize).Take(request.PageSize);
+        return Ok(new Paging<IEnumerable<Member>>
+        {
+            Data = result,
+            PageIndex = request.PageIndex,
+            PageSize = request.PageSize,
+            TotalPage = (members.Count() / request.PageSize) + 1,
+        });
     }
     /// <summary>
     /// Update a member information
