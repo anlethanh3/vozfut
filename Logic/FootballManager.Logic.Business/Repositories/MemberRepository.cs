@@ -12,7 +12,7 @@ public class MemberRepository : IMemberRepository
         this.entityDbContext = entityDbContext;
     }
 
-    public async Task<Member?> AddAsync(Member member)
+    public async Task<Member?> AddAsync(Member member) 
     {
         var now = DateTime.Now;
         _ = await entityDbContext.Members.AddAsync(new()
