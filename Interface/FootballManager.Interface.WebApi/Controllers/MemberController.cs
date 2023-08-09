@@ -3,7 +3,7 @@ using FootballManager.Data.Entities;
 using FootballManager.Data.Entities.Requests;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FootballManger.Controllers;
+namespace FootballManager.Controllers;
 
 [ApiController]
 [Route("[controller]")]

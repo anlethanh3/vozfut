@@ -3,8 +3,11 @@ using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.DataAccess.Repositories;
 using FootballManager.Logic.Business.Interfaces;
 using FootballManager.Logic.Business.Repositories;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
+// Health check
+builder.Services.AddHealthChecks();
 // Dependency Injection
 builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 builder.Services.AddDbContext<EntityDbContext>();
@@ -31,5 +34,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+// health check
+app.MapHealthChecks("/healthz");
 
 app.Run();
