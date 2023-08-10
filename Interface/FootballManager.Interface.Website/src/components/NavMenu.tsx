@@ -1,9 +1,17 @@
+import { useState } from "react";
 import { Container, Navbar, Nav, Button } from "react-bootstrap";
-import { Outlet } from 'react-router-dom'
+import Login from "./Login";
 
-function NavMenu() {
+export default function NavMenu() {
+    const [isLogin, setIsLogin] = useState(false)
+
+
     return (
-        <header>
+        <>
+            {
+                isLogin &&
+                <Login show={isLogin} onClose={() => setIsLogin(false)} onSubmit={(data) => {}} />
+            }
             <Navbar expand="md" bg="primary" data-bs-theme="dark">
                 <Container>
                     <Navbar.Brand href="/">
@@ -23,12 +31,11 @@ function NavMenu() {
                             <Nav.Link href="history">History</Nav.Link>
                         </Nav>
                         <Nav>
-                            <Button>Login</Button>
+                            <Button onClick={() => setIsLogin(true)}>Login</Button>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-        </header>
+        </>
     )
 }
-export default NavMenu;

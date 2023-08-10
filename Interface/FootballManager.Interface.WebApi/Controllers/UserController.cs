@@ -93,7 +93,13 @@ public class UserController : ControllerBase
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return Ok(tokenHandler.WriteToken(token));
+        var result = new
+        {
+            AccessToken = tokenHandler.WriteToken(token),
+            TokenType = "Bearer",
+            ExpiredIn = 3600,
+        };
+        return Ok(result);
     }
     /// <summary>
     /// Get all users

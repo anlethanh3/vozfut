@@ -112,13 +112,9 @@ export default function Member() {
             }
             {
                 state.error &&
-                <Toast bg="danger" show={state.error !== undefined} onClose={() => { dispatch({ type: "failure", error: undefined }) }}>
-                    <Toast.Header>
-                        <strong className="me-auto">Error</strong>
-                        <small>Just now</small>
-                    </Toast.Header>
-                    <Toast.Body>{state.error}</Toast.Body>
-                </Toast>
+                <Alert show={state.error !== undefined} variant="danger" onClose={() => dispatch({ type: "failure", error: undefined })} dismissible>
+                    {state.error}
+                </Alert>
             }
             {
                 state.isShowAdd &&
