@@ -4,14 +4,20 @@ using FootballManager.Data.Entities.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballManager.Controllers;
-
+/// <summary>
+/// Member Controller
+/// </summary>
 [ApiController]
 [Route("[controller]")]
 public class MemberController : ControllerBase
 {
     private readonly ILogger<MemberController> logger;
     private readonly IUnitOfWork unitOfWork;
-
+    /// <summary>
+    /// Member controller
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="unitOfWork"></param>
     public MemberController(ILogger<MemberController> logger, IUnitOfWork unitOfWork)
     {
         this.logger = logger;
@@ -27,7 +33,11 @@ public class MemberController : ControllerBase
         var members = await unitOfWork.MemberRepository.GetAsync();
         return Ok(members);
     }
-
+    /// <summary>
+    /// Paging members
+    /// </summary>
+    /// <param name="paging">Paging model</param>
+    /// <returns>Paging members</returns>
     [HttpGet("paging")]
     public async Task<ActionResult> GetPaging([FromQuery]Paging<bool> paging)
     {

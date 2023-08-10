@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using FootballManager.Data.Entities;
 using Microsoft.Extensions.Configuration;
-using FootballManager.Data.DataAccess.Interfaces;
 
 namespace FootballManager.Data.DataAccess.Contexts;
 

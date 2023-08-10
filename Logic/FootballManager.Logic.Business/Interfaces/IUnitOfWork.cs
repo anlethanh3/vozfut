@@ -5,4 +5,6 @@ namespace FootballManager.Data.DataAccess.Interfaces;
 public interface IUnitOfWork
 {
     IMemberRepository MemberRepository { get; set; }
+    IMatchRepository MatchRepository { get; set; }
+    IMatchDetailRepository MatchDetailRepository { get; set; }
 }
