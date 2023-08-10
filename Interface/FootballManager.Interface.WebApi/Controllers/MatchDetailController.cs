@@ -1,5 +1,6 @@
 using FootballManager.Data.DataAccess.Interfaces;
-using FootballManager.Data.Entities;
+using FootballManager.Data.Entity.Entities;
+using FootballManager.Data.Entity.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballManager.Controllers;
@@ -23,21 +24,21 @@ public class MatchDetailController : ControllerBase
         this.unitOfWork = unitOfWork;
     }
     /// <summary>
-    /// Get all members
+    /// Get all match detail
     /// </summary>
-    /// <returns>List member</returns>
+    /// <returns>List match detail</returns>
     [HttpGet]
     public async Task<ActionResult> GetAll()
     {
-        var members = await unitOfWork.MatchDetailRepository.GetAsync();
-        return Ok(members);
+        var detail = await unitOfWork.MatchDetailRepository.GetAsync();
+        return Ok(detail);
     }
-    
+
     /// <summary>
-    /// Get one member
+    /// Get one match detail
     /// </summary>
     /// <param name="id">MatchDetail id</param>
-    /// <returns>A member</returns>
+    /// <returns>A match detail</returns>
     [HttpGet("{id}")]
     public async Task<ActionResult> Get(int id)
     {
@@ -45,31 +46,31 @@ public class MatchDetailController : ControllerBase
         return Ok(result);
     }
     /// <summary>
-    /// Add a member
+    /// Add a match detail
     /// </summary>
-    /// <param name="member">MatchDetail model</param>
+    /// <param name="detail">MatchDetail model</param>
     /// <returns>MatchDetail info</returns>
     [HttpPost]
-    public async Task<ActionResult> Add(MatchDetail member)
+    public async Task<ActionResult> Add(MatchDetail detail)
     {
-        var result = await unitOfWork.MatchDetailRepository.AddAsync(member);
+        var result = await unitOfWork.MatchDetailRepository.AddAsync(detail);
         return Ok(result);
     }
     /// <summary>
-    /// Update a member information
+    /// Update a match detail information
     /// </summary>
-    /// <param name="member">member model</param>
+    /// <param name="detail">match detail model</param>
     /// <returns>true: success, false: failure</returns>
     [HttpPut]
-    public async Task<ActionResult> Update(MatchDetail member)
+    public async Task<ActionResult> Update(MatchDetail detail)
     {
-        var result = await unitOfWork.MatchDetailRepository.UpdateAsync(member);
+        var result = await unitOfWork.MatchDetailRepository.UpdateAsync(detail);
         return Ok(result);
     }
     /// <summary>
-    /// Delete a member
+    /// Delete a match detail
     /// </summary>
-    /// <param name="id">member id</param>
+    /// <param name="id">match detail id</param>
     /// <returns>true: deleted, false: error</returns>
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)

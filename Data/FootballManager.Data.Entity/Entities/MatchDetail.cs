@@ -1,4 +1,4 @@
-﻿namespace FootballManager.Data.Entities;
+﻿namespace FootballManager.Data.Entity.Entities;
 
 public class MatchDetail
 {

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FootballManager.Data.Entities\FootballManager.Data.Entities.csproj" />
+    <ProjectReference Include="..\FootballManager.Data.Entity\FootballManager.Data.Entity.csproj" />
   </ItemGroup>
 
 </Project>

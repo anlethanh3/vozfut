@@ -1,4 +1,4 @@
-namespace FootballManager.Data.Entities.Requests;
+namespace FootballManager.Data.Entity.Requests;
 
 public class SearchPagingRequest
 {

@@ -1,6 +1,7 @@
 using FootballManager.Data.DataAccess.Interfaces;
-using FootballManager.Data.Entities;
-using FootballManager.Data.Entities.Requests;
+using FootballManager.Data.Entity.Entities;
+using FootballManager.Data.Entity.Requests;
+using FootballManager.Data.Entity.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballManager.Controllers;

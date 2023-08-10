@@ -1,4 +1,4 @@
-using FootballManager.Data.Entities;
+using FootballManager.Data.Entity.Entities;
 
 namespace FootballManager.Logic.Business.Interfaces;
 

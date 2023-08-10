@@ -4,7 +4,9 @@ using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.DataAccess.Repositories;
 using FootballManager.Logic.Business.Interfaces;
 using FootballManager.Logic.Business.Repositories;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 // Health check
@@ -13,12 +15,26 @@ builder.Services.AddHealthChecks();
 builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 builder.Services.AddTransient<IMatchRepository, MatchRepository>();
 builder.Services.AddTransient<IMatchDetailRepository, MatchDetailRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IDatabaseContext, DapperDbContext>();
 builder.Services.AddDbContext<EntityDbContext>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audiences"] ?? string.Empty,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? string.Empty,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
+    };
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

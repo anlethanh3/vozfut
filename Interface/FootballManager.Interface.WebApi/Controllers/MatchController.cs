@@ -1,6 +1,7 @@
 using FootballManager.Data.DataAccess.Interfaces;
-using FootballManager.Data.Entities;
-using FootballManager.Data.Entities.Requests;
+using FootballManager.Data.Entity.Entities;
+using FootballManager.Data.Entity.Requests;
+using FootballManager.Data.Entity.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballManager.Controllers;
@@ -24,14 +25,14 @@ public class MatchController : ControllerBase
         this.unitOfWork = unitOfWork;
     }
     /// <summary>
-    /// Get all members
+    /// Get all matches
     /// </summary>
     /// <returns>List member</returns>
     [HttpGet]
     public async Task<ActionResult> GetAll()
     {
-        var members = await unitOfWork.MatchRepository.GetAsync();
-        return Ok(members);
+        var matches = await unitOfWork.MatchRepository.GetAsync();
+        return Ok(matches);
     }
     /// <summary>
     /// Get one member
@@ -56,21 +57,21 @@ public class MatchController : ControllerBase
         return Ok(result);
     }
     /// <summary>
-    /// Search members with name
+    /// Search matches with name
     /// </summary>
     /// <param name="request">Search model</param>
-    /// <returns>Paging members</returns>
+    /// <returns>Paging matches</returns>
     [HttpPost("search")]
     public async Task<ActionResult> Search(SearchPagingRequest request)
     {
-        var members = await unitOfWork.MatchRepository.SearchAsync(request.Name);
-        var result = members.Skip(request.PageIndex * request.PageSize).Take(request.PageSize);
+        var matches = await unitOfWork.MatchRepository.SearchAsync(request.Name);
+        var result = matches.Skip(request.PageIndex * request.PageSize).Take(request.PageSize);
         return Ok(new Paging<IEnumerable<Match>>
         {
             Data = result,
             PageIndex = request.PageIndex,
             PageSize = request.PageSize,
-            TotalPage = (members.Count() / request.PageSize) + 1,
+            TotalPage = (matches.Count() / request.PageSize) + 1,
         });
     }
     /// <summary>
