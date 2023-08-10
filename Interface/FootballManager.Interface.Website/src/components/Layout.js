@@ -1,9 +1,14 @@
 import NavMenu from './NavMenu'
+import { Outlet } from 'react-router-dom'
+import { Container } from 'react-bootstrap';
 function Layout() {
     return (
-        <div>
+        <>
             <NavMenu />
-        </div>
+            <Container>
+                <Outlet />
+            </Container>
+        </>
     )
 }
 export default Layout;

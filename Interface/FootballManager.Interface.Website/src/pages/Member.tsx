@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, } from "react-bootstrap";
-import { memberReducer, initState } from "../reducers/MemberReducer";
+import { reducer, initState, MemberProps, State, Action, SearchProps } from "../reducers/MemberReducer";
 import { add, remove, update, search } from '../providers/MemberApiProvider'
 import moment from 'moment'
 import AddMember from "../components/AddMember"
@@ -8,59 +8,59 @@ import UpdateMember from "../components/UpdateMember"
 import Confirmation from "../components/Confirmation"
 import SearchMember from "../components/SearchMember";
 
-function Home() {
+export default function Member() {
     const sizes = [10, 50, 100]
-    const [state, dispatch] = useReducer(memberReducer, initState)
+    const [state, dispatch] = useReducer(reducer, initState)
     moment.defaultFormat = 'YYYY-MM-DD HH:mm:ss'
-    const fetchData = async (signal) => {
+    const fetchData = async (signal: AbortSignal) => {
         try {
             dispatch({ type: 'fetch' })
-            var data = await search({ pageIndex: state.pageIndex, pageSize: state.pageSize, name: state.search.name }, signal)
+            var data = await search({ pageIndex: state.pageIndex, pageSize: state.pageSize, name: state.search.name, signal: signal },)
             dispatch({ type: 'success', payload: data })
         } catch (ex) {
             dispatch({ type: 'failure', error: ex })
         }
     }
-    const onChangePageIndex = (pageIndex) => {
+    const onChangePageIndex = (pageIndex: number) => {
         dispatch({ type: 'page', pageIndex: pageIndex })
     }
-    const onChangePageSize = (pageSize) => {
+    const onChangePageSize = (pageSize: number) => {
         dispatch({ type: 'size', pageSize: pageSize })
     }
-    const onShowAdd = (isShowAdd) => {
-        dispatch({ type: 'showAdd', isShowAdd: isShowAdd })
+    const onShowAdd = (isShow: boolean) => {
+        dispatch({ type: 'showAdd', isShow: isShow })
     }
-    const onShowUpdate = (isShowUpdate, id) => {
-        dispatch({ type: 'showUpdate', isShowUpdate: isShowUpdate, selectedId: id })
+    const onShowUpdate = (isShow: boolean, id: number) => {
+        dispatch({ type: 'showUpdate', isShow: isShow, selectedId: id })
     }
-    const onShowDelete = (isShowDelete, id) => {
-        dispatch({ type: 'showDelete', isShowDelete: isShowDelete, selectedId: id })
+    const onShowDelete = (isShow: boolean, id: number) => {
+        dispatch({ type: 'showDelete', isShow: isShow, selectedId: id })
     }
 
-    const onSubmitAdd = async (member) => {
-        dispatch({ type: 'showAdd', isShowAdd: false })
+    const onSubmitAdd = async (member: MemberProps) => {
+        dispatch({ type: 'showAdd', isShow: false })
         const abortController = new AbortController()
-        await add(abortController.signal, member)
+        await add({ signal: abortController.signal, data: member })
         await fetchData(abortController.signal)
     }
-    const onSubmitUpdate = async (member) => {
-        dispatch({ type: 'showUpdate', isShowUpdate: false })
+    const onSubmitUpdate = async (member: MemberProps) => {
+        dispatch({ type: 'showUpdate', isShow: false, selectedId: member.id })
         const abortController = new AbortController()
-        await update(abortController.signal, member)
+        await update({ signal: abortController.signal, data: member })
         await fetchData(abortController.signal)
     }
     const onDelete = async () => {
-        dispatch({ type: 'showDelete', isShowDelete: false })
+        dispatch({ type: 'showDelete', isShow: false, selectedId: state.selectedId })
         const abortController = new AbortController()
-        await remove(abortController.signal, state.selectedId)
+        await remove({ signal: abortController.signal, id: state.selectedId })
         await fetchData(abortController.signal)
     }
-    const onSearch = async ({ name: name }) => {
+    const onSearch = async (props: { name: string }) => {
         const abortController = new AbortController()
         await fetchData(abortController.signal)
     }
 
-    const onSearchChanged = (search) => {
+    const onSearchChanged = (search: SearchProps) => {
         dispatch({ type: 'search', search: { ...search } })
     }
 
@@ -86,7 +86,7 @@ function Home() {
             }
             {
                 state.isShowUpdate &&
-                <UpdateMember initData={state.data.find(x => x.id === state.selectedId)} show={state.isShowUpdate} onSubmit={onSubmitUpdate} onClose={() => onShowUpdate(false)} />
+                <UpdateMember initData={state.data.find(x => x.id === state.selectedId)} show={state.isShowUpdate} onSubmit={onSubmitUpdate} onClose={() => onShowUpdate(false, state.selectedId)} />
             }
             {
                 state.isShowDelete &&
@@ -141,7 +141,7 @@ function Home() {
                 <>
                     <Row>
                         <Col>
-                            <DropdownButton className="d-inline" size="md" variant="secondary" id="dropdown-basic-button" title={state.pageSize}>
+                            <DropdownButton className="d-inline" size="lg" variant="secondary" id="dropdown-basic-button" title={state.pageSize}>
                                 {
                                     sizes.map(element =>
                                         <Dropdown.Item key={`ditem-${element}`} onClick={() => onChangePageSize(element)}>{element}</Dropdown.Item>
@@ -168,4 +168,3 @@ function Home() {
         </>
     )
 }
-export default Home;

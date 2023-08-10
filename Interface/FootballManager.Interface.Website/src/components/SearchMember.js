@@ -16,6 +16,7 @@ const SearchMember = ({ onSearchChanged: onSearchChanged, onSubmit }) => {
     }
 
     const onClear = () => {
+        onSearchChanged({ name: '' })
         setName('')
     }
 
@@ -27,7 +28,7 @@ const SearchMember = ({ onSearchChanged: onSearchChanged, onSubmit }) => {
                     <Form>
                         <FormGroup className="mb-3" controlId="addMember.Name">
                             <FloatingLabel controlId="floatingName" label="Name">
-                                <Form.Control type="text" placeholder="Input name" value={name} onChange={onChanged} />
+                                <Form.Control type="text" placeholder="Input name" value={name} onChange={onChanged} onBlur={onChanged} />
                             </FloatingLabel>
                         </FormGroup>
                     </Form>

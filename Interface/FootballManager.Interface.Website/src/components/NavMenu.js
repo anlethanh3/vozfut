@@ -17,8 +17,9 @@ function NavMenu() {
                     <Navbar.Toggle />
                     <Navbar.Collapse className="justify-content-end">
                         <Nav className="me-auto">
-                            <Nav.Link href="/">Member</Nav.Link>
-                            <Nav.Link href="rolling">Rolling</Nav.Link>
+                            <Nav.Link href="/">Match</Nav.Link>
+                            <Nav.Link href="member">Member</Nav.Link>
+                            <Nav.Link href="donate">Donate</Nav.Link>
                             <Nav.Link href="history">History</Nav.Link>
                         </Nav>
                         <Nav>
@@ -27,9 +28,6 @@ function NavMenu() {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <Container>
-                <Outlet />
-            </Container>
         </header>
     )
 }
