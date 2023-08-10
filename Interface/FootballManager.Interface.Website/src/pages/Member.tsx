@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
-import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, } from "react-bootstrap";
-import { reducer, initState, MemberProps, State, Action, SearchProps } from "../reducers/MemberReducer";
+import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, Toast } from "react-bootstrap";
+import { reducer, initState, MemberProps, SearchProps } from "../reducers/MemberReducer";
 import { add, remove, update, search } from '../providers/MemberApiProvider'
 import moment from 'moment'
 import AddMember from "../components/AddMember"
@@ -15,10 +15,15 @@ export default function Member() {
     const fetchData = async (signal: AbortSignal) => {
         try {
             dispatch({ type: 'fetch' })
-            var data = await search({ pageIndex: state.pageIndex, pageSize: state.pageSize, name: state.search.name, signal: signal },)
-            dispatch({ type: 'success', payload: data })
+            var response = await search({ pageIndex: state.pageIndex, pageSize: state.pageSize, name: state.search.name, signal: signal },)
+            if (response.status === 200) {
+                var data = response.data
+                dispatch({ type: 'success', payload: data })
+            } else {
+                dispatch({ type: 'failure', error: "Got error while fetch data" })
+            }
         } catch (ex) {
-            dispatch({ type: 'failure', error: ex })
+            dispatch({ type: 'failure', error: JSON.stringify(ex) })
         }
     }
     const onChangePageIndex = (pageIndex: number) => {
@@ -40,20 +45,44 @@ export default function Member() {
     const onSubmitAdd = async (member: MemberProps) => {
         dispatch({ type: 'showAdd', isShow: false })
         const abortController = new AbortController()
-        await add({ signal: abortController.signal, data: member })
-        await fetchData(abortController.signal)
+        add({ signal: abortController.signal, data: member })
+            .then(response => {
+                if (response.status === 200) {
+                    fetchData(abortController.signal)
+                }
+            })
+            .catch(error => {
+                dispatch({ type: "failure", error: "Access denied! Requested Add!" })
+            })
     }
     const onSubmitUpdate = async (member: MemberProps) => {
         dispatch({ type: 'showUpdate', isShow: false, selectedId: member.id })
         const abortController = new AbortController()
-        await update({ signal: abortController.signal, data: member })
-        await fetchData(abortController.signal)
+        update({ signal: abortController.signal, data: member })
+            .then(response => {
+                if (response.status === 200) {
+                    fetchData(abortController.signal)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                dispatch({ type: "failure", error: "Access denied! Requested Update!" })
+            })
     }
     const onDelete = async () => {
         dispatch({ type: 'showDelete', isShow: false, selectedId: state.selectedId })
         const abortController = new AbortController()
-        await remove({ signal: abortController.signal, id: state.selectedId })
-        await fetchData(abortController.signal)
+        remove({ signal: abortController.signal, id: state.selectedId })
+            .then(response => {
+                if (response.status === 200) {
+                    fetchData(abortController.signal)
+                }
+            })
+            .catch(error => {
+                console.log(error)
+                dispatch({ type: "failure", error: "Access denied! Requested Delete!" })
+            })
+
     }
     const onSearch = async (props: { name: string }) => {
         const abortController = new AbortController()
@@ -68,10 +97,11 @@ export default function Member() {
         const abortController = new AbortController()
         fetchData(abortController.signal)
         console.log('effect', state)
-        return () => {
+
+        return function cleanup() {
             console.log('unmount', state)
-            abortController.abort()
         }
+
     }, [state.pageIndex, state.pageSize])
     return (
         <>
@@ -79,6 +109,16 @@ export default function Member() {
             {
                 state.isLoading &&
                 <Alert color='primary'>Loading...</Alert>
+            }
+            {
+                state.error &&
+                <Toast bg="danger" show={state.error !== undefined} onClose={() => { dispatch({ type: "failure", error: undefined }) }}>
+                    <Toast.Header>
+                        <strong className="me-auto">Error</strong>
+                        <small>Just now</small>
+                    </Toast.Header>
+                    <Toast.Body>{state.error}</Toast.Body>
+                </Toast>
             }
             {
                 state.isShowAdd &&

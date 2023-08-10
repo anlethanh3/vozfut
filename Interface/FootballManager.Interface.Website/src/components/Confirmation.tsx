@@ -1,8 +1,8 @@
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
-const Confirmation = ({ show, title, content, onSubmit, onClose }) => {
-
+const Confirmation = (props: { show: boolean, title: string, content: string, onSubmit: () => void, onClose: () => void }) => {
+    const { show, title, content, onSubmit, onClose } = props
     return (<>
         <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>

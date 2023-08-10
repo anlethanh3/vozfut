@@ -1,11 +1,12 @@
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { Button, Accordion, Form, FormGroup, FloatingLabel } from "react-bootstrap";
 
-const SearchMember = ({ onSearchChanged: onSearchChanged, onSubmit }) => {
+const SearchMember = (props: { onSearchChanged: (props: { name: string }) => void, onSubmit: (props: { name: string }) => void }) => {
+    const { onSearchChanged, onSubmit } = props
 
     const [name, setName] = useState('')
 
-    const onChanged = (e) => {
+    const onChanged = (e: any) => {
         const value = e.target.value
         onSearchChanged({ name: name })
         setName(value)

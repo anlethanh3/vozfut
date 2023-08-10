@@ -14,6 +14,7 @@ export interface SearchProps {
 export interface State {
     data: MemberProps[],
     isLoading: boolean,
+    error: string | undefined,
     isShowAdd: boolean,
     isShowUpdate: boolean,
     isShowDelete: boolean,
@@ -26,8 +27,9 @@ export interface State {
 
 export const initState: State = {
     data: [],
-    isLoading: true,
+    isLoading: false,
     isShowAdd: false,
+    error: undefined,
     isShowUpdate: false,
     isShowDelete: false,
     selectedId: 0,
@@ -40,7 +42,7 @@ export const initState: State = {
 export type Action =
     | { type: 'fetch', }
     | { type: 'success', payload?: any }
-    | { type: 'failure', error: unknown }
+    | { type: 'failure', error: string | undefined }
     | { type: 'loading', isLoading: boolean }
     | { type: 'page', pageIndex: number }
     | { type: 'size', pageSize: number }
@@ -56,7 +58,7 @@ export const reducer: Reducer<State, Action> = (state, action) => {
         case 'success':
             return { ...state, isLoading: false, ...action.payload }
         case 'failure':
-            return { ...state, isLoading: false }
+            return { ...state, isLoading: false, error: action.error }
         case 'loading':
             return { ...state, isLoading: action.isLoading }
         case 'page':

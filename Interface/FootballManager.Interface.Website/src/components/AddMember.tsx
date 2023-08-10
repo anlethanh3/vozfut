@@ -2,10 +2,12 @@ import Form from 'react-bootstrap/Form'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { MemberProps } from '../reducers/MemberReducer';
 
-const UpdateMember = ({ show, initData, onSubmit, onClose }) => {
-    const [member, setMember] = useState({ id: 0, name: '', description: '', elo: 1 })
+const AddMember = (props: { show: boolean, onSubmit: (member: MemberProps) => void, onClose: () => void }) => {
+    const { show, onSubmit, onClose } = props
+    const [member, setMember] = useState<MemberProps>({ name: '', description: '', elo: 1, id: 0 })
     const [valid, setValid] = useState({ name: true });
     const onValid = () => {
         if (member.name === '') {
@@ -14,16 +16,11 @@ const UpdateMember = ({ show, initData, onSubmit, onClose }) => {
         }
         onSubmit(member)
     }
-    useEffect(() => {
-        if (initData) {
-            setMember({ ...initData })
-        }
-    }, [initData])
 
     return (<>
         <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Update a member</Modal.Title>
+                <Modal.Title>Add a member</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -40,7 +37,7 @@ const UpdateMember = ({ show, initData, onSubmit, onClose }) => {
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="addMember.Elo">
                         <FloatingLabel controlId="floatingElo" label="Elo">
-                            <Form.Select value={member.elo} onChange={(e) => setMember({ ...member, elo: e.target.value })}>
+                            <Form.Select value={member.elo} onChange={(e) => setMember({ ...member, elo: parseInt(e.target.value) })}>
                                 {
                                     [1, 2, 3, 4, 5].map(value =>
                                         <option key={`elo.id-${value}`} value={value}>+{value}</option>
@@ -56,11 +53,11 @@ const UpdateMember = ({ show, initData, onSubmit, onClose }) => {
                     Close
                 </Button>
                 <Button variant="primary" onClick={onValid}>
-                    Update
+                    Add
                 </Button>
             </Modal.Footer>
         </Modal>
     </>)
 }
 
-export default UpdateMember
+export default AddMember
