@@ -45,7 +45,6 @@ namespace FootballManager.Application.Extensions
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-
                 cfg.AddOpenBehavior(typeof(AuditBehaviour<,>));
                 cfg.AddOpenBehavior(typeof(ValidatorBehaviour<,>));
             });

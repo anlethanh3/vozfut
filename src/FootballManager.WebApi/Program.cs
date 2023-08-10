@@ -1,4 +1,7 @@
-﻿using FootballManager.WebApi.Extensions;
+﻿using FootballManager.Application.Extensions;
+using FootballManager.Persistence.Context;
+using FootballManager.Persistence.Extensions;
+using FootballManager.WebApi.Extensions;
 using FootballManager.WebApi.Helpers;
 using Serilog;
 
@@ -14,29 +17,19 @@ builder.Host.UseSerilog(LoggingExtension.ConfigureLogging());
 
 services.AddPresentationLayer(configuration)
         .AddApplicationLayer(configuration)
-        .AddInfrastructure(configuration);
+        .AddPersistenceLayer(configuration);
 
 #endregion dependency injection layer
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.MigrationDatabase<EfDbContext>((context, service) =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    var logger = service.GetService<ILogger<EfContextSeed>>();
+    EfContextSeed.SeedAsync(context, logger).Wait();
+});
 
-app.UseHttpsRedirection();
+app.UsePresentationLayer(configuration)
+   .UseMinimalApi();
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+await app.RunAsync();

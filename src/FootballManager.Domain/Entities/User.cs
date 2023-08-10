@@ -2,7 +2,7 @@
 
 namespace FootballManager.Domain.Entities
 {
-    public class Member : FullAuditable<int>
+    public class User : FullAuditable<int>
     {
         public string Name { get; set; } = string.Empty;
         public int Elo { get; set; } = 1;

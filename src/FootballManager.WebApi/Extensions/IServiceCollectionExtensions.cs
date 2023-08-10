@@ -2,7 +2,12 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
+using FootballManager.Domain.OptionsSettings;
+using FootballManager.Infrastructure.Extensions;
+using FootballManager.WebApi.Providers;
+using FootballManager.WebApi.SwaggerConfig;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace FootballManager.WebApi.Extensions
@@ -65,6 +70,50 @@ namespace FootballManager.WebApi.Extensions
             services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>());
 
             return services;
+        }
+
+        private static IServiceCollection AddSwaggerDocumentationWithBearer(this IServiceCollection services, IConfiguration configuration, string fileName, string baseDirectory)
+        {
+            var swaggerOptions = configuration.GetOptions<SwaggerOptions>("Swagger");
+
+            return services
+               .AddSwaggerGen(options =>
+               {
+                   options.SwaggerDoc(swaggerOptions.Name, new OpenApiInfo
+                   {
+                       Title = swaggerOptions.Title ?? "no title",
+                       Version = swaggerOptions.Version ?? "no version",
+                       Description = swaggerOptions.Description ?? "no description"
+                   });
+
+                   options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                   {
+                       In = ParameterLocation.Header,
+                       Description = "Please enter into field the word 'Bearer' following by space and JWT",
+                       Name = "Authorization",
+                       Type = SecuritySchemeType.ApiKey,
+                       Scheme = "Bearer"
+                   });
+
+                   options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                   {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme
+                                }
+                            },new List<string>()
+                        }
+                   });
+                   options.DescribeAllParametersInCamelCase();
+
+                   // Set the comments path for the Swagger JSON and UI.
+                   var xmlPath = Path.Combine(baseDirectory, fileName);
+                   options.IncludeXmlComments(xmlPath);
+               });
         }
 
         private static IServiceCollection AddCustomCors(this IServiceCollection services)

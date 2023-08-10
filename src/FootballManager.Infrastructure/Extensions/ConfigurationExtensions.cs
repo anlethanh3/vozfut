@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FootballManager.Domain.Enums;
+using Microsoft.Extensions.Configuration;
 
 namespace FootballManager.Infrastructure.Extensions
 {
@@ -16,6 +17,17 @@ namespace FootballManager.Infrastructure.Extensions
             var model = new TModel();
             configuration.GetSection(section).Bind(model);
             return model;
+        }
+
+        /// <summary>
+        /// Get connection to database
+        /// </summary>
+        /// <param name="configuration">The configuration instance to bind.</param>
+        /// <param name="key">enum of database</param>
+        /// <returns>string connection</returns>
+        public static string GetConnectionStrings(this IConfiguration configuration, string dbName)
+        {
+            return configuration.GetSection($"ConnectionStrings:{dbName}Connection").Value;
         }
     }
 }
