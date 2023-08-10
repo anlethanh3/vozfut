@@ -2,6 +2,7 @@ using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.Entity.Entities;
 using FootballManager.Data.Entity.Requests;
 using FootballManager.Data.Entity.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballManager.Controllers;
@@ -9,7 +10,7 @@ namespace FootballManager.Controllers;
 /// Match Controller
 /// </summary>
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]"), Authorize(Roles = "Admin")]
 public class MatchController : ControllerBase
 {
     private readonly ILogger<MatchController> logger;
@@ -61,7 +62,7 @@ public class MatchController : ControllerBase
     /// </summary>
     /// <param name="request">Search model</param>
     /// <returns>Paging matches</returns>
-    [HttpPost("search")]
+    [HttpPost("search"),AllowAnonymous]
     public async Task<ActionResult> Search(SearchPagingRequest request)
     {
         var matches = await unitOfWork.MatchRepository.SearchAsync(request.Name);

@@ -2,6 +2,7 @@ using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.Entity.Entities;
 using FootballManager.Data.Entity.Requests;
 using FootballManager.Data.Entity.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballManager.Controllers;
@@ -9,7 +10,7 @@ namespace FootballManager.Controllers;
 /// Member Controller
 /// </summary>
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]"), Authorize(Roles = "Admin")]
 public class MemberController : ControllerBase
 {
     private readonly ILogger<MemberController> logger;
@@ -33,24 +34,6 @@ public class MemberController : ControllerBase
     {
         var members = await unitOfWork.MemberRepository.GetAsync();
         return Ok(members);
-    }
-    /// <summary>
-    /// Paging members
-    /// </summary>
-    /// <param name="paging">Paging model</param>
-    /// <returns>Paging members</returns>
-    [HttpGet("paging")]
-    public async Task<ActionResult> GetPaging([FromQuery]Paging<bool> paging)
-    {
-        var members = await unitOfWork.MemberRepository.GetAsync();
-        var result = members.Skip(paging.PageIndex * paging.PageSize).Take(paging.PageSize);
-        return Ok(new Paging<IEnumerable<Member>>
-        {
-            Data = result,
-            PageIndex = paging.PageIndex,
-            PageSize = paging.PageSize,
-            TotalPage = (members.Count() / paging.PageSize) + 1,
-        });
     }
     /// <summary>
     /// Get one member
@@ -79,7 +62,7 @@ public class MemberController : ControllerBase
     /// </summary>
     /// <param name="request">Search model</param>
     /// <returns>Paging members</returns>
-    [HttpPost("search")]
+    [HttpPost("search"), AllowAnonymous]
     public async Task<ActionResult> Search(SearchPagingRequest request)
     {
         var members = await unitOfWork.MemberRepository.SearchAsync(request.Name);

@@ -1,6 +1,7 @@
 using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.Entity.Entities;
 using FootballManager.Data.Entity.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FootballManager.Controllers;
@@ -8,7 +9,7 @@ namespace FootballManager.Controllers;
 /// Match Detail Controller
 /// </summary>
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]"), Authorize(Roles = "Admin")]
 public class MatchDetailController : ControllerBase
 {
     private readonly ILogger<MatchDetailController> logger;

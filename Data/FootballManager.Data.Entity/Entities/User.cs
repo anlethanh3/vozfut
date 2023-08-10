@@ -8,8 +8,9 @@ public class User
     public string Email { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public int? MemberId { get; set; }
+    public bool IsAdmin { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime ModifiedDate { get; set; }
     public bool IsDeleted { get; set; } = false;
-    
+
 }

@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using FootballManager.Data.DataAccess.Contexts;
 using FootballManager.Data.Entity.Entities;
 using FootballManager.Logic.Business.Interfaces;
@@ -13,7 +12,7 @@ public class UserRepository : IUserRepository
         this.entityDbContext = entityDbContext;
     }
 
-    public async Task<User?> AddAsync(User user)
+    public async Task<User?> AddAsync(User user, string password)
     {
         var record = await GetAsync(user.Email);
         if (record is not null)
@@ -21,7 +20,7 @@ public class UserRepository : IUserRepository
             return null;
         }
         var now = DateTime.Now;
-        var hashPassword = await GeneratePasswordHashAsync(user);
+        var hashPassword = await GeneratePasswordHashAsync(user, password);
         _ = await entityDbContext.Users.AddAsync(new()
         {
             Name = user.Name,
@@ -29,6 +28,7 @@ public class UserRepository : IUserRepository
             Username = user.Username,
             PasswordHash = hashPassword,
             MemberId = user.MemberId,
+            IsAdmin = user.IsAdmin,
             CreatedDate = now,
             ModifiedDate = now,
             IsDeleted = false,
@@ -49,13 +49,8 @@ public class UserRepository : IUserRepository
         _ = entityDbContext.SaveChanges();
         return true;
     }
-
-    public async Task<string> GeneratePasswordHashAsync(User user)
+    public async Task<string> GeneratePasswordHashAsync(User user, string password)
     {
-        // random a number
-        var rngBytes = new byte[8];
-        RandomNumberGenerator.Create().GetBytes(rngBytes);
-        var password = BitConverter.ToString(rngBytes);
         // hash password
         var passwordHasher = new PasswordHasher<User>();
         var hash = passwordHasher.HashPassword(user, $"{password}");
@@ -91,16 +86,17 @@ public class UserRepository : IUserRepository
         }
         record.Name = user.Name;
         record.MemberId = user.MemberId;
+        record.IsAdmin = user.IsAdmin;
         record.ModifiedDate = DateTime.Now;
         _ = entityDbContext.SaveChanges();
         return true;
     }
 
-    public async Task<bool> ValidatePasswordAsync(User user,string password)
+    public async Task<bool> ValidatePasswordAsync(User user, string password)
     {
         // validate hash password
         var passwordHasher = new PasswordHasher<User>();
-        var result = passwordHasher.VerifyHashedPassword(user,user.PasswordHash, $"{password}");
+        var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, $"{password}");
         return result != PasswordVerificationResult.Failed;
     }
 }
