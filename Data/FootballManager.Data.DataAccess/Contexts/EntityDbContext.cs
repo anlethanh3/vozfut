@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using FootballManager.Data.Entities;
+using FootballManager.Data.Entity.Entities;
 using Microsoft.Extensions.Configuration;
-using FootballManager.Data.DataAccess.Interfaces;
 
 namespace FootballManager.Data.DataAccess.Contexts;
 
@@ -10,6 +9,9 @@ public class EntityDbContext : DbContext
     private IConfiguration Configuration { get; set; }
     private string ConnectionString { get; set; }
     public DbSet<Member> Members { get; set; }
+    public DbSet<Match> Matches { get; set; }
+    public DbSet<MatchDetail> MatchDetails { get; set; }
+    public DbSet<User> Users { get; set; }
 
     public EntityDbContext(IConfiguration configuration)
     {

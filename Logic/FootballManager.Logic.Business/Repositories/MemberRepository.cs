@@ -1,5 +1,5 @@
 using FootballManager.Data.DataAccess.Contexts;
-using FootballManager.Data.Entities;
+using FootballManager.Data.Entity.Entities;
 using FootballManager.Logic.Business.Interfaces;
 
 namespace FootballManager.Logic.Business.Repositories;
@@ -49,6 +49,11 @@ public class MemberRepository : IMemberRepository
     public async Task<IEnumerable<Member>> GetAsync()
     {
         return entityDbContext.Members.Where(x => x.IsDeleted == false).ToList();
+    }
+
+    public async Task<IEnumerable<Member>> SearchAsync(string name)
+    {
+        return entityDbContext.Members.Where(m => m.Name.ToLower().Contains(name.ToLower())).ToList();
     }
 
     public async Task<bool> UpdateAsync(Member member)
