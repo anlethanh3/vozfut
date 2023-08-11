@@ -1,15 +1,15 @@
 ﻿using System.Linq.Expressions;
 using FootballManager.Domain.Contracts.Repositories;
+using FootballManager.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace FootballManager.Persistence.Repositories
 {
-    public class EfBaseRepository<TEntity, TKey, TContext> : IAsyncRepository<TEntity, TKey, TContext> where TEntity : class
-                                                                                                       where TContext : DbContext
+    public abstract class EfBaseRepository<TEntity> : IAsyncRepository<TEntity> where TEntity : class
     {
-        protected readonly TContext GenericContext;
+        protected readonly EfDbContext GenericContext;
 
-        public EfBaseRepository(TContext genericContext)
+        public EfBaseRepository(EfDbContext genericContext)
         {
             GenericContext = genericContext;
         }
@@ -23,7 +23,7 @@ namespace FootballManager.Persistence.Repositories
             return entity;
         }
 
-        public async Task<bool> DeleteAsync(TKey id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var data = await GetAsync(id) ?? throw new Exception($"cannot find entity with id: {id}");
 
@@ -98,7 +98,7 @@ namespace FootballManager.Persistence.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<TEntity> GetAsync(TKey id)
+        public async Task<TEntity> GetAsync(int id)
         {
             return await GenericContext.Set<TEntity>().FindAsync(id);
         }

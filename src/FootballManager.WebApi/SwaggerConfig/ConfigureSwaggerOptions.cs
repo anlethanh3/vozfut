@@ -48,8 +48,8 @@ namespace FootballManager.WebApi.SwaggerConfig
             {
                 Title = swaggerOptions.Title ?? "Example API",
                 Version = description.ApiVersion.ToString(),
-                Contact = new OpenApiContact() { Name = swaggerOptions.Contact ?? "Bill", Email = swaggerOptions.Email ?? "bill.mei@somewhere.com" },
-                License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
+                Contact = new OpenApiContact() { Name = swaggerOptions.Contact.Name ?? "N/A", Email = swaggerOptions.Email ?? "N/A" },
+                License = new OpenApiLicense() { Name = swaggerOptions.License.Name ?? "N/A", Url = new Uri(swaggerOptions.License.Url) }
             };
 
             if (description.IsDeprecated)

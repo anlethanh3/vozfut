@@ -25,6 +25,9 @@
 
   <ItemGroup>
     <Folder Include="Features\Members\" />
+    <Folder Include="Features\Matches\" />
+    <Folder Include="Features\MatchDetails\" />
+    <Folder Include="Features\Users\Queries\" />
   </ItemGroup>
 
 </Project>

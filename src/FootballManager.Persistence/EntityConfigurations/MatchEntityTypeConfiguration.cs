@@ -4,20 +4,21 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FootballManager.Persistence.EntityConfigurations
 {
-    public class MemberEntityTypeConfiguration : IEntityTypeConfiguration<Member>
+    public class MatchEntityTypeConfiguration : IEntityTypeConfiguration<Match>
     {
-        public void Configure(EntityTypeBuilder<Member> builder)
+        public void Configure(EntityTypeBuilder<Match> builder)
         {
-            builder.ToTable("Members");
+            builder.ToTable("Matches");
 
             builder.Property(e => e.Id)
-                   .ValueGeneratedOnAdd()
-                   .UseIdentityColumn()
-                   .HasComment("Primary Key");
+                    .ValueGeneratedOnAdd()
+                    .UseIdentityColumn()
+                    .HasComment("Primary Key");
 
             builder.Property(e => e.Name).IsRequired();
             builder.Property(e => e.Description);
-            builder.Property(e => e.Elo).IsRequired();
+            builder.Property(e => e.TeamSize).IsRequired();
+            builder.Property(e => e.TeamCount).IsRequired();
             builder.Property(e => e.CreatedDate).IsRequired();
             builder.Property(e => e.CreatedBy).IsRequired();
             builder.Property(e => e.ModifiedBy);

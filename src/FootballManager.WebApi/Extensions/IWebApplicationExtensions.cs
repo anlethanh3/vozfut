@@ -1,4 +1,5 @@
-﻿using FootballManager.WebApi.Providers;
+﻿using FootballManager.Persistence.Context;
+using FootballManager.WebApi.Providers;
 
 namespace FootballManager.WebApi.Extensions
 {
@@ -50,45 +51,21 @@ namespace FootballManager.WebApi.Extensions
         private static WebApplication UseCustomIdentityServer(this WebApplication app, IConfiguration configuration)
         {
             //app.UseIdentityServer();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             return app;
         }
 
         private static WebApplication UseCustomMigrate(this WebApplication app)
         {
-            //app.MigrateDatabase();
-
-            //app.MigrationDatabaseEF<IdentityDbContext>((context, service) =>
-            //{
-            //    var logger = service.GetService<ILogger<IdentityContextSeed>>();
-            //    IdentityContextSeed.SeedAsync(context, logger).Wait();
-            //});
+            app.MigrationDatabase<EfDbContext>((context, service) =>
+            {
+                var logger = service.GetService<ILogger<EfContextSeed>>();
+                EfContextSeed.SeedAsync(context, logger).Wait();
+            });
 
             return app;
-        }
-
-        private static IHost MigrateDatabase(this IHost host)
-        {
-            //using (var scope = host.Services.CreateScope())
-            //{
-            //    var databaseService = scope.ServiceProvider.GetRequiredService<Database>();
-            //    var migrationService = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-            //    try
-            //    {
-            //        databaseService.CreateDatabase("sso_system");
-
-            //        migrationService.ListMigrations();
-            //        migrationService.MigrateUp();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        //log errors or ...
-            //        throw;
-            //    }
-            //}
-            return host;
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 
 namespace FootballManager.Domain.Contracts.Repositories
 {
-    public interface IAsyncRepository<TEntity, TKey, TContext> where TEntity : class
-                                                                where TContext : DbContext
+    public interface IAsyncRepository<TEntity> where TEntity : class
     {
         IQueryable<TEntity> Entities { get; }
 
@@ -22,12 +20,12 @@ namespace FootballManager.Domain.Contracts.Repositories
                                         List<Expression<Func<TEntity, object>>> includes = null,
                                         bool disableTracking = true);
 
-        Task<TEntity> GetAsync(TKey id);
+        Task<TEntity> GetAsync(int id);
 
         Task<TEntity> CreateAsync(TEntity entity);
 
         Task<TEntity> UpdateAsync(TEntity entity);
 
-        Task<bool> DeleteAsync(TKey id);
+        Task<bool> DeleteAsync(int id);
     }
 }

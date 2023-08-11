@@ -29,9 +29,9 @@ namespace FootballManager.WebApi.Providers
         {
             context.Response.ContentType = "application/json; charset=utf-8";
 
-            if (exception.GetType() == typeof(DomainExeption))
+            if (exception.GetType() == typeof(DomainException))
             {
-                var ex = exception as DomainExeption;
+                var ex = exception as DomainException;
                 var json = JsonSerializer.Serialize(new
                 {
                     message = ex?.Message,

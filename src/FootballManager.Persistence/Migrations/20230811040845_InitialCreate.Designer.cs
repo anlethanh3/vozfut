@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FootballManager.Persistence.Migrations
 {
     [DbContext(typeof(EfDbContext))]
-    [Migration("20230810094501_InitialCreate")]
+    [Migration("20230811040845_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace FootballManager.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FootballManager.Domain.Entities.User", b =>
+            modelBuilder.Entity("FootballManager.Domain.Entities.Member", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,7 +65,7 @@ namespace FootballManager.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Members", (string)null);
                 });
 #pragma warning restore 612, 618
         }

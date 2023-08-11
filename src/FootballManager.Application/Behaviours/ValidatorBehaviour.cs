@@ -33,7 +33,7 @@ namespace FootballManager.Application.Behaviours
             {
                 _logger.LogError("Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}", typeName, request, failures);
 
-                throw new DomainExeption(string.Join(",", failures.Select(x => x.ErrorMessage)));
+                throw new DomainException(string.Join(",", failures.Select(x => x.ErrorMessage)));
             }
 
             return await next();

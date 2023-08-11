@@ -12,7 +12,7 @@ namespace FootballManager.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "Members",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false, comment: "Primary Key")
@@ -29,7 +29,7 @@ namespace FootballManager.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Members", x => x.Id);
                 });
         }
 
@@ -37,7 +37,7 @@ namespace FootballManager.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Members");
         }
     }
 }

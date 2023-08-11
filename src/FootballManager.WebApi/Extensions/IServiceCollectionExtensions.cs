@@ -81,9 +81,20 @@ namespace FootballManager.WebApi.Extensions
                {
                    options.SwaggerDoc(swaggerOptions.Name, new OpenApiInfo
                    {
-                       Title = swaggerOptions.Title ?? "no title",
-                       Version = swaggerOptions.Version ?? "no version",
-                       Description = swaggerOptions.Description ?? "no description"
+                       Title = swaggerOptions.Title ?? "N/A",
+                       Version = swaggerOptions.Version ?? "N/A",
+                       Description = swaggerOptions.Description ?? "N/A",
+                       TermsOfService = new Uri(swaggerOptions.TermsOfService, UriKind.Absolute),
+                       Contact = new()
+                       {
+                           Url = new Uri(swaggerOptions.Contact.Url, UriKind.Absolute),
+                           Name = swaggerOptions.Contact.Name ?? "N/A"
+                       },
+                       License = new()
+                       {
+                           Url = new Uri(swaggerOptions.License.Url, UriKind.Absolute),
+                           Name = swaggerOptions.License.Name ?? "N/A"
+                       }
                    });
 
                    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

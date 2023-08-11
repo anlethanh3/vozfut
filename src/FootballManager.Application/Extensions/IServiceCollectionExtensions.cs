@@ -32,6 +32,9 @@ namespace FootballManager.Application.Extensions
             var connectionOptions = configuration.GetOptions<ConnectionOptions>("ConnectionStrings");
             services.AddSingleton<ConnectionOptions>(connectionOptions);
 
+            var jwtOptions = configuration.GetOptions<JwtOptions>("Jwt");
+            services.AddSingleton<JwtOptions>(jwtOptions);
+
             return services;
         }
 
@@ -58,7 +61,7 @@ namespace FootballManager.Application.Extensions
             {
                 IHttpContextAccessor currentContext = x.GetService<IHttpContextAccessor>();
 
-                if (currentContext.HttpContext != null)
+                if (currentContext?.HttpContext != null)
                 {
                     return currentContext.HttpContext.User;
                 }

@@ -12,12 +12,13 @@ namespace FootballManager.Persistence.Extensions
         public static IServiceCollection AddPersistenceLayer(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddGenericRepository()
-                            .AddConnectionAndDbContext(configuration);
+                           .AddConnectionAndDbContext(configuration);
         }
 
         private static IServiceCollection AddGenericRepository(this IServiceCollection services)
         {
-            return services.AddScoped(typeof(IAsyncRepository<,,>), typeof(EfBaseRepository<,,>));
+            return services
+                           .AddScoped<IUserRepository, UserRepository>();
         }
 
         private static IServiceCollection AddConnectionAndDbContext(this IServiceCollection services, IConfiguration configuration)

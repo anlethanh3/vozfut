@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using FootballManager.Application.Features.Users.Queries.GetAll;
+using FootballManager.Domain.Entities;
 
 namespace FootballManager.Application.AutoMappings
 {
@@ -6,14 +8,7 @@ namespace FootballManager.Application.AutoMappings
     {
         public AutoMap()
         {
-            //    CreateMap<User, CreateUserCommand>().ReverseMap();
-            //    CreateMap<UserProfile, CreateUserCommand>().ReverseMap();
-            //    CreateMap<CreateUserAddressCommand, UserAddress>()
-            //        .ForMember(dest => dest.DisplayName,
-            //                   opt => opt.MapFrom(src => src.FullName))
-            //        .ReverseMap();
-
-            //    CreateMap<UpdateUserCommand, UserProfile>().ReverseMap();
+            CreateMap<User, GetAllUserDto>().ReverseMap();
         }
     }
 }
