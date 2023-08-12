@@ -1,10 +1,4 @@
 services:
-  # web:
-  #   image: nginx
-  #   volumes:
-  #     - ./default.conf:/etc/nginx/conf.d/default.conf:ro
-  #   ports:
-  #     - 5001:80
   webreactjs:
     image: anlt/vozfut-web:latest
     ports:
@@ -15,10 +9,8 @@ services:
   servergo:
     image: anlt/vozfut-webapi:latest
     restart: always
-  servergo:
+  server-test:
     image: anlt/vozfut-webapi:latest
-    ports:
-      - 5002:80
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     restart: always
