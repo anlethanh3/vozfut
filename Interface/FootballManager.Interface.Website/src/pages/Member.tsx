@@ -7,24 +7,30 @@ import AddMember from "../components/AddMember"
 import UpdateMember from "../components/UpdateMember"
 import Confirmation from "../components/Confirmation"
 import SearchMember from "../components/SearchMember";
+import { AxiosError, HttpStatusCode } from "axios";
 
 export default function Member() {
     const sizes = [10, 50, 100]
     const [state, dispatch] = useReducer(reducer, initState)
     moment.defaultFormat = 'YYYY-MM-DD HH:mm:ss'
     const fetchData = async (signal: AbortSignal) => {
-        try {
-            dispatch({ type: 'fetch' })
-            var response = await search({ pageIndex: state.pageIndex, pageSize: state.pageSize, name: state.search.name, signal: signal },)
-            if (response.status === 200) {
-                var data = response.data
-                dispatch({ type: 'success', payload: data })
-            } else {
-                dispatch({ type: 'failure', error: "Got error while fetch data" })
-            }
-        } catch (ex) {
-            dispatch({ type: 'failure', error: JSON.stringify(ex) })
-        }
+        dispatch({ type: 'fetch' })
+        search({ pageIndex: state.pageIndex, pageSize: state.pageSize, name: state.search.name, signal: signal },)
+            .then(response => {
+                if (response.status === 200) {
+                    var data = response.data
+                    dispatch({ type: 'success', payload: data })
+                } else {
+                    dispatch({ type: 'failure', error: "Got error while fetch data" })
+                }
+            })
+            .catch((ex: Error) => {
+                if (ex instanceof AxiosError && ex.response?.status === HttpStatusCode.Unauthorized) {
+                    dispatch({ type: 'failure', error: "Fetch Data Failed!" })
+                } else {
+                    dispatch({ type: 'failure', error: ex.message })
+                }
+            })
     }
     const onChangePageIndex = (pageIndex: number) => {
         dispatch({ type: 'page', pageIndex: pageIndex })

@@ -7,6 +7,7 @@ import Match from './pages/Match';
 import ErrorPage from './pages/ErrorPage';
 import Member from './pages/Member';
 import Donate from './pages/Donate';
+import { Counter } from './features/counter/counter';
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -15,6 +16,7 @@ function App() {
         <Route path="donate" element={<Donate />} />
         <Route path="member" element={<Member />} />
         <Route path="history" element={<History />} />
+        <Route path="counter" element={<Counter />} />
         <Route path='*' element={<ErrorPage />} />
       </Route>
     )

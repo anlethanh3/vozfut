@@ -29,6 +29,7 @@ export default function NavMenu() {
                             <Nav.Link href="member">Member</Nav.Link>
                             <Nav.Link href="donate">Donate</Nav.Link>
                             <Nav.Link href="history">History</Nav.Link>
+                            <Nav.Link href="counter">Counter</Nav.Link>
                         </Nav>
                         <Nav>
                             <Button onClick={() => setIsLogin(true)}>Login</Button>
