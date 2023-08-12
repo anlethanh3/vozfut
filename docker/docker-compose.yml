@@ -6,14 +6,14 @@ services:
   #   ports:
   #     - 5001:80
   webreactjs:
-    image: fut-web
+    image: anlt/vozfut-web:latest
     ports:
-      - 5000:80
+      - 80:80
     environment:
       - NODE_ENV=production
     restart: always
   servergo:
-    image: fut-webapi
+    image: anlt/vozfut-webapi:latest
     ports:
       - 5002:80
     restart: always
