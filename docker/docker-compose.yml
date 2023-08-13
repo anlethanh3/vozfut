@@ -4,7 +4,7 @@ services:
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
       - ./certbot/www/:/var/www/certbot/
-      - ./cerbot/conf/:/etc/nginx/ssl/
+      - ./certbot/conf/:/etc/nginx/ssl/
     ports:
       - 80:80
       - 443:443
