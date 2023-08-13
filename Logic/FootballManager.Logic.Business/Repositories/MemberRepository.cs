@@ -1,5 +1,5 @@
 using FootballManager.Data.DataAccess.Contexts;
-using FootballManager.Data.Entities;
+using FootballManager.Data.Entity.Entities;
 using FootballManager.Logic.Business.Interfaces;
 
 namespace FootballManager.Logic.Business.Repositories;
