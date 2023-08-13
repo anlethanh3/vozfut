@@ -1,19 +1,23 @@
 services:
   webreactjs:
     image: anlt/vozfut-web:latest
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./certbot/www/:/var/www/certbot/
+      - ./cerbot/conf/:/etc/nginx/ssl/
     ports:
       - 80:80
       - 443:443
     environment:
       - NODE_ENV=production
     restart: always
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes: 
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email an.lethanh3@gmail.com -d vozfc.io.vn --agree-tos
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes: 
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www/certbot
+  #   command: certonly --webroot -w /var/www/certbot --force-renewal --email an.lethanh3@gmail.com -d vozfc.io.vn --agree-tos
   servergo:
     image: anlt/vozfut-webapi:latest
     restart: always
