@@ -24,5 +24,5 @@ services:
   server-test:
     image: anlt/vozfut-webapi:latest
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Testing
     restart: always
