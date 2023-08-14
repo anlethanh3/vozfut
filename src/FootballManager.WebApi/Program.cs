@@ -1,5 +1,4 @@
 ﻿using FootballManager.Application.Extensions;
-using FootballManager.Persistence.Context;
 using FootballManager.Persistence.Extensions;
 using FootballManager.WebApi.Extensions;
 using FootballManager.WebApi.Helpers;
@@ -22,12 +21,6 @@ services.AddPresentationLayer(configuration)
 #endregion dependency injection layer
 
 var app = builder.Build();
-
-app.MigrationDatabase<EfDbContext>((context, service) =>
-{
-    var logger = service.GetService<ILogger<EfContextSeed>>();
-    EfContextSeed.SeedAsync(context, logger).Wait();
-});
 
 app.UsePresentationLayer(configuration)
    .UseMinimalApi();
