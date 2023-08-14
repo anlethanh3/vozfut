@@ -1,4 +1,10 @@
-﻿using FootballManager.Application.Features.Users.Commands.Authenticate;
+﻿using FootballManager.Application.Features.Matches.Commands.Create;
+using FootballManager.Application.Features.Matches.Commands.Delete;
+using FootballManager.Application.Features.Matches.Commands.Update;
+using FootballManager.Application.Features.Matches.Queries.GetAll;
+using FootballManager.Application.Features.Matches.Queries.GetDetail;
+using FootballManager.Application.Features.Matches.Queries.GetPaging;
+using FootballManager.Application.Features.Users.Commands.Authenticate;
 using FootballManager.Application.Features.Users.Commands.Create;
 using FootballManager.Application.Features.Users.Commands.Update;
 using FootballManager.Application.Features.Users.Queries.GetAll;
@@ -18,7 +24,8 @@ namespace FootballManager.WebApi.Extensions
         /// <returns></returns>
         public static WebApplication UseMinimalApi(this WebApplication app)
         {
-            return app.UseV1UserBuilder();
+            return app.UseV1UserBuilder()
+                      .UseV1MatchBuilder();
         }
 
         private static WebApplication UseV1UserBuilder(this WebApplication app)
@@ -44,15 +51,59 @@ namespace FootballManager.WebApi.Extensions
                 return Results.Ok(await mediator.Send(command));
             }).WithMetadata(new SwaggerOperationAttribute("Endpoint using for update user information."));
 
-            usersV1.MapGet("/profile", async (IMediator mediator, GetProfileUserQuery query) =>
+            usersV1.MapGet("/profile", async (IMediator mediator) =>
             {
-                return Results.Ok(await mediator.Send(query));
+                return Results.Ok(await mediator.Send(new GetProfileUserQuery()));
             }).WithMetadata(new SwaggerOperationAttribute("Endpoint using for get user information."));
 
-            usersV1.MapGet("/", async (IMediator mediator, GetAllUserQuery query) =>
+            usersV1.MapGet("/", async (IMediator mediator, int page, int limit) =>
             {
-                return Results.Ok(await mediator.Send(query));
+                return Results.Ok(await mediator.Send(new GetAllUserQuery(page, limit)));
             }).WithMetadata(new SwaggerOperationAttribute("Endpoint using for get paging user information."));
+
+            return app;
+        }
+
+        private static WebApplication UseV1MatchBuilder(this WebApplication app)
+        {
+            var matches = app.NewVersionedApi("Matches");
+            var matchesV1 = matches.MapGroup("/api/v{version:apiVersion}/matches").RequireAuthorization();
+
+            matchesV1.MapPost("/", async (IMediator mediator, [FromBody] CreateMatchCommand command) =>
+            {
+                return Results.Ok(await mediator.Send(command));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for create new matches"));
+
+            matchesV1.MapPut("/", async (IMediator mediator, [FromBody] UpdateMatchCommand command) =>
+            {
+                return Results.Ok(await mediator.Send(command));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for update matches information"));
+
+            matchesV1.MapDelete("/{id:int}", async (IMediator mediator, int id) =>
+            {
+                return Results.Ok(await mediator.Send(new DeleteMatchCommand(id)));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for delete matches information"));
+
+            matchesV1.MapGet("/{id:int}", async (IMediator mediator, int id) =>
+            {
+                return Results.Ok(await mediator.Send(new GetDetailMatchQuery(id)));
+            })
+           .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get detail matches information"));
+
+            matchesV1.MapGet("/", async (IMediator mediator) =>
+            {
+                return Results.Ok(await mediator.Send(new GetAllMatchQuery()));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get all matches information"));
+
+            matchesV1.MapGet("/paging", async (IMediator mediator, int page, int limit) =>
+            {
+                return Results.Ok(await mediator.Send(new GetPagingMatchQuery(page, limit)));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get paging matches information"));
 
             return app;
         }

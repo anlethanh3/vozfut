@@ -17,8 +17,10 @@ namespace FootballManager.Persistence.Extensions
 
         private static IServiceCollection AddGenericRepository(this IServiceCollection services)
         {
-            return services
-                           .AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped(typeof(IAsyncRepository<>), typeof(EfBaseRepository<>));
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            return services;
         }
 
         private static IServiceCollection AddConnectionAndDbContext(this IServiceCollection services, IConfiguration configuration)

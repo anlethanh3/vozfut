@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
@@ -7,6 +8,7 @@ using FootballManager.Infrastructure.Extensions;
 using FootballManager.WebApi.Providers;
 using FootballManager.WebApi.SwaggerConfig;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -19,7 +21,8 @@ namespace FootballManager.WebApi.Extensions
             services.AddCustomVersioning()
                     .AddCustomSwagger(configuration)
                     .AddCustomController()
-                    .AddCustomCors();
+                    .AddCustomCors()
+                    .AddCustomIdentity(configuration);
 
             return services;
         }
@@ -162,6 +165,27 @@ namespace FootballManager.WebApi.Extensions
                 options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             });
+            return services;
+        }
+
+        private static IServiceCollection AddCustomIdentity(this IServiceCollection services, IConfiguration configuration)
+        {
+            var jwtOptions = configuration.GetOptions<JwtOptions>("Jwt");
+
+            services.AddAuthentication("Bearer").AddJwtBearer(options =>
+             {
+                 options.RequireHttpsMetadata = false;
+                 options.SaveToken = true;
+                 options.TokenValidationParameters = new()
+                 {
+                     ValidateIssuer = true,
+                     ValidateAudience = true,
+                     ValidAudience = jwtOptions.Audience,
+                     ValidIssuer = jwtOptions.Issuer,
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+                 };
+             });
+
             return services;
         }
     }

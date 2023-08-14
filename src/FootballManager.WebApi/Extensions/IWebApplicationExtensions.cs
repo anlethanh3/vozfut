@@ -50,7 +50,6 @@ namespace FootballManager.WebApi.Extensions
 
         private static WebApplication UseCustomIdentityServer(this WebApplication app, IConfiguration configuration)
         {
-            //app.UseIdentityServer();
             app.UseAuthentication();
             app.UseAuthorization();
 

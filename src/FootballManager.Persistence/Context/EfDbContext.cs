@@ -11,7 +11,7 @@ namespace FootballManager.Persistence.Context
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Member> Members { get; set; }
-        public DbSet<Match> Matchers { get; set; }
+        public DbSet<Match> Matches { get; set; }
         public DbSet<MatchDetail> MatchDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

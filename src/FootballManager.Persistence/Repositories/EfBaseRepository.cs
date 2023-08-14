@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FootballManager.Persistence.Repositories
 {
-    public abstract class EfBaseRepository<TEntity> : IAsyncRepository<TEntity> where TEntity : class
+    public class EfBaseRepository<TEntity> : IAsyncRepository<TEntity> where TEntity : class
     {
         protected readonly EfDbContext GenericContext;
 

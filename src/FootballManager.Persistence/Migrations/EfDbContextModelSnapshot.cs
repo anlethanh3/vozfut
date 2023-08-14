@@ -62,7 +62,7 @@ namespace FootballManager.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Matchers");
+                    b.ToTable("Matches");
                 });
 
             modelBuilder.Entity("FootballManager.Domain.Entities.MatchDetail", b =>
