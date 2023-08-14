@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "target": "ESNext",
+      "target": "ES6",
       "lib": ["DOM", "DOM.Iterable", "ESNext"],
       "allowJs": true,
       "skipLibCheck": true,
@@ -9,7 +9,7 @@
       "forceConsistentCasingInFileNames": true,
       "noFallthroughCasesInSwitch": true,
       "strict": true,
-      "module": "ESNext",
+      "module": "ES6",
       "moduleResolution": "Node",
       "resolveJsonModule": true,
       "isolatedModules": true,

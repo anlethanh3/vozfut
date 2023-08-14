@@ -4,7 +4,7 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import { Modal, Button, Alert, Spinner } from 'react-bootstrap';
 import { authenticate, profile } from '../providers/UserApiProvider'
 import { AxiosError, HttpStatusCode } from 'axios';
-import { ProfileProps } from '../reducers/UserReducer';
+import { ProfileProps } from '../reducers/DataReducer';
 
 export interface LoginRequestProps {
     email: string | undefined,

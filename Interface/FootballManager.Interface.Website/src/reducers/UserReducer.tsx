@@ -10,17 +10,6 @@ export interface UserProps {
     modifiedDate?: string,
     isDeleted?: boolean,
 }
-export interface ProfileProps {
-    userId: number,
-    email: string,
-    username: string,
-    role: string,
-}
-export interface TokenProps {
-    tokenType: string,
-    expiredIn: number,
-    accessToken: string,
-}
 
 export interface SearchProps {
     name: string,
