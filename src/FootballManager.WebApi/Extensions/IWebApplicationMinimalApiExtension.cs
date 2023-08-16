@@ -1,6 +1,7 @@
 ﻿using FootballManager.Application.Features.Matches.Commands.Create;
 using FootballManager.Application.Features.Matches.Commands.Delete;
 using FootballManager.Application.Features.Matches.Commands.Update;
+using FootballManager.Application.Features.Matches.Commands.UpdateStatus;
 using FootballManager.Application.Features.Matches.Queries.GetAll;
 using FootballManager.Application.Features.Matches.Queries.GetDetail;
 using FootballManager.Application.Features.Matches.Queries.GetPaging;
@@ -9,6 +10,8 @@ using FootballManager.Application.Features.Users.Commands.Create;
 using FootballManager.Application.Features.Users.Commands.Update;
 using FootballManager.Application.Features.Users.Queries.GetAll;
 using FootballManager.Application.Features.Users.Queries.Profile;
+using FootballManager.Domain.Enums;
+using FootballManager.Domain.ResultModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -87,6 +90,12 @@ namespace FootballManager.WebApi.Extensions
             })
             .WithMetadata(new SwaggerOperationAttribute("Endpoint using for delete matches information"));
 
+            matchesV1.MapPut("/update-status", async (IMediator mediator, [FromBody] UpdateStatusMatchCommand command) =>
+            {
+                return Results.Ok(await mediator.Send(command));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for update status matches information"));
+
             matchesV1.MapGet("/{id:int}", async (IMediator mediator, int id) =>
             {
                 return Results.Ok(await mediator.Send(new GetDetailMatchQuery(id)));
@@ -104,6 +113,18 @@ namespace FootballManager.WebApi.Extensions
                 return Results.Ok(await mediator.Send(new GetPagingMatchQuery(page, limit)));
             })
             .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get paging matches information"));
+
+            matchesV1.MapGet("/status", async () =>
+            {
+                return Results.Ok(await Result<IEnumerable<MatchStatusEnum>>.SuccessAsync(MatchStatusEnum.Gets));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for gets status matches information"));
+
+            matchesV1.MapGet("/status/{id:int}", async (int id) =>
+            {
+                return Results.Ok(await Result<MatchStatusEnum>.SuccessAsync(MatchStatusEnum.Get((short)id)));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get detail status matches information"));
 
             return app;
         }

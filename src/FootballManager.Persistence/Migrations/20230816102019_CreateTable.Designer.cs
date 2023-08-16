@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FootballManager.Persistence.Migrations
 {
     [DbContext(typeof(EfDbContext))]
-    [Migration("20230814102607_CreateTable")]
+    [Migration("20230816102019_CreateTable")]
     partial class CreateTable
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace FootballManager.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -45,8 +45,23 @@ namespace FootballManager.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FootballFieldAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short>("FootballFieldNumber")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("FootballFieldSize")
+                        .HasColumnType("smallint");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("MatchDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -57,11 +72,23 @@ namespace FootballManager.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TeamCount")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("TeamSize")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<short>("TeamCount")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("TeamSize")
+                        .HasColumnType("smallint");
+
+                    b.Property<double>("TotalAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TotalHour")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -76,6 +103,10 @@ namespace FootballManager.Persistence.Migrations
                         .HasComment("Primary Key");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BibColour")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -135,8 +166,8 @@ namespace FootballManager.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Elo")
-                        .HasColumnType("int");
+                    b.Property<short>("Elo")
+                        .HasColumnType("smallint");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -151,9 +182,67 @@ namespace FootballManager.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PositionId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Members", (string)null);
+                });
+
+            modelBuilder.Entity("FootballManager.Domain.Entities.MemberVote", b =>
+                {
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("VoteId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("MemberId", "VoteId");
+
+                    b.HasIndex("VoteId");
+
+                    b.ToTable("MemberVotes");
+                });
+
+            modelBuilder.Entity("FootballManager.Domain.Entities.Position", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasComment("Primary Key");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descrption")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Positions", (string)null);
                 });
 
             modelBuilder.Entity("FootballManager.Domain.Entities.User", b =>
@@ -208,6 +297,78 @@ namespace FootballManager.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("FootballManager.Domain.Entities.Vote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasComment("Primary Key");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Votes", (string)null);
+                });
+
+            modelBuilder.Entity("FootballManager.Domain.Entities.MemberVote", b =>
+                {
+                    b.HasOne("FootballManager.Domain.Entities.Member", "Member")
+                        .WithMany("MemberVotes")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FootballManager.Domain.Entities.Vote", "Vote")
+                        .WithMany("MemberVotes")
+                        .HasForeignKey("VoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+
+                    b.Navigation("Vote");
+                });
+
+            modelBuilder.Entity("FootballManager.Domain.Entities.Member", b =>
+                {
+                    b.Navigation("MemberVotes");
+                });
+
+            modelBuilder.Entity("FootballManager.Domain.Entities.Vote", b =>
+                {
+                    b.Navigation("MemberVotes");
                 });
 #pragma warning restore 612, 618
         }

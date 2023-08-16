@@ -2,12 +2,12 @@
 
 namespace FootballManager.Domain.Entities
 {
-    public class Member : FullAuditable<int>
+    public class Vote : FullAuditable<int>
     {
         public string Name { get; set; }
-        public short Elo { get; set; }
-        public int? PositionId { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
+
         public IList<MemberVote> MemberVotes { get; set; }
     }
 }

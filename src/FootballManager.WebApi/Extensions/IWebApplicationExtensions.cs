@@ -58,7 +58,7 @@ namespace FootballManager.WebApi.Extensions
 
         private static WebApplication UseCustomMigrate(this WebApplication app)
         {
-            app.MigrationDatabase<EfDbContext>((context, service) =>
+            app.CreateDbIfNotExists<EfDbContext>((context, service) =>
             {
                 var logger = service.GetService<ILogger<EfContextSeed>>();
                 EfContextSeed.SeedAsync(context, logger).Wait();

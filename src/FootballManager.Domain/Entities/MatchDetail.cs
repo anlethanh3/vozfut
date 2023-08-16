@@ -8,4 +8,5 @@ public class MatchDetail : FullAuditable<int>
     public int MemberId { get; set; }
     public bool IsPaid { get; set; }
     public bool IsSkip { get; set; }
+    public string BibColour { get; set; }
 }

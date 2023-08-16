@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -7,6 +8,8 @@ using FootballManager.Domain.OptionsSettings;
 using FootballManager.Infrastructure.Extensions;
 using FootballManager.WebApi.Providers;
 using FootballManager.WebApi.SwaggerConfig;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -22,7 +25,8 @@ namespace FootballManager.WebApi.Extensions
                     .AddCustomSwagger(configuration)
                     .AddCustomController()
                     .AddCustomCors()
-                    .AddCustomIdentity(configuration);
+                    .AddCustomIdentity(configuration)
+                    .AddClaim();
 
             return services;
         }
@@ -172,7 +176,7 @@ namespace FootballManager.WebApi.Extensions
         {
             var jwtOptions = configuration.GetOptions<JwtOptions>("Jwt");
 
-            services.AddAuthentication("Bearer").AddJwtBearer(options =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
              {
                  options.RequireHttpsMetadata = false;
                  options.SaveToken = true;
@@ -187,6 +191,22 @@ namespace FootballManager.WebApi.Extensions
              });
 
             return services;
+        }
+
+        private static IServiceCollection AddClaim(this IServiceCollection services)
+        {
+            services.AddHttpContextAccessor();
+            services.AddTransient<ClaimsPrincipal>(x =>
+            {
+                var currentContext = x.GetService<IHttpContextAccessor>();
+                if (currentContext.HttpContext != null)
+                {
+                    return currentContext.HttpContext.User;
+                }
+
+                return new ClaimsPrincipal();
+            });
+            return services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
         }
     }
 }

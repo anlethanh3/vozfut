@@ -1,5 +1,6 @@
 ﻿using FootballManager.Domain.Contracts.Repositories;
 using FootballManager.Domain.Entities;
+using FootballManager.Domain.Enums;
 using FootballManager.Domain.Exceptions;
 using FootballManager.Domain.ResultModels;
 using MediatR;
@@ -19,22 +20,29 @@ namespace FootballManager.Application.Features.Matches.Commands.Update
         {
             var match = await _matchRepository.GetAsync(request.Id) ?? throw new DomainException("Match not found");
 
+            if (match.Status.ToLower().Equals(MatchStatusEnum.Completed.Name.ToLower()))
+            {
+                throw new DomainException("Cannot update, because match completed");
+            }
+
             match.Name = request.Name;
             match.Description = request.Description;
             match.TeamSize = request.TeamSize;
             match.TeamCount = request.TeamCount;
+            match.TotalHour = request.TotalHour;
+            match.TotalAmount = request.TotalAmount;
+            match.FootballFieldSize = request.FootballFieldSize;
+            match.FootballFieldAddress = request.FootballFieldAddress;
+            match.FootballFieldNumber = request.FootballFieldNumber;
+            match.StartTime = request.StartTime;
+            match.EndTime = request.EndTime;
             match.ModifiedBy = request.RequestedBy;
             match.ModifiedDate = request.RequestedAt;
 
             var matchUpdated = await _matchRepository.UpdateAsync(match);
-            if (matchUpdated != null)
-            {
-                return await Result<bool>.SuccessAsync(true);
-            }
-            else
-            {
-                return await Result<bool>.FailureAsync(false);
-            }
+            return matchUpdated != null
+                                ? Result<bool>.Success(true)
+                                : Result<bool>.Failure(false);
         }
     }
 }

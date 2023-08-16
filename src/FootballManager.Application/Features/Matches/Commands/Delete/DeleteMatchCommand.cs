@@ -1,5 +1,6 @@
 ﻿using FootballManager.Domain.Contracts.Repositories;
 using FootballManager.Domain.Entities;
+using FootballManager.Domain.Enums;
 using FootballManager.Domain.Exceptions;
 using FootballManager.Domain.ResultModels;
 using MediatR;
@@ -20,19 +21,23 @@ namespace FootballManager.Application.Features.Matches.Commands.Delete
         public async Task<Result<bool>> Handle(DeleteMatchCommand request, CancellationToken cancellationToken)
         {
             var match = await _matchRepository.GetAsync(request.Id) ?? throw new DomainException("Match not found");
+            if (match.IsDeleted)
+            {
+                throw new DomainException("Match not found");
+            }
+
+            if (match.Status.ToLower().Equals(MatchStatusEnum.Completed.Name.ToLower()))
+            {
+                throw new DomainException("cannot delete, because match completed");
+            }
 
             match.IsDeleted = true;
             match.DeletedDate = request.RequestedAt;
 
             var deleted = await _matchRepository.UpdateAsync(match);
-            if (deleted != null)
-            {
-                return await Result<bool>.SuccessAsync(true);
-            }
-            else
-            {
-                return await Result<bool>.FailureAsync(false);
-            }
+            return deleted != null
+                           ? Result<bool>.Success(true)
+                           : Result<bool>.Failure(false);
         }
     }
 }

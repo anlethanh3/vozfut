@@ -5,7 +5,7 @@ namespace FootballManager.WebApi.Extensions
 {
     public static class HostExtension
     {
-        public static IHost MigrationDatabase<TContext>(this IHost host, Action<TContext, IServiceProvider> seeder, int? retry = 0) where TContext : DbContext
+        public static IHost CreateDbIfNotExists<TContext>(this IHost host, Action<TContext, IServiceProvider> seeder, int? retry = 0) where TContext : DbContext
         {
             // TODO: should replace retry policy
             var retryAvailability = retry ?? 0;
@@ -33,7 +33,7 @@ namespace FootballManager.WebApi.Extensions
                 {
                     retryAvailability++;
                     Thread.Sleep(1500);
-                    MigrationDatabase<TContext>(host, seeder, retryAvailability);
+                    CreateDbIfNotExists<TContext>(host, seeder, retryAvailability);
                 }
             }
 
