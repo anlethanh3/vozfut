@@ -11,8 +11,8 @@ export default function Home() {
             <h1>Events</h1>
             <Carousel>
                 {
-                    images.map(item =>
-                        <Carousel.Item>
+                    images.map((item, index) =>
+                        <Carousel.Item key={`image-${index}`} >
                             <Image src={`https://drive.google.com/uc?export=view&id=${item}`} fluid />
                             <Carousel.Caption>
                                 <h3>6/8/2023 - Sân bóng đá 367</h3>
