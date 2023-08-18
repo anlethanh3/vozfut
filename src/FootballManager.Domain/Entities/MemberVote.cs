@@ -13,6 +13,8 @@ namespace FootballManager.Domain.Entities
         [Column(Order = 2)]
         public int VoteId { get; set; }
 
+        public DateTime VoteDate { get; set; }
+
         [ForeignKey("MemberId")]
         public virtual Member Member { get; set; }
 

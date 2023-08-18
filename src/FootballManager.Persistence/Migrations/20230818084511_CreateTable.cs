@@ -74,6 +74,7 @@ namespace FootballManager.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Elo = table.Column<short>(type: "smallint", nullable: false),
                     PositionId = table.Column<int>(type: "int", nullable: true),
+                    SubPositionId = table.Column<int>(type: "int", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -95,7 +96,7 @@ namespace FootballManager.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descrption = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -156,7 +157,8 @@ namespace FootballManager.Persistence.Migrations
                 columns: table => new
                 {
                     MemberId = table.Column<int>(type: "int", nullable: false),
-                    VoteId = table.Column<int>(type: "int", nullable: false)
+                    VoteId = table.Column<int>(type: "int", nullable: false),
+                    VoteDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

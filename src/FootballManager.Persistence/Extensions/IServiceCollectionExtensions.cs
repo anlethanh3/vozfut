@@ -1,9 +1,12 @@
-﻿using FootballManager.Domain.Contracts.Repositories;
+﻿using FootballManager.Domain.Contracts.DapperConnection;
+using FootballManager.Domain.Contracts.Repositories;
 using FootballManager.Persistence.Context;
+using FootballManager.Persistence.DapperConnectionFactories;
 using FootballManager.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace FootballManager.Persistence.Extensions
 {
@@ -12,7 +15,8 @@ namespace FootballManager.Persistence.Extensions
         public static IServiceCollection AddPersistenceLayer(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddGenericRepository()
-                           .AddConnectionAndDbContext(configuration);
+                           .AddConnectionAndDbContext(configuration)
+                           .AddDapperSqlFactory();
         }
 
         private static IServiceCollection AddGenericRepository(this IServiceCollection services)
@@ -29,6 +33,19 @@ namespace FootballManager.Persistence.Extensions
             services.AddDbContext<EfDbContext>(options =>
             {
                 options.UseSqlServer(connection);
+            });
+
+            return services;
+        }
+
+        private static IServiceCollection AddDapperSqlFactory(this IServiceCollection services)
+        {
+            services.AddTransient<SqlConnectionFactory>();
+
+            services.AddTransient<ISqlConnectionFactory>(provider =>
+            {
+                var logger = provider.GetRequiredService<ILogger<SqlConnectionFactory>>();
+                return new SqlConnectionFactory(logger);
             });
 
             return services;

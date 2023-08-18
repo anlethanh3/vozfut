@@ -182,6 +182,9 @@ namespace FootballManager.Persistence.Migrations
                     b.Property<int?>("PositionId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SubPositionId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Members", (string)null);
@@ -196,6 +199,9 @@ namespace FootballManager.Persistence.Migrations
                     b.Property<int>("VoteId")
                         .HasColumnType("int")
                         .HasColumnOrder(2);
+
+                    b.Property<DateTime>("VoteDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("MemberId", "VoteId");
 
@@ -224,7 +230,7 @@ namespace FootballManager.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Descrption")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ModifiedBy")
