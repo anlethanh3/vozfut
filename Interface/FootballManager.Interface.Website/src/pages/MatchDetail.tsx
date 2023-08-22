@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { Button, Col, Row, Table, Alert, Form } from "react-bootstrap";
 import moment from 'moment';
-import { selectState, fetchAsync } from '../slices/matchDetailSlice';
+import { selectState, fetchAsync, rollingAsync, onCloseError, onCloseRivals } from '../slices/matchDetailSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useParams } from "react-router-dom";
+import Rivals from "../components/Rivals";
 
 export default function MatchDetail() {
     let { id } = useParams()
@@ -15,6 +16,17 @@ export default function MatchDetail() {
         dispatch(fetchAsync({ id: parseInt(id ?? "") }))
             .unwrap()
             .then(values => {
+            })
+            .catch(error => {
+
+            })
+    }
+
+    const rolling = () => {
+        dispatch(rollingAsync({ id: parseInt(id ?? "") }))
+            .unwrap()
+            .then(values => {
+                console.log(values)
 
             })
             .catch(error => {
@@ -38,15 +50,19 @@ export default function MatchDetail() {
                 <Alert color='primary'>Loading...</Alert>
             }
             {
+                state.isShowRivals && state.rolling &&
+                <Rivals show={state.isShowRivals} rivals={state.rolling} onClose={() => dispatch(onCloseRivals())} />
+            }
+            {
                 state.error &&
-                <Alert show={state.error !== undefined} variant="danger" onClose={() => dispatch({ type: "failure", error: undefined })} dismissible>
+                <Alert show={state.error !== undefined} variant="danger" onClose={() => dispatch(onCloseError())} dismissible>
                     {state.error}
                 </Alert>
             }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
                     <Button variant="primary" onClick={() => { }}>Add Member</Button><div className="mx-2" />
-                    <Button variant="success" onClick={() => { }}>Team Division Rivals</Button>
+                    <Button variant="success" onClick={() => { rolling() }}>Team Division Rivals</Button>
                 </Col>
             </Row>
 

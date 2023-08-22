@@ -92,7 +92,7 @@ public class MatchDetailController : ControllerBase
         var result = await unitOfWork.MatchDetailRepository.DeleteAsync(id);
         return Ok(result);
     }
-
+    
     [HttpGet("rolling/{id}")]
     public async Task<ActionResult> Rolling(int id)
     {
@@ -102,29 +102,25 @@ public class MatchDetailController : ControllerBase
             return BadRequest("ERR_MATCH_NOT_EXIST");
         }
         var details = await unitOfWork.MatchDetailRepository.GetAllAsync(id);
+        var numTeams = match.TeamCount;
         var players = details.Select(x => new Player
         {
             Id = x.MemberId,
             Elo = x.MemberElo,
             Name = x.MemberName,
-        }).ToList();
-        var numTeams = match.TeamCount;
-
-        RollRepository teamAssignment = new(numTeams, players);
+        }).Take(numTeams * match.TeamSize).ToList();
+        var rnd = new Random();
+        var randomized = players.OrderBy(item => rnd.Next()).ToList();
+        RollRepository teamAssignment = new(numTeams, randomized);
         if (teamAssignment.FindBalancedTeamAssignment())
         {
             var assignedTeams = teamAssignment.GetAssignedTeams();
-            var teamBibColors = new string[] { "yellow", "red", "blue", "orange" };
-
-            return Ok(new
+            var result = assignedTeams.Select(x => new
             {
-                Teams = assignedTeams.Select(x => new
-                {
-                    Players = x,
-                    EloSum = x.Sum(m => m.Elo),
-                }),
-                Colors = teamBibColors.Take(numTeams)
+                Players = x,
+                EloSum = x.Sum(m => m.Elo),
             });
+            return Ok(result);
         }
         return BadRequest("No balanced team assignment found.");
     }

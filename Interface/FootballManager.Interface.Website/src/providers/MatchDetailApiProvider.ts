@@ -11,6 +11,13 @@ export const search = async <T>(props: { matchId: number, signal: AbortSignal })
     return response
 }
 
+export const rolling = async <T>(props: { matchId: number, signal: AbortSignal }) => {
+    let { signal, matchId } = props
+    let response = await axios.get<T>(`${url}/rolling/${matchId}`,
+        { signal: signal, })
+    return response
+}
+
 export const remove = async (props: { signal: AbortSignal, id: number }) => {
     const { id, signal } = props
     let response = await axios.delete(`${url}/${id}`, { signal: signal, })
