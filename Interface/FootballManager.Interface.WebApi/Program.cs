@@ -12,11 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Health check
 builder.Services.AddHealthChecks();
 // Dependency Injection
+// Repository
 builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 builder.Services.AddTransient<IMatchRepository, MatchRepository>();
 builder.Services.AddTransient<IMatchDetailRepository, MatchDetailRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+// Database context
 builder.Services.AddTransient<IDatabaseContext, DapperDbContext>();
+builder.Services.AddTransient<IMatchDetailContext, MatchDetailContext>();
 builder.Services.AddDbContext<EntityDbContext>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 // Add services to the container.

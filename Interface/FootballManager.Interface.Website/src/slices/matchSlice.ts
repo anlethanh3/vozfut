@@ -11,7 +11,7 @@ export interface MatchProps {
   teamCount: number,
   createdDate?: string,
   modifiedDate?: string,
-  isDeleted: string,
+  isDeleted: boolean,
 }
 
 export interface State {
@@ -31,8 +31,8 @@ export const initialState: State = {
   error: undefined,
   pageIndex: 0,
   totalPage: 0,
+  pageSize: 50,
   search: { name: '' },
-  pageSize: 50
 }
 
 export interface SearchResponseProps<T> {

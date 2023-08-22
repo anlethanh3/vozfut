@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { profile, authenticate } from '../providers/UserApiProvider';
-import { AxiosError, HttpStatusCode } from 'axios';
+import axios, { AxiosError, HttpStatusCode } from 'axios';
 
 export interface ProfileProps {
   userId: number,
@@ -119,6 +119,8 @@ export const profileSlice = createSlice({
     },
     onToken: (state, action: PayloadAction<TokenProps>) => {
       state.token = action.payload
+      let token = action.payload
+      axios.defaults.headers.common['Authorization'] =  `${token.tokenType} ${token.accessToken}`
     },
     onCloseSuccess: (state) => {
       state.isSuccess = false

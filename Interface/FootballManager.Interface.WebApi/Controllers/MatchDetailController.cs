@@ -1,5 +1,6 @@
 using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.Entity.Entities;
+using FootballManager.Data.Entity.Requests;
 using FootballManager.Data.Entity.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,17 @@ public class MatchDetailController : ControllerBase
     {
         var detail = await unitOfWork.MatchDetailRepository.GetAsync();
         return Ok(detail);
+    }
+
+    /// <summary>
+    /// Get all match detail
+    /// </summary>
+    /// <returns>List match detail</returns>
+    [HttpPost("search")]
+    public async Task<ActionResult> GetAll(MatchDetailRequest request)
+    {
+        var details = await unitOfWork.MatchDetailRepository.GetAllAsync(request.MatchId);
+        return Ok(details);
     }
 
     /// <summary>

@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Container, Navbar, Nav, Button, Dropdown, Image, Row, Col, DropdownButton } from "react-bootstrap";
+import { PropsWithChildren, ReactNode, useState } from "react";
+import { Container, Navbar, Nav, Button, Dropdown, Image, Row, Col, DropdownButton, NavItem } from "react-bootstrap";
 import Login from "./Login";
 import { selectProfile, signOut, } from '../slices/profileSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { Link, NavLink, useMatch, useResolvedPath } from "react-router-dom";
 
 export default function NavMenu() {
     const [isLogin, setIsLogin] = useState(false)
@@ -19,9 +20,6 @@ export default function NavMenu() {
                 <Col>
                     <Image className="px-0" style={{ width: '40px' }} src={imageUri(imageId)} roundedCircle />
                 </Col>
-                {/* <Col>
-                    <p className="mx-0 mp-0">{profile?.username ?? ''}</p>
-                </Col> */}
             </Row>
         )
     }
@@ -41,6 +39,18 @@ export default function NavMenu() {
                     <Dropdown.ItemText>Elo: +5</Dropdown.ItemText>
                 </Dropdown.Header>
                 <Dropdown.Divider />
+                <Dropdown.Item>Specialist</Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={() => dispatch(signOut())}>
+                    Sign Out
+                </Dropdown.Item>
+            </DropdownButton >
+        )
+    }
+
+    function Specialist() {
+        return (
+            <>
                 <Dropdown.Item>Chỉ số chi tiết</Dropdown.Item>
                 <Dropdown.ItemText>Giữ bóng: 99</Dropdown.ItemText>
                 <Dropdown.ItemText>Sút xa: 99</Dropdown.ItemText>
@@ -53,11 +63,23 @@ export default function NavMenu() {
                 <Dropdown.ItemText>5* Gáy</Dropdown.ItemText>
                 <Dropdown.ItemText>5* Câu giờ</Dropdown.ItemText>
                 <Dropdown.ItemText>Leadership</Dropdown.ItemText>
-                <Dropdown.Divider />
-                <Dropdown.Item onClick={() => dispatch(signOut())}>
-                    Sign Out
-                </Dropdown.Item>
-            </DropdownButton >
+            </>
+        )
+    }
+    interface CustomLinkProps {
+        route: string,
+    }
+    function CustomLink(props: PropsWithChildren<CustomLinkProps>) {
+        let { children, route } = props
+        let resolved = useResolvedPath(route)
+        let match = useMatch({ path: resolved.pathname, end: true })
+        return (
+            <NavItem>
+                <Nav.Link style={{
+                    fontWeight: match ? 'bold' : 'normal',
+                    color: match ? 'var(--bs-warning)' : 'var(--bs-body-color)'
+                }} as={Link} to={route} {...props} >{children}</Nav.Link>
+            </NavItem>
         )
     }
 
@@ -82,19 +104,19 @@ export default function NavMenu() {
                     <Navbar.Toggle />
                     <Navbar.Collapse >
                         <Nav className="me-auto">
-                            <Nav.Link href="/">Home</Nav.Link>
-                            <Nav.Link href="match">Match</Nav.Link>
-                            <Nav.Link href="member">Member</Nav.Link>
-                            <Nav.Link href="donate">Donate</Nav.Link>
-                            <Nav.Link href="history">History</Nav.Link>
-                            <Nav.Link href="counter">Counter</Nav.Link>
+                            <CustomLink route='/'>Home</CustomLink>
+                            <CustomLink route="match">Match</CustomLink>
+                            <CustomLink route="member">Member</CustomLink>
+                            <CustomLink route="donate">Donate</CustomLink>
+                            <CustomLink route="history">History</CustomLink>
+                            <CustomLink route="counter">Counter</CustomLink>
                         </Nav>
                         <Nav>
                             <Profile />
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
-            </Navbar>
+            </Navbar >
         </>
     )
 }

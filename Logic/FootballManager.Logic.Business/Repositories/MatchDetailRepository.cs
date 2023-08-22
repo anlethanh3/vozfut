@@ -1,15 +1,19 @@
 using FootballManager.Data.DataAccess.Contexts;
+using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.Entity.Entities;
+using FootballManager.Data.Entity.Responses;
 using FootballManager.Logic.Business.Interfaces;
 
 namespace FootballManager.Logic.Business.Repositories;
 public class MatchDetailRepository : IMatchDetailRepository
 {
     private readonly EntityDbContext entityDbContext;
+    private readonly IMatchDetailContext matchDetailContext;
 
-    public MatchDetailRepository(EntityDbContext entityDbContext)
+    public MatchDetailRepository(EntityDbContext entityDbContext, IMatchDetailContext matchDetailContext)
     {
         this.entityDbContext = entityDbContext;
+        this.matchDetailContext = matchDetailContext;
     }
 
     public async Task<MatchDetail?> AddAsync(MatchDetail detail)
@@ -50,6 +54,20 @@ public class MatchDetailRepository : IMatchDetailRepository
     public async Task<MatchDetail?> GetAsync(int id)
     {
         return entityDbContext.MatchDetails.FirstOrDefault(m => m.Id == id);
+    }
+
+    public async Task<IEnumerable<MatchDetailResponse>> GetAllAsync(int id)
+    {
+        using (var entity = entityDbContext)
+        {
+            var match = entity.Matches.Where(x => x.Id == id).FirstOrDefault();
+            if (match is null)
+            {
+                return null;
+            }
+            var result = await matchDetailContext.GetAllAsync(match.Id);
+            return result;
+        };
     }
 
     public async Task<MatchDetail?> GetAsync(int matchId, int memberId)

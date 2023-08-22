@@ -4,6 +4,7 @@ import moment from 'moment';
 import SearchMember from "../components/SearchMember";
 import { selectState, onChangePageIndex, onChangePageSize, fetchAsync } from '../slices/matchSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { NavLink } from "react-router-dom";
 
 export default function Match() {
     let sizes = [10, 50, 100]
@@ -75,8 +76,11 @@ export default function Match() {
                                 <td>{value.teamSize}</td>
                                 <td>{value.modifiedDate && moment(value.modifiedDate).format()}</td>
                                 <td>
-                                    <Button variant="warning" onClick={() => { }}>Edit</Button>{' '}
-                                    <Button variant="danger" onClick={() => { }}>Delete</Button>{' '}
+                                    <NavLink to={`${value.id}`}>
+                                        <Button variant="primary" className="me-2" onClick={() => { }}>Member</Button>
+                                    </NavLink>
+                                    <Button variant="warning" className="me-2" onClick={() => { }}>Edit</Button>
+                                    <Button variant="danger" className="me-2" onClick={() => { }}>Delete</Button>
                                 </td>
                             </tr>
                         )

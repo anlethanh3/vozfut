@@ -9,12 +9,14 @@ import Member from './pages/Member';
 import Donate from './pages/Donate';
 import { Counter } from './features/counter/counter';
 import Home from './pages/Home';
+import MatchDetail from './pages/MatchDetail';
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="match" element={<Match />} />
+        <Route path="match/:id" element={<MatchDetail />} />
         <Route path="donate" element={<Donate />} />
         <Route path="member" element={<Member />} />
         <Route path="history" element={<History />} />

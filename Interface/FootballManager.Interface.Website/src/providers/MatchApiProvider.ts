@@ -15,8 +15,8 @@ export const remove = async (props: { signal: AbortSignal, id: number }) => {
     return response
 }
 
-export const search = async <T>(props: { pageIndex: number, pageSize: number, name: string, signal: AbortSignal }) => {
-    let { pageIndex, pageSize, name, signal } = props
+export const search = async <T>(props: {pageIndex: number, pageSize: number, name: string, signal: AbortSignal }) => {
+    let { pageIndex, pageSize, name, signal} = props
     var response = await axios.post<T>(`${url}/search`,
         {
             pageIndex,
