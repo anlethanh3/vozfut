@@ -1,7 +1,8 @@
 using FootballManager.Data.DataAccess.Interfaces;
+using FootballManager.Data.Entity;
 using FootballManager.Data.Entity.Entities;
 using FootballManager.Data.Entity.Requests;
-using FootballManager.Data.Entity.Results;
+using FootballManager.Logic.Business.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -90,5 +91,41 @@ public class MatchDetailController : ControllerBase
     {
         var result = await unitOfWork.MatchDetailRepository.DeleteAsync(id);
         return Ok(result);
+    }
+
+    [HttpGet("rolling/{id}")]
+    public async Task<ActionResult> Rolling(int id)
+    {
+        var match = await unitOfWork.MatchRepository.GetAsync(id);
+        if (match is null)
+        {
+            return BadRequest("ERR_MATCH_NOT_EXIST");
+        }
+        var details = await unitOfWork.MatchDetailRepository.GetAllAsync(id);
+        var players = details.Select(x => new Player
+        {
+            Id = x.MemberId,
+            Elo = x.MemberElo,
+            Name = x.MemberName,
+        }).ToList();
+        var numTeams = match.TeamCount;
+
+        RollRepository teamAssignment = new(numTeams, players);
+        if (teamAssignment.FindBalancedTeamAssignment())
+        {
+            var assignedTeams = teamAssignment.GetAssignedTeams();
+            var teamBibColors = new string[] { "yellow", "red", "blue", "orange" };
+
+            return Ok(new
+            {
+                Teams = assignedTeams.Select(x => new
+                {
+                    Players = x,
+                    EloSum = x.Sum(m => m.Elo),
+                }),
+                Colors = teamBibColors.Take(numTeams)
+            });
+        }
+        return BadRequest("No balanced team assignment found.");
     }
 }

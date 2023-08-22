@@ -21,7 +21,7 @@ public class MatchDetailContext : IMatchDetailContext
         {
             IEnumerable<MatchDetailResponse> result;
             connection.Open();
-            var sql = @"SELECT md.*, m.Name as MatchName, mem.Name as MemberName
+            var sql = @"SELECT md.*, m.Name as MatchName, mem.Name as MemberName, mem.Elo as MemberElo
                             FROM ([MatchDetails] as md JOIN [Matches] as m ON md.MatchId = m.Id) 
                                     JOIN [Members] as mem ON md.MemberId = mem.Id
                             WHERE   m.IsDeleted = @IsDeleted AND 

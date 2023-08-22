@@ -7,6 +7,7 @@ public class MatchDetailResponse
     public string MatchName { get; set; } = string.Empty;
     public int MemberId { get; set; }
     public string MemberName { get; set; } = string.Empty;
+    public int MemberElo { get; set; }
     public bool IsPaid { get; set; }
     public bool IsSkip { get; set; }
     public DateTime CreatedDate { get; set; }
