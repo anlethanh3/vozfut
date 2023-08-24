@@ -1,8 +1,6 @@
 using FootballManager.Data.DataAccess.Interfaces;
-using FootballManager.Data.Entity;
 using FootballManager.Data.Entity.Entities;
 using FootballManager.Data.Entity.Requests;
-using FootballManager.Logic.Business.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -92,7 +90,7 @@ public class MatchDetailController : ControllerBase
         var result = await unitOfWork.MatchDetailRepository.DeleteAsync(id);
         return Ok(result);
     }
-    
+
     [HttpGet("rolling/{id}")]
     public async Task<ActionResult> Rolling(int id)
     {
@@ -103,25 +101,37 @@ public class MatchDetailController : ControllerBase
         }
         var details = await unitOfWork.MatchDetailRepository.GetAllAsync(id);
         var numTeams = match.TeamCount;
-        var players = details.Select(x => new Player
+        var players = details
+        .Select(x => new Member
         {
             Id = x.MemberId,
             Elo = x.MemberElo,
             Name = x.MemberName,
-        }).Take(numTeams * match.TeamSize).ToList();
+        })
+        .Take(numTeams * match.TeamSize);
         var rnd = new Random();
-        var randomized = players.OrderBy(item => rnd.Next()).ToList();
-        RollRepository teamAssignment = new(numTeams, randomized);
-        if (teamAssignment.FindBalancedTeamAssignment())
+        var orders = players.OrderByDescending(item => item.Elo).ToList();
+        var teams = new List<Member>[match.TeamCount];
+
+        // random members
+        for (int i = 0; i < match.TeamSize; i++)
         {
-            var assignedTeams = teamAssignment.GetAssignedTeams();
-            var result = assignedTeams.Select(x => new
+            var random = orders.Take(match.TeamCount).OrderBy(x => rnd.Next()).ToList();
+            for (int j = 0; j < match.TeamCount; j++)
             {
-                Players = x,
-                EloSum = x.Sum(m => m.Elo),
-            });
-            return Ok(result);
+                if (teams[j] is null)
+                {
+                    teams[j] = new();
+                }
+                teams[j].Add(random[j]);
+                orders.Remove(random[j]);
+            }
         }
-        return BadRequest("No balanced team assignment found.");
+        var result = teams.Select(x => new
+        {
+            Players = x,
+            EloSum = x.Sum(m => m.Elo),
+        });
+        return Ok(result);
     }
 }
