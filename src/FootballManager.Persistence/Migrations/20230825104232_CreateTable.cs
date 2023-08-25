@@ -12,6 +12,35 @@ namespace FootballManager.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Goals",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false, comment: "Primary Key")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MatchId = table.Column<int>(type: "int", nullable: false),
+                    MatchScoreId = table.Column<int>(type: "int", nullable: false),
+                    MemberId = table.Column<int>(type: "int", nullable: false),
+                    AssistMemberId = table.Column<int>(type: "int", nullable: true),
+                    Minute = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsOwnGoal = table.Column<bool>(type: "bit", nullable: false),
+                    IsPenalty = table.Column<bool>(type: "bit", nullable: false),
+                    IsHeader = table.Column<bool>(type: "bit", nullable: false),
+                    IsRegularTime = table.Column<bool>(type: "bit", nullable: false),
+                    IsExtraTime = table.Column<bool>(type: "bit", nullable: false),
+                    IsGoldenGoal = table.Column<bool>(type: "bit", nullable: false),
+                    IsDecisiveGoal = table.Column<bool>(type: "bit", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Goals", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MatchDetails",
                 columns: table => new
                 {
@@ -65,6 +94,27 @@ namespace FootballManager.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Matches", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MatchScores",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false, comment: "Primary Key")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MatchId = table.Column<int>(type: "int", nullable: false),
+                    Team1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Team2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ScoreTeam1 = table.Column<short>(type: "smallint", nullable: false),
+                    ScoreTeam2 = table.Column<short>(type: "smallint", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MatchScores", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -191,10 +241,16 @@ namespace FootballManager.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Goals");
+
+            migrationBuilder.DropTable(
                 name: "MatchDetails");
 
             migrationBuilder.DropTable(
                 name: "Matches");
+
+            migrationBuilder.DropTable(
+                name: "MatchScores");
 
             migrationBuilder.DropTable(
                 name: "MemberVotes");

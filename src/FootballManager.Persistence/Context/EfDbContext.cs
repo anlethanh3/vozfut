@@ -17,6 +17,8 @@ namespace FootballManager.Persistence.Context
         public DbSet<MemberVote> MemberVotes { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<MatchDetail> MatchDetails { get; set; }
+        public DbSet<Goals> Goals { get; set; }
+        public DbSet<MatchScore> MatchScores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +29,8 @@ namespace FootballManager.Persistence.Context
             modelBuilder.ApplyConfiguration(new MatchDetailEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new VoteEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PositionEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new GoalEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new MatchScoreEntityTypeConfiguration());
         }
     }
 }

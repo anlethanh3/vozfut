@@ -22,6 +22,72 @@ namespace FootballManager.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("FootballManager.Domain.Entities.Goals", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasComment("Primary Key");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AssistMemberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDecisiveGoal")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsExtraTime")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsGoldenGoal")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsHeader")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOwnGoal")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPenalty")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRegularTime")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MatchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MatchScoreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Minute")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Goals", (string)null);
+                });
+
             modelBuilder.Entity("FootballManager.Domain.Entities.Match", b =>
                 {
                     b.Property<int>("Id")
@@ -150,6 +216,50 @@ namespace FootballManager.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MatchDetails", (string)null);
+                });
+
+            modelBuilder.Entity("FootballManager.Domain.Entities.MatchScore", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasComment("Primary Key");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MatchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<short>("ScoreTeam1")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("ScoreTeam2")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Team1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Team2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MatchScores", (string)null);
                 });
 
             modelBuilder.Entity("FootballManager.Domain.Entities.Member", b =>
