@@ -4,6 +4,7 @@ using FootballManager.Domain.Enums;
 using FootballManager.Domain.Exceptions;
 using FootballManager.Domain.ResultModels;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace FootballManager.Application.Features.Matches.Commands.UpdateStatus
 {
@@ -20,7 +21,7 @@ namespace FootballManager.Application.Features.Matches.Commands.UpdateStatus
 
         public async Task<Result<bool>> Handle(UpdateStatusMatchCommand request, CancellationToken cancellationToken)
         {
-            var match = await _matchRepository.GetAsync(request.Id) ?? throw new DomainException("Match not found");
+            var match = await _matchRepository.Entities.Where(x => x.Id == request.Id && !x.IsDeleted).FirstOrDefaultAsync(cancellationToken: cancellationToken) ?? throw new DomainException("Match not found");
 
             if (match.Status.ToLower().Equals(MatchStatusEnum.Completed.Name.ToLower()))
             {

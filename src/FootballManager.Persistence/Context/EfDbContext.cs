@@ -23,7 +23,7 @@ namespace FootballManager.Persistence.Context
             modelBuilder.ApplyConfiguration(new MemberVoteEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new MemberEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new MatchDetailEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new MatchEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new MatchDetailEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new VoteEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PositionEntityTypeConfiguration());

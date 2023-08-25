@@ -38,22 +38,24 @@ namespace FootballManager.Persistence.Migrations
                 name: "Matches",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false, comment: "Primary Key")
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VoteId = table.Column<int>(type: "int", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TeamSize = table.Column<short>(type: "smallint", nullable: false),
                     TeamCount = table.Column<short>(type: "smallint", nullable: false),
                     TotalAmount = table.Column<double>(type: "float", nullable: false),
                     TotalHour = table.Column<double>(type: "float", nullable: false),
                     FootballFieldSize = table.Column<short>(type: "smallint", nullable: false),
-                    FootballFieldAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FootballFieldAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FootballFieldNumber = table.Column<short>(type: "smallint", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MatchDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -140,6 +142,7 @@ namespace FootballManager.Persistence.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -158,7 +161,8 @@ namespace FootballManager.Persistence.Migrations
                 {
                     MemberId = table.Column<int>(type: "int", nullable: false),
                     VoteId = table.Column<int>(type: "int", nullable: false),
-                    VoteDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    VoteDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsJoin = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {

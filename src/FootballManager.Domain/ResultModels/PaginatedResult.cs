@@ -15,6 +15,10 @@
             Messages = messages;
             PageSize = pageSize;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            if (TotalPages < 0)
+            {
+                TotalPages = 0;
+            }
             TotalCount = count;
         }
 

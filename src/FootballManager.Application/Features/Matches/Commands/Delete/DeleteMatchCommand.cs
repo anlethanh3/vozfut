@@ -20,12 +20,7 @@ namespace FootballManager.Application.Features.Matches.Commands.Delete
 
         public async Task<Result<bool>> Handle(DeleteMatchCommand request, CancellationToken cancellationToken)
         {
-            var match = await _matchRepository.GetAsync(request.Id) ?? throw new DomainException("Match not found");
-            if (match.IsDeleted)
-            {
-                throw new DomainException("Match not found");
-            }
-
+            var match = (_matchRepository.Entities.Where(x => x.Id == request.Id && !x.IsDeleted).FirstOrDefault() ?? throw new DomainException("Match not found")) ?? throw new DomainException("Match not found");
             if (match.Status.ToLower().Equals(MatchStatusEnum.Completed.Name.ToLower()))
             {
                 throw new DomainException("cannot delete, because match completed");

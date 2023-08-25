@@ -48,7 +48,7 @@ namespace FootballManager.Application.Features.Positions.Queries.GetPaging
                 count = (await multipleResut.ReadAsync<GetPagingPositionDto>()).Count();
             }
 
-            return PaginatedResult<GetPagingPositionDto>.Create(positions.ToList(), count, request.Page, request.Limit);
+            return PaginatedResult<GetPagingPositionDto>.Create(positions, count, request.Page, request.Limit);
         }
     }
 }

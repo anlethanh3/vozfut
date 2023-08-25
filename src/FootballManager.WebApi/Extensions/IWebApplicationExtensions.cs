@@ -5,13 +5,13 @@ namespace FootballManager.WebApi.Extensions
 {
     public static class IWebApplicationExtensions
     {
-        public static WebApplication UsePresentationLayer(this WebApplication app, IConfiguration configuration)
+        public static WebApplication UsePresentationLayer(this WebApplication app, IConfiguration configuration, IHostEnvironment webHost)
         {
             return app.UseCustomSwagger()
                       .UseCustomMiddleware()
                       .UseCustomCors()
                       .UseCustomIdentityServer(configuration)
-                      .UseCustomMigrate();
+                      .UseCustomMigrate(webHost);
         }
 
         private static WebApplication UseCustomMiddleware(this WebApplication app)
@@ -56,12 +56,12 @@ namespace FootballManager.WebApi.Extensions
             return app;
         }
 
-        private static WebApplication UseCustomMigrate(this WebApplication app)
+        private static WebApplication UseCustomMigrate(this WebApplication app, IHostEnvironment webHost)
         {
             app.CreateDbIfNotExists<EfDbContext>((context, service) =>
             {
                 var logger = service.GetService<ILogger<EfContextSeed>>();
-                EfContextSeed.SeedAsync(context, logger).Wait();
+                EfContextSeed.SeedAsync(context, logger, webHost).Wait();
             });
 
             return app;

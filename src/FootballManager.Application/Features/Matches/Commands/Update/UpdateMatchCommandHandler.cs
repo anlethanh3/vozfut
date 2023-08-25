@@ -10,21 +10,23 @@ namespace FootballManager.Application.Features.Matches.Commands.Update
     internal class UpdateMatchCommandHandler : IRequestHandler<UpdateMatchCommand, Result<bool>>
     {
         private readonly IAsyncRepository<Match> _matchRepository;
+        private readonly IAsyncRepository<Vote> _voteRepository;
 
-        public UpdateMatchCommandHandler(IAsyncRepository<Match> matchRepository)
+        public UpdateMatchCommandHandler(IAsyncRepository<Match> matchRepository,
+                IAsyncRepository<Vote> voteRepository)
         {
             _matchRepository = matchRepository;
+            _voteRepository = voteRepository;
         }
 
         public async Task<Result<bool>> Handle(UpdateMatchCommand request, CancellationToken cancellationToken)
         {
-            var match = await _matchRepository.GetAsync(request.Id) ?? throw new DomainException("Match not found");
+            var match = _matchRepository.Entities.Where(x => x.Id == request.Id && !x.IsDeleted).FirstOrDefault() ?? throw new DomainException("Match not found");
 
             if (match.Status.ToLower().Equals(MatchStatusEnum.Completed.Name.ToLower()))
             {
                 throw new DomainException("Cannot update, because match completed");
             }
-
             match.Name = request.Name;
             match.Description = request.Description;
             match.TeamSize = request.TeamSize;
@@ -38,6 +40,11 @@ namespace FootballManager.Application.Features.Matches.Commands.Update
             match.EndTime = request.EndTime;
             match.ModifiedBy = request.RequestedBy;
             match.ModifiedDate = request.RequestedAt;
+            if (request.VoteId.HasValue)
+            {
+                _ = _voteRepository.Entities.Where(x => x.Id == request.VoteId.Value && !x.IsDeleted) ?? throw new DomainException("Vote not found");
+                match.VoteId = request.VoteId.Value;
+            }
 
             var matchUpdated = await _matchRepository.UpdateAsync(match);
             return matchUpdated != null

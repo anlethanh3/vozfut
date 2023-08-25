@@ -5,6 +5,7 @@ namespace FootballManager.Application.Features.Matches.Commands.Create
 {
     public record CreateMatchCommand : RequestAudit, IRequest<Result<int>>
     {
+        public int? VoteId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public short TeamSize { get; set; }

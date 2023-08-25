@@ -24,6 +24,8 @@ namespace FootballManager.Domain.Contracts.Repositories
 
         Task<TEntity> CreateAsync(TEntity entity);
 
+        Task<List<TEntity>> CreateMultipleAsync(List<TEntity> entities);
+
         Task<TEntity> UpdateAsync(TEntity entity);
 
         Task<bool> DeleteAsync(int id);

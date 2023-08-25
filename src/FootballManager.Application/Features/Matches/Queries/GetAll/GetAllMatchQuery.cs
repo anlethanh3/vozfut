@@ -1,32 +1,55 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using FootballManager.Domain.Contracts.Repositories;
-using FootballManager.Domain.Entities;
+﻿using Dapper;
+using FootballManager.Domain.Contracts.DapperConnection;
+using FootballManager.Domain.OptionsSettings;
 using FootballManager.Domain.ResultModels;
-using FootballManager.Infrastructure.Extensions;
 using MediatR;
 
 namespace FootballManager.Application.Features.Matches.Queries.GetAll
 {
-    public record GetAllMatchQuery : IRequest<PaginatedResult<GetAllMatchDto>>;
+    public record GetAllMatchQuery(string Search) : IRequest<PaginatedResult<GetAllMatchDto>>;
 
     internal class GetAllMatchQueryHandler : IRequestHandler<GetAllMatchQuery, PaginatedResult<GetAllMatchDto>>
     {
-        private readonly IMapper _mapper;
-        private readonly IAsyncRepository<Match> _matchRepository;
+        private readonly ISqlConnectionFactory _sqlConnectionFactory;
+        private readonly string _connectionString;
 
-        public GetAllMatchQueryHandler(IMapper mapper, IAsyncRepository<Match> matchRepository)
+        public GetAllMatchQueryHandler(ISqlConnectionFactory sqlConnectionFactory,
+            ConnectionOptions connectionOptions)
         {
-            _mapper = mapper;
-            _matchRepository = matchRepository;
+            _sqlConnectionFactory = sqlConnectionFactory;
+            _connectionString = connectionOptions.SqlConnectionString;
         }
 
         public async Task<PaginatedResult<GetAllMatchDto>> Handle(GetAllMatchQuery request, CancellationToken cancellationToken)
         {
-            var data = _matchRepository.Entities.Where(x => !x.IsDeleted);
+            var matches = new List<GetAllMatchDto>();
+            var count = 0;
+            using var connection = await _sqlConnectionFactory.CreateConnectionAsync(_connectionString);
+            var query = $@"SELECT Id, Name, Code, Description
+                           FROM Matches
+                           WHERE @search IS NULL OR (Name LIKE @search OR Code LIKE @search OR Description LIKE @search)
+                                AND IsDeleted = 0;
 
-            return await data.ProjectTo<GetAllMatchDto>(_mapper.ConfigurationProvider)
-                             .ToPaginatedListAsync(1, data.Count(), cancellationToken);
+                           SELECT Id
+                           FROM Matches
+                           WHERE @search IS NULL OR (Name LIKE @search OR Code LIKE @search OR Description LIKE @search)
+                                AND IsDeleted = 0;";
+
+            using (var multipleResut = await connection.QueryMultipleAsync(query, new
+            {
+                search = "%" + request.Search + "%"
+            }))
+            {
+                matches = (await multipleResut.ReadAsync<GetAllMatchDto>()).ToList();
+                count = (await multipleResut.ReadAsync<GetAllMatchDto>()).Count();
+            }
+
+            if (count == 0)
+            {
+                count = 10;
+            }
+
+            return PaginatedResult<GetAllMatchDto>.Create(matches, count, 1, count);
         }
     }
 }

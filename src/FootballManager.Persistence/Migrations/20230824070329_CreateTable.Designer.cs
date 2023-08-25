@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FootballManager.Persistence.Migrations
 {
     [DbContext(typeof(EfDbContext))]
-    [Migration("20230818084511_CreateTable")]
+    [Migration("20230824070329_CreateTable")]
     partial class CreateTable
     {
         /// <inheritdoc />
@@ -29,11 +29,16 @@ namespace FootballManager.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasComment("Primary Key");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -49,6 +54,7 @@ namespace FootballManager.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FootballFieldAddress")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<short>("FootballFieldNumber")
@@ -70,12 +76,14 @@ namespace FootballManager.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<short>("TeamCount")
@@ -90,9 +98,12 @@ namespace FootballManager.Persistence.Migrations
                     b.Property<double>("TotalHour")
                         .HasColumnType("float");
 
+                    b.Property<int?>("VoteId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Matches");
+                    b.ToTable("Matches", (string)null);
                 });
 
             modelBuilder.Entity("FootballManager.Domain.Entities.MatchDetail", b =>
@@ -202,6 +213,9 @@ namespace FootballManager.Persistence.Migrations
                     b.Property<int>("VoteId")
                         .HasColumnType("int")
                         .HasColumnOrder(2);
+
+                    b.Property<bool?>("IsJoin")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("VoteDate")
                         .HasColumnType("datetime2");
@@ -341,6 +355,9 @@ namespace FootballManager.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

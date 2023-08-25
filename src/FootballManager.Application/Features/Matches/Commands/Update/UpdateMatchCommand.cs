@@ -6,6 +6,7 @@ namespace FootballManager.Application.Features.Matches.Commands.Update
     public record UpdateMatchCommand : RequestAudit, IRequest<Result<bool>>
     {
         public int Id { get; set; }
+        public int? VoteId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public short TeamSize { get; set; }

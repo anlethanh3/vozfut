@@ -26,8 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Features\MatchDetails\Queries\GetPaging\" />
-    <Folder Include="Features\Members\Queries\GetPaging\" />
-    <Folder Include="Features\Members\Queries\GetFilter\" />
     <Folder Include="Features\Users\Queries\" />
   </ItemGroup>
 

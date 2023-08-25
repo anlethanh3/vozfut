@@ -15,7 +15,9 @@ namespace FootballManager.Persistence.EntityConfigurations
                     .UseIdentityColumn()
                     .HasComment("Primary Key");
 
+            builder.Property(e => e.VoteId);
             builder.Property(e => e.Name).IsRequired();
+            builder.Property(e => e.Code);
             builder.Property(e => e.MatchDate).IsRequired();
             builder.Property(e => e.FootballFieldNumber).IsRequired();
             builder.Property(e => e.FootballFieldAddress).IsRequired();

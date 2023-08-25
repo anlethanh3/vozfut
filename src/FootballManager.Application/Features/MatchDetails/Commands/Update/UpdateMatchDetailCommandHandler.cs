@@ -23,13 +23,13 @@ namespace FootballManager.Application.Features.MatchDetails.Commands.Update
 
         public async Task<Result<bool>> Handle(UpdateMatchDetailCommand request, CancellationToken cancellationToken)
         {
-            var match = await _matchRepository.GetAsync(request.MatchId) ?? throw new DomainException("Match not found");
+            var match = _matchRepository.Entities.Where(x => x.Id == request.MatchId && !x.IsDeleted).FirstOrDefault() ?? throw new DomainException("Match not found");
             if (match.Status.ToLower().Equals(MatchStatusEnum.Completed.Name.ToLower()))
             {
                 throw new DomainException("Cannot update match detail, because match have completed");
             }
-            _ = await _memberRepository.GetAsync(request.MemberId) ?? throw new DomainException("Member not found");
-            var matchDetail = await _matchDetailRepository.GetAsync(request.Id) ?? throw new DomainException("MatchDetail not found");
+            _ = _memberRepository.Entities.Where(x => x.Id == request.MemberId && !x.IsDeleted).FirstOrDefault() ?? throw new DomainException("Member not found");
+            var matchDetail = _matchDetailRepository.Entities.Where(x => x.Id == request.Id && !x.IsDeleted).FirstOrDefault() ?? throw new DomainException("MatchDetail not found");
 
             matchDetail.MatchId = request.MatchId;
             matchDetail.MemberId = request.MemberId;

@@ -35,6 +35,9 @@ namespace FootballManager.Application.Extensions
             var jwtOptions = configuration.GetOptions<JwtOptions>("Jwt");
             services.AddSingleton<JwtOptions>(jwtOptions);
 
+            var bibColour = configuration.GetSection("BibColour").Get<List<string>>();
+            services.AddSingleton(new BibColourOption { BibColour = bibColour });
+
             return services;
         }
 

@@ -1,5 +1,6 @@
 ﻿using FootballManager.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace FootballManager.Persistence.Context
@@ -8,8 +9,9 @@ namespace FootballManager.Persistence.Context
     {
         private static readonly string s_systemString = "System";
         private static readonly DateTime s_dateNow = DateTime.UtcNow;
+        private static readonly IHostingEnvironment s_hostingEnvironment;
 
-        public static async Task SeedAsync(EfDbContext context, ILogger<EfContextSeed> logger)
+        public static async Task SeedAsync(EfDbContext context, ILogger<EfContextSeed> logger, IHostEnvironment webHost)
         {
             if (!context.Users.Any())
             {
@@ -19,10 +21,19 @@ namespace FootballManager.Persistence.Context
             }
 
             if (!context.Members.Any())
-            {
-                context.Members.AddRange(GetPreConfigureMembers());
-                await context.SaveChangesAsync();
-                logger.LogInformation("Seed table {Table} database associted with context {DbContext}", "Members", typeof(EfDbContext).Name);
+           {
+                if (webHost.IsProduction())
+                {
+                    context.Members.AddRange(GetPreConfigureMembers());
+                    await context.SaveChangesAsync();
+                    logger.LogInformation("Seed table {Table} database associted with context {DbContext}", "Members", typeof(EfDbContext).Name);
+                }
+                else
+                {
+                    context.Members.AddRange(GetPreConfigureMembersForDev());
+                    await context.SaveChangesAsync();
+                    logger.LogInformation("Seed table {Table} database associted with context {DbContext}", "Members", typeof(EfDbContext).Name);
+                }
             }
 
             if (!context.Positions.Any())
@@ -60,22 +71,60 @@ namespace FootballManager.Persistence.Context
                 }
             };
 
-        private static List<Member> GetPreConfigureMembers()
-            => new()
+        private static List<Member> GetPreConfigureMembersForDev()
+        {
+            var members = new List<Member>();
+
+            members.Add(new Member
             {
+                Name = "Nguyễn Tâm",
+                Elo = 3,
+                CreatedBy = "System",
+                CreatedDate = DateTime.UtcNow,
+                IsDeleted = false,
+                Description = "Description"
+            });
+            members.Add(new Member
+            {
+                Name = "An Lee",
+                Elo = 2,
+                CreatedBy = "System",
+                CreatedDate = DateTime.UtcNow,
+                IsDeleted = false,
+                Description = "Description"
+            });
+
+            for (var i = 1; i < 10; i++)
+            {
+                var rnd = new Random();
+
+                members.Add(new Member
+                {
+                    Name = string.Format("{0} {1}", "Member Dev", i),
+                    Elo = (short)rnd.Next(1, 5),
+                    CreatedBy = s_systemString,
+                    CreatedDate = s_dateNow,
+                    IsDeleted = false,
+                    Description = string.Format("{0} {1}", "Description", i)
+                });
+            }
+
+            return members;
+        }
+
+        private static List<Member> GetPreConfigureMembers()
+           => new()
+           {
                 new Member
                 {
                      Name = "Nguyễn Tâm",
                      Elo = 3,
                      CreatedBy = "System",
                      CreatedDate = DateTime.UtcNow,
-                     DeletedDate = null,
                      IsDeleted = false,
-                     Description = "Description",
-                     ModifiedBy = null,
-                     ModifiedDate = null
+                     Description = "Description"
                 }
-            };
+           };
 
         private static List<Position> GetPreConfigurePosition()
         => new()

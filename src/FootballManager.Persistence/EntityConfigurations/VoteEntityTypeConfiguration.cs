@@ -17,6 +17,7 @@ namespace FootballManager.Persistence.EntityConfigurations
             builder.Property("Name").IsRequired();
             builder.Property("Code");
             builder.Property("Description");
+            builder.Property("Status");
             builder.Property(e => e.CreatedDate).IsRequired();
             builder.Property(e => e.CreatedBy).IsRequired();
             builder.Property(e => e.ModifiedBy);

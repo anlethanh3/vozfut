@@ -9,5 +9,7 @@ namespace FootballManager.Application.Features.Members.Commands.Create
         public int Elo { get; set; }
         public string Description { get; set; }
         public int? PositionId { get; set; }
+
+        public int? SubPositionId { get; set; }
     }
 }

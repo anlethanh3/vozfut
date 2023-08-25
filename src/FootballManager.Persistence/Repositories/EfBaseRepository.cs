@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Application.Contracts.Entities;
 using FootballManager.Domain.Contracts.Repositories;
 using FootballManager.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,13 @@ namespace FootballManager.Persistence.Repositories
             GenericContext.Set<TEntity>().Add(entity);
             await GenericContext.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<List<TEntity>> CreateMultipleAsync(List<TEntity> entities)
+        {
+            GenericContext.Set<TEntity>().AddRange(entities);
+            await GenericContext.SaveChangesAsync();
+            return entities;
         }
 
         public async Task<bool> DeleteAsync(int id)

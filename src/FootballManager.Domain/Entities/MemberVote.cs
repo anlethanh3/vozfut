@@ -15,6 +15,8 @@ namespace FootballManager.Domain.Entities
 
         public DateTime VoteDate { get; set; }
 
+        public bool? IsJoin { get; set; }
+
         [ForeignKey("MemberId")]
         public virtual Member Member { get; set; }
 

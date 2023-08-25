@@ -1,7 +1,7 @@
 ﻿using FootballManager.Application.Extensions;
+using FootballManager.Infrastructure.Helpers;
 using FootballManager.Persistence.Extensions;
 using FootballManager.WebApi.Extensions;
-using FootballManager.WebApi.Helpers;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,8 +21,9 @@ services.AddPresentationLayer(configuration)
 #endregion dependency injection layer
 
 var app = builder.Build();
+var environment = app.Environment;
 
-app.UsePresentationLayer(configuration)
+app.UsePresentationLayer(configuration, environment)
    .UseMinimalApi();
 
 await app.RunAsync();

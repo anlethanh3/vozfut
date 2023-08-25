@@ -1,4 +1,6 @@
-﻿namespace FootballManager.WebApi.Helpers
+﻿using Microsoft.Extensions.Configuration;
+
+namespace FootballManager.Infrastructure.Helpers
 {
     public static class ConfigurationHelper
     {

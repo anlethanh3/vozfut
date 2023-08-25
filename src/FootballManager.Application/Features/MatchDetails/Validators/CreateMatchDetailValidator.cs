@@ -9,8 +9,7 @@ namespace FootballManager.Application.Features.MatchDetails.Validators
         {
             RuleFor(x => x.MatchId).NotEmpty().NotNull().WithMessage("{PropertyName} is required.")
                                    .GreaterThan(0);
-            RuleFor(x => x.MemberId).NotEmpty().NotNull().WithMessage("{PropertyName} is required.")
-                                    .GreaterThan(0);
+            RuleFor(x => x.MemberId).NotEmpty().NotNull().WithMessage("{PropertyName} is required.");
             RuleFor(x => x.BibColour).NotEmpty().WithMessage("{PropertyName} is required.");
         }
     }

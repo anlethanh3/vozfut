@@ -1,5 +1,6 @@
 ﻿using FootballManager.Application.Features.MatchDetails.Commands.Create;
 using FootballManager.Application.Features.MatchDetails.Commands.Update;
+using FootballManager.Application.Features.MatchDetails.Queries.Rolling;
 using FootballManager.Application.Features.Matches.Commands.Create;
 using FootballManager.Application.Features.Matches.Commands.Delete;
 using FootballManager.Application.Features.Matches.Commands.Update;
@@ -11,6 +12,9 @@ using FootballManager.Application.Features.Members.Commands.Create;
 using FootballManager.Application.Features.Members.Commands.Delete;
 using FootballManager.Application.Features.Members.Commands.Update;
 using FootballManager.Application.Features.Members.Queries.GetById;
+using FootballManager.Application.Features.Members.Queries.GetFilter;
+using FootballManager.Application.Features.Members.Queries.GetPaging;
+using FootballManager.Application.Features.MemberVotes.Commands.Create;
 using FootballManager.Application.Features.Positions.Commands.Create;
 using FootballManager.Application.Features.Positions.Commands.Update;
 using FootballManager.Application.Features.Positions.Queries.GetAutoComplete;
@@ -21,6 +25,13 @@ using FootballManager.Application.Features.Users.Commands.Create;
 using FootballManager.Application.Features.Users.Commands.Update;
 using FootballManager.Application.Features.Users.Queries.GetAll;
 using FootballManager.Application.Features.Users.Queries.Profile;
+using FootballManager.Application.Features.Votes.Commands.Create;
+using FootballManager.Application.Features.Votes.Commands.Delete;
+using FootballManager.Application.Features.Votes.Commands.Update;
+using FootballManager.Application.Features.Votes.Commands.UpdateStatus;
+using FootballManager.Application.Features.Votes.Queries.GetById;
+using FootballManager.Application.Features.Votes.Queries.GetFilter;
+using FootballManager.Application.Features.Votes.Queries.GetPaging;
 using FootballManager.Domain.Enums;
 using FootballManager.Domain.ResultModels;
 using MediatR;
@@ -42,7 +53,9 @@ namespace FootballManager.WebApi.Extensions
                       .UseV1MatchBuilder()
                       .UseV1MatchDeatilBuilder()
                       .UseV1MemberBuilder()
-                      .UseV1PositionBuilder();
+                      .UseV1PositionBuilder()
+                      .UseV1VoteBuilder()
+                      .UseV1MemberVoteBuilder();
         }
 
         private static WebApplication UseV1UserBuilder(this WebApplication app)
@@ -116,15 +129,15 @@ namespace FootballManager.WebApi.Extensions
             })
            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get detail matches information"));
 
-            matchesV1.MapGet("/", async (IMediator mediator) =>
+            matchesV1.MapGet("/", async (IMediator mediator, string search) =>
             {
-                return Results.Ok(await mediator.Send(new GetAllMatchQuery()));
+                return Results.Ok(await mediator.Send(new GetAllMatchQuery(search)));
             })
             .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get all matches information"));
 
-            matchesV1.MapGet("/paging", async (IMediator mediator, int page, int limit) =>
+            matchesV1.MapGet("/paging", async (IMediator mediator, int page, int limit, string search, string sort, DateTime? startDate, DateTime? endDate) =>
             {
-                return Results.Ok(await mediator.Send(new GetPagingMatchQuery(page, limit)));
+                return Results.Ok(await mediator.Send(new GetPagingMatchQuery(page, limit, search, sort, startDate, endDate)));
             })
             .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get paging matches information"));
 
@@ -160,6 +173,12 @@ namespace FootballManager.WebApi.Extensions
             })
             .WithMetadata(new SwaggerOperationAttribute("Endpoint using for update match detail"));
 
+            matcheDetailsV1.MapGet("/rolling", async (IMediator mediator, int matchId) =>
+            {
+                return Results.Ok(await mediator.Send(new RollingTeamMatchDetailQuery(matchId)));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("This endpoint using for rolling team"));
+
             return app;
         }
 
@@ -191,6 +210,18 @@ namespace FootballManager.WebApi.Extensions
                 return Results.Ok(await mediator.Send(new GetMemberByIdQuery(id)));
             })
            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get detail member"));
+
+            membersV1.MapGet("/filters", async (IMediator mediator, string search) =>
+            {
+                return Results.Ok(await mediator.Send(new GetMemberAutoCompleteQuery(search)));
+            })
+           .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get auto-complete members"));
+
+            membersV1.MapGet("/", async (IMediator mediator, int page, int limit, string search, string sort) =>
+            {
+                return Results.Ok(await mediator.Send(new GetMemberPagingQuery(page, limit, search, sort)));
+            })
+           .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get-paging members"));
 
             return app;
         }
@@ -229,6 +260,70 @@ namespace FootballManager.WebApi.Extensions
                 return Results.Ok(await mediator.Send(new GetAutoCompletePositionQuery(search)));
             })
            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get auto-complete positions"));
+
+            return app;
+        }
+
+        private static WebApplication UseV1VoteBuilder(this WebApplication app)
+        {
+            var votes = app.NewVersionedApi("Votes");
+            var votesV1 = votes.MapGroup("/api/v{version:apiVersion}/votes").RequireAuthorization();
+
+            votesV1.MapPost("/", async (IMediator mediator, [FromBody] CreateVoteCommand command) =>
+            {
+                return Results.Ok(await mediator.Send(command));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for create votes"));
+
+            votesV1.MapPut("/", async (IMediator mediator, [FromBody] UpdateVoteCommand command) =>
+            {
+                return Results.Ok(await mediator.Send(command));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for update votes"));
+
+            votesV1.MapPut("/completed", async (IMediator mediator, [FromBody] CompleteVoteStatusCommand command) =>
+            {
+                return Results.Ok(await mediator.Send(command));
+            })
+           .WithMetadata(new SwaggerOperationAttribute("Endpoint using for update votes"));
+
+            votesV1.MapDelete("/{id:int}", async (IMediator mediator, int id) =>
+            {
+                return Results.Ok(await mediator.Send(new DeleteVoteCommand(id)));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for delete votes"));
+
+            votesV1.MapGet("/", async (IMediator mediator, int page, int limit, string search, string sort) =>
+            {
+                return Results.Ok(await mediator.Send(new GetPagingVoteQuery(page, limit, search, sort)));
+            })
+           .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get paging votes"));
+
+            votesV1.MapGet("/filters", async (IMediator mediator, string search, DateTime? startDate, DateTime? endDate) =>
+            {
+                return Results.Ok(await mediator.Send(new GetVoteFilterQuery { Search = search, Start = startDate, End = endDate }));
+            })
+          .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get filter votes"));
+
+            votesV1.MapGet("/{id:int}", async (IMediator mediator, int id) =>
+            {
+                return Results.Ok(await mediator.Send(new GetVoteByIdQuery(id)));
+            })
+           .WithMetadata(new SwaggerOperationAttribute("Endpoint using for get detail votes"));
+
+            return app;
+        }
+
+        private static WebApplication UseV1MemberVoteBuilder(this WebApplication app)
+        {
+            var memberVotes = app.NewVersionedApi("MemberVotes");
+            var memberVotesV1 = memberVotes.MapGroup("/api/v{version:apiVersion}/member-votes").RequireAuthorization();
+
+            memberVotesV1.MapPost("/", async (IMediator mediator, [FromBody] CreateOrUpdateMemberVoteCommand command) =>
+            {
+                return Results.Ok(await mediator.Send(command));
+            })
+           .WithMetadata(new SwaggerOperationAttribute("Endpoint using for create or update member-votes"));
 
             return app;
         }
