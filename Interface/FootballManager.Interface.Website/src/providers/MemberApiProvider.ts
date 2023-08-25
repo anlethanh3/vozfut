@@ -3,9 +3,9 @@ import { MemberProps } from "../reducers/MemberReducer"
 
 const url = `${process.env.REACT_APP_API_URL}/member`
 
-export const get = async (props: { signal: AbortSignal }) => {
+export const get = async <T>(props: { signal: AbortSignal }) => {
     let { signal } = props
-    let response = await axios.get(url, { signal: signal })
+    let response = await axios.get<T>(url, { signal: signal })
     return response
 }
 

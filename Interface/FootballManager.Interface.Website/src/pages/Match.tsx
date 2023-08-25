@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown } from "react-bootstrap";
 import moment from 'moment';
 import SearchMember from "../components/SearchMember";
-import { selectState, onChangePageIndex, onChangePageSize, fetchAsync } from '../slices/matchSlice';
+import AddMatch from "../components/AddMatch";
+import { selectState, onChangePageIndex, onChangePageSize, fetchAsync, onShowAdd, addAsync, MatchProps } from '../slices/matchSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { NavLink } from "react-router-dom";
 
@@ -18,6 +19,15 @@ export default function Match() {
             .then(values => {
 
             })
+            .catch(error => {
+
+            })
+    }
+
+    const addMatch = (match: MatchProps) => {
+        dispatch(onShowAdd(false))
+        dispatch(addAsync(match)).unwrap()
+            .then(values => dispatch(fetchAsync({ name: state.search.name, pageIndex: state.pageIndex, pageSize: state.pageSize })).unwrap())
             .catch(error => {
 
             })
@@ -44,12 +54,15 @@ export default function Match() {
                     {state.error}
                 </Alert>
             }
-
+            {
+                state.isShowAdd &&
+                <AddMatch onSubmit={(match) => { addMatch(match) }} show={state.isShowAdd} onClose={() => { dispatch(onShowAdd(false)) }} />
+            }
             <SearchMember onSearchChanged={() => { }} onSubmit={() => { }} />
 
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
-                    <Button variant="primary" onClick={() => { }}>Add match</Button><div className="mx-2" />
+                    <Button variant="primary" onClick={() => { dispatch(onShowAdd(true)) }}>Add match</Button><div className="mx-2" />
                 </Col>
             </Row>
 

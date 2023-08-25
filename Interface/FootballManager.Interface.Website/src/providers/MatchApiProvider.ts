@@ -9,14 +9,20 @@ export const get = async (props: { signal: AbortSignal }) => {
     return response
 }
 
+export const getId = async (props: { id: number, signal: AbortSignal }) => {
+    let { signal, id } = props
+    let response = await axios.get(`${url}/${id}`, { signal: signal })
+    return response
+}
+
 export const remove = async (props: { signal: AbortSignal, id: number }) => {
     const { id, signal } = props
     let response = await axios.delete(`${url}/${id}`, { signal: signal, })
     return response
 }
 
-export const search = async <T>(props: {pageIndex: number, pageSize: number, name: string, signal: AbortSignal }) => {
-    let { pageIndex, pageSize, name, signal} = props
+export const search = async <T>(props: { pageIndex: number, pageSize: number, name: string, signal: AbortSignal }) => {
+    let { pageIndex, pageSize, name, signal } = props
     var response = await axios.post<T>(`${url}/search`,
         {
             pageIndex,

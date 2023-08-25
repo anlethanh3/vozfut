@@ -4,7 +4,6 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import { Modal, Button, Alert, Spinner } from 'react-bootstrap';
 import { LoginRequestProps, ProfileProps, onCloseError, onCloseSuccess, loginAsync, selectState } from '../slices/profileSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { unwrapResult } from '@reduxjs/toolkit';
 
 
 export default function Login(props: { show: boolean, onSubmit: (profile: ProfileProps) => void, onClose: () => void }) {
@@ -34,8 +33,7 @@ export default function Login(props: { show: boolean, onSubmit: (profile: Profil
     }
 
     const onAuthenticate = (login: LoginRequestProps) => {
-        dispatch(loginAsync(login))
-            .then(unwrapResult)
+        dispatch(loginAsync(login)).unwrap()
             .then((profile) => {
                 setTimeout(() => {
                     onSubmit(profile)

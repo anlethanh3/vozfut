@@ -1,19 +1,23 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { rolling, search } from '../providers/MatchDetailApiProvider';
+import { add, rolling, search, remove } from '../providers/MatchDetailApiProvider';
+import { getId as getMatch } from '../providers/MatchApiProvider';
+import { get } from '../providers/MemberApiProvider';
 import { HttpStatusCode } from 'axios';
+import { MemberProps } from '../reducers/MemberReducer';
+import { MatchProps } from './matchSlice';
 
 export interface MatchDetailProps {
   id: number,
   matchId: number,
-  matchName: number,
+  matchName?: number,
   memberId: number,
-  memberName: number,
+  memberName?: number,
   isPaid: boolean,
   isSkip: boolean,
   createdDate?: string,
   modifiedDate?: string,
-  isDeleted: boolean,
+  isDeleted?: boolean,
 }
 
 export interface PlayerProps {
@@ -34,6 +38,9 @@ export interface State {
   isLoading: boolean,
   isShowRivals: boolean,
   rolling: RollingProps[] | undefined,
+  isShowAdd: boolean,
+  members: MemberProps[],
+  match: MatchProps | undefined,
   search: { name: string }
 }
 export const initialState: State = {
@@ -43,6 +50,9 @@ export const initialState: State = {
   isShowRivals: false,
   error: undefined,
   rolling: undefined,
+  isShowAdd: false,
+  members: [],
+  match: undefined,
   search: { name: '' },
 }
 
@@ -60,6 +70,46 @@ export const fetchAsync = createAsyncThunk(
   }
 )
 
+export const fetchMembersAsync = createAsyncThunk(
+  'matchDetail/fetchMembers',
+  async (id: number, { signal }) => {
+    return get<MemberProps[]>({ signal: signal, })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Fetch data failed!")
+      })
+  }
+)
+
+export const addMatchDetailAsync = createAsyncThunk(
+  'matchDetail/addMatchDetail',
+  async (detail: MatchDetailProps, { signal }) => {
+    return add({ data: detail, signal: signal, })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Fetch data failed!")
+      })
+  }
+)
+
+export const deleteMatchDetailAsync = createAsyncThunk(
+  'matchDetail/deleteMatchDetail',
+  async (id: number, { signal }) => {
+    return remove({ id: id, signal: signal, })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Fetch data failed!")
+      })
+  }
+)
+
+
 export const rollingAsync = createAsyncThunk(
   'matchDetail/rolling',
   async (request: { id: number, }, { signal }) => {
@@ -74,12 +124,29 @@ export const rollingAsync = createAsyncThunk(
   }
 )
 
+export const fetchMatchAsync = createAsyncThunk(
+  'matchDetail/fetchMatch',
+  async (request: { id: number, }, { signal }) => {
+    let { id } = request
+    return getMatch({ signal: signal, id: id })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Fetch data failed!")
+      })
+  }
+)
 function isResponseProps(data: MatchDetailProps[] | Error): data is MatchDetailProps[] {
   return (data as MatchDetailProps[]).length !== undefined
 }
 
 function isRollingProps(data: RollingProps[] | Error): data is RollingProps[] {
   return (data as RollingProps[]) !== undefined
+}
+
+function isMemberProps(data: MemberProps[] | Error): data is MemberProps[] {
+  return (data as MemberProps[]) !== undefined
 }
 
 export const matchSlice = createSlice({
@@ -91,6 +158,9 @@ export const matchSlice = createSlice({
     },
     onCloseRivals: (state) => {
       state.isShowRivals = false
+    },
+    onShowAdd: (state, action: PayloadAction<boolean>) => {
+      state.isShowAdd = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -133,10 +203,71 @@ export const matchSlice = createSlice({
         state.isLoading = false
         state.isShowRivals = false
       })
+      // members
+      .addCase(fetchMembersAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(fetchMembersAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+        let payload = action.payload
+        if (isMemberProps(payload)) {
+          state.members = payload
+        }
+      })
+      .addCase(fetchMembersAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
+      // detail
+      .addCase(addMatchDetailAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(addMatchDetailAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+      })
+      .addCase(addMatchDetailAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
+      // remove
+      .addCase(deleteMatchDetailAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(deleteMatchDetailAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+      })
+      .addCase(deleteMatchDetailAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
+      // get match by id
+      .addCase(fetchMatchAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(fetchMatchAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+        state.match = action.payload
+      })
+      .addCase(fetchMatchAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
   },
 });
 
-export const { onCloseError, onCloseRivals } = matchSlice.actions;
+export const { onCloseError, onCloseRivals, onShowAdd } = matchSlice.actions;
 
 export const selectState = (state: RootState) => state.matchDetail
 

@@ -66,6 +66,9 @@ public class MatchDetailController : ControllerBase
     public async Task<ActionResult> Add(MatchDetail detail)
     {
         var result = await unitOfWork.MatchDetailRepository.AddAsync(detail);
+        if(result == null){
+            return BadRequest("ERR_DATA_IS_EXIST");
+        }
         return Ok(result);
     }
     /// <summary>

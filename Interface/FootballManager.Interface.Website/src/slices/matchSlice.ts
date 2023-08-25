@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { search } from '../providers/MatchApiProvider';
+import { add, search } from '../providers/MatchApiProvider';
 import { HttpStatusCode } from 'axios';
 
 export interface MatchProps {
@@ -11,7 +11,7 @@ export interface MatchProps {
   teamCount: number,
   createdDate?: string,
   modifiedDate?: string,
-  isDeleted: boolean,
+  isDeleted?: boolean,
 }
 
 export interface State {
@@ -22,7 +22,8 @@ export interface State {
   pageSize: number,
   pageIndex: number,
   totalPage: number,
-  search: { name: string }
+  isShowAdd: boolean,
+  search: { name: string },
 }
 export const initialState: State = {
   data: [],
@@ -33,6 +34,7 @@ export const initialState: State = {
   totalPage: 0,
   pageSize: 50,
   search: { name: '' },
+  isShowAdd: false,
 }
 
 export interface SearchResponseProps<T> {
@@ -56,6 +58,20 @@ export const fetchAsync = createAsyncThunk(
   }
 )
 
+export const addAsync = createAsyncThunk(
+  'match/add',
+  async (data: MatchProps, { signal }) => {
+    return add({ signal: signal, data: data })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Add match failed!")
+      })
+  }
+)
+
+
 function isSearchResponseProps(data: SearchResponseProps<MatchProps[]> | Error): data is SearchResponseProps<MatchProps[]> {
   return (data as SearchResponseProps<MatchProps[]>).pageIndex !== undefined;
 }
@@ -69,11 +85,14 @@ export const matchSlice = createSlice({
     },
     onChangePageSize: (state, action: PayloadAction<number>) => {
       state.pageSize = action.payload
+    },
+    onShowAdd: (state, action: PayloadAction<boolean>) => {
+      state.isShowAdd = action.payload
     }
   },
   extraReducers: (builder) => {
     builder
-      // authenticate
+      // fetch
       .addCase(fetchAsync.pending, (state) => {
         state.status = 'loading'
         state.isLoading = true
@@ -81,13 +100,13 @@ export const matchSlice = createSlice({
       .addCase(fetchAsync.fulfilled, (state, action) => {
         state.status = 'idle'
         state.isLoading = false
+        state.error = undefined
         let payload = action.payload
-        if(isSearchResponseProps(payload)){
+        if (isSearchResponseProps(payload)) {
           state.data = payload.data
           state.pageIndex = payload.pageIndex
           state.pageSize = payload.pageSize
           state.totalPage = payload.totalPage
-
         }
       })
       .addCase(fetchAsync.rejected, (state, action) => {
@@ -95,10 +114,25 @@ export const matchSlice = createSlice({
         state.error = action.error.message
         state.isLoading = false
       })
+      // fetch
+      .addCase(addAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(addAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+        state.error = undefined
+      })
+      .addCase(addAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
   },
 });
 
-export const { onChangePageIndex, onChangePageSize } = matchSlice.actions;
+export const { onChangePageIndex, onChangePageSize, onShowAdd } = matchSlice.actions;
 
 export const selectState = (state: RootState) => state.match
 
