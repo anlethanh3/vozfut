@@ -1,6 +1,6 @@
 import axios from "axios"
 import { ProfileProps, TokenProps } from "../reducers/DataReducer"
-import { LoginRequestProps } from "../components/Login"
+import { LoginRequestProps } from "../slices/profileSlice"
 
 const url = `${process.env.REACT_APP_API_URL}/user`
 
