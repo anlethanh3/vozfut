@@ -50,12 +50,12 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
 
     return (
         <>
-            <Modal show={show} onHide={onClose} fullscreen>
+            <Modal centered aria-labelledby="contained-modal-title-vcenter" show={show} onHide={onClose} fullscreen>
                 <Modal.Header closeButton>
                     <Modal.Title>Team Division Rivals</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Container>
+                    <Container className='h-100 flex'>
                         <Row>
                             <Team />
                         </Row>

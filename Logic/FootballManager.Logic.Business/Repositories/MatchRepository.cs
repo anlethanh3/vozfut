@@ -54,7 +54,7 @@ public class MatchRepository : IMatchRepository
 
     public async Task<IEnumerable<Match>> SearchAsync(string name)
     {
-        return entityDbContext.Matches.Where(m => m.Name.ToLower().Contains(name.ToLower())).ToList();
+        return entityDbContext.Matches.Where(m => m.Name.ToLower().Contains(name.ToLower()) && !m.IsDeleted).ToList();
     }
 
     public async Task<bool> UpdateAsync(Match match)

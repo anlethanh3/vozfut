@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { add, search } from '../providers/MatchApiProvider';
+import { add, remove, search } from '../providers/MatchApiProvider';
 import { HttpStatusCode } from 'axios';
 
 export interface MatchProps {
@@ -23,6 +23,8 @@ export interface State {
   pageIndex: number,
   totalPage: number,
   isShowAdd: boolean,
+  selectedId: number,
+  isShowDelete: boolean,
   search: { name: string },
 }
 export const initialState: State = {
@@ -33,8 +35,10 @@ export const initialState: State = {
   pageIndex: 0,
   totalPage: 0,
   pageSize: 50,
+  selectedId: -1,
   search: { name: '' },
   isShowAdd: false,
+  isShowDelete: false,
 }
 
 export interface SearchResponseProps<T> {
@@ -71,6 +75,20 @@ export const addAsync = createAsyncThunk(
   }
 )
 
+export const deleteAsync = createAsyncThunk(
+  'match/delete',
+  async (id: number, { signal }) => {
+    return remove({ signal: signal, id: id })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Delete match failed!")
+      })
+  }
+)
+
+
 
 function isSearchResponseProps(data: SearchResponseProps<MatchProps[]> | Error): data is SearchResponseProps<MatchProps[]> {
   return (data as SearchResponseProps<MatchProps[]>).pageIndex !== undefined;
@@ -88,6 +106,15 @@ export const matchSlice = createSlice({
     },
     onShowAdd: (state, action: PayloadAction<boolean>) => {
       state.isShowAdd = action.payload
+    },
+    onShowDelete: (state, action: PayloadAction<boolean>) => {
+      state.isShowDelete = action.payload
+    },
+    onSelectedId: (state, action: PayloadAction<number>) => {
+      state.selectedId = action.payload
+    },
+    onCloseError: (state) => {
+      state.error = undefined
     }
   },
   extraReducers: (builder) => {
@@ -129,10 +156,26 @@ export const matchSlice = createSlice({
         state.error = action.error.message
         state.isLoading = false
       })
+      // delete
+      .addCase(deleteAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(deleteAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+        state.error = undefined
+      })
+      .addCase(deleteAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        console.log('slice',)
+        state.error = action.error.message
+        state.isLoading = false
+      })
   },
 });
 
-export const { onChangePageIndex, onChangePageSize, onShowAdd } = matchSlice.actions;
+export const { onChangePageIndex, onChangePageSize, onShowAdd, onShowDelete, onSelectedId, onCloseError } = matchSlice.actions;
 
 export const selectState = (state: RootState) => state.match
 

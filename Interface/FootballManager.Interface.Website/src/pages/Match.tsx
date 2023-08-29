@@ -3,9 +3,10 @@ import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown } 
 import moment from 'moment';
 import SearchMember from "../components/SearchMember";
 import AddMatch from "../components/AddMatch";
-import { selectState, onChangePageIndex, onChangePageSize, fetchAsync, onShowAdd, addAsync, MatchProps } from '../slices/matchSlice';
+import { selectState, onChangePageIndex, onChangePageSize, fetchAsync, onShowAdd, addAsync, MatchProps, deleteAsync, onShowDelete, onSelectedId, onCloseError } from '../slices/matchSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { NavLink } from "react-router-dom";
+import Confirmation from "../components/Confirmation";
 
 export default function Match() {
     let sizes = [10, 50, 100]
@@ -33,6 +34,19 @@ export default function Match() {
             })
     }
 
+    const onDeleteEvent = (id: number) => {
+        dispatch(onShowDelete(true))
+        dispatch(onSelectedId(id))
+    }
+
+    const deleteMatch = (id: number) => {
+        dispatch(onShowDelete(false))
+        dispatch(deleteAsync(id)).unwrap()
+            .then(values => dispatch(fetchAsync({ name: state.search.name, pageIndex: state.pageIndex, pageSize: state.pageSize })).unwrap())
+            .catch(err => { console.log('ui', err) })
+
+    }
+
     useEffect(() => {
         console.log('effect', state)
         fetch()
@@ -50,13 +64,22 @@ export default function Match() {
             }
             {
                 state.error &&
-                <Alert show={state.error !== undefined} variant="danger" onClose={() => dispatch({ type: "failure", error: undefined })} dismissible>
+                <Alert show={state.error !== undefined} variant="danger" onClose={() => dispatch(onCloseError())} dismissible>
                     {state.error}
                 </Alert>
             }
             {
                 state.isShowAdd &&
                 <AddMatch onSubmit={(match) => { addMatch(match) }} show={state.isShowAdd} onClose={() => { dispatch(onShowAdd(false)) }} />
+            }
+            {
+                state.isShowDelete &&
+                <Confirmation
+                    show={state.isShowDelete}
+                    title={"Confirmation"}
+                    content={"Are you sure you want to permanently delete this member?"}
+                    onSubmit={() => deleteMatch(state.selectedId)}
+                    onClose={() => dispatch(onShowDelete(false))} />
             }
             <SearchMember onSearchChanged={() => { }} onSubmit={() => { }} />
 
@@ -93,7 +116,7 @@ export default function Match() {
                                         <Button variant="primary" className="me-2" onClick={() => { }}>Member</Button>
                                     </NavLink>
                                     <Button variant="warning" className="me-2" onClick={() => { }}>Edit</Button>
-                                    <Button variant="danger" className="me-2" onClick={() => { }}>Delete</Button>
+                                    <Button variant="danger" className="me-2" onClick={() => { onDeleteEvent(value.id) }}>Delete</Button>
                                 </td>
                             </tr>
                         )

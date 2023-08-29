@@ -117,6 +117,7 @@ public class MatchDetailController : ControllerBase
         var details = await unitOfWork.MatchDetailRepository.GetAllAsync(id);
         var numTeams = match.TeamCount;
         var readyPlayers = details.Where(x => x.IsPaid && !x.IsSkip);
+        var elos = new int[numTeams];
         if (readyPlayers.Count() < numTeams * match.TeamSize)
         {
             return BadRequest("ERR_TEAM_SIZE");
@@ -131,31 +132,28 @@ public class MatchDetailController : ControllerBase
             .Take(numTeams * match.TeamSize);
         var orders = players.OrderByDescending(item => item.Elo).ToList();
         var teams = new List<Member>[match.TeamCount];
-        var decrease = true;
-        var sumElo = orders.Sum(x => x.Elo);
+        var rng = new Random();
         // random members
-        for (int i = 0; i < match.TeamSize; i++)
+        while (orders.Count() > 0)
         {
-
-            List<Member> random;
-            if (decrease)
+            int teamIndex = 0;
+            for (var index = 0; index < elos.Count(); index++)
             {
-                random = orders.Take(match.TeamCount).ToList();
-            }
-            else
-            {
-                random = orders.Take(match.TeamCount).OrderBy(x => x.Elo).ToList();
-            }
-            decrease = !decrease;
-            for (int j = 0; j < match.TeamCount; j++)
-            {
-                if (teams[j] is null)
+                if (elos[teamIndex] > elos[index])
                 {
-                    teams[j] = new();
+                    teamIndex = index;
                 }
-                teams[j].Add(random[j]);
-                orders.Remove(random[j]);
             }
+            var maxElos = orders.Where(x => x.Elo == orders[0].Elo).ToList();
+            if (teams[teamIndex] is null)
+            {
+                teams[teamIndex] = new();
+            }
+            var randomIndex = rng.Next(-1, maxElos.Count() - 1) + 1;
+            var player = maxElos[randomIndex];
+            teams[teamIndex].Add(player);
+            elos[teamIndex] += player.Elo;
+            orders.Remove(player);
         }
         var result = teams.Select(x => new
         {
