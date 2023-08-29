@@ -33,7 +33,8 @@ public class MemberController : ControllerBase
     public async Task<ActionResult> GetAll()
     {
         var members = await unitOfWork.MemberRepository.GetAsync();
-        return Ok(members);
+        var result = members.OrderBy(x=>x.Name);
+        return Ok(result);
     }
     /// <summary>
     /// Get one member

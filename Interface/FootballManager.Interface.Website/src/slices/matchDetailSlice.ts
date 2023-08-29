@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { add, rolling, search, remove } from '../providers/MatchDetailApiProvider';
+import { add, rolling, search, remove, updateNew } from '../providers/MatchDetailApiProvider';
 import { getId as getMatch } from '../providers/MatchApiProvider';
 import { get } from '../providers/MemberApiProvider';
 import { HttpStatusCode } from 'axios';
@@ -137,6 +137,21 @@ export const fetchMatchAsync = createAsyncThunk(
       })
   }
 )
+
+export const updateMatchDetailAsync = createAsyncThunk(
+  'matchDetail/updateMatchDetail',
+  async (request: { data: MatchDetailProps, }, { signal }) => {
+    let { data } = request
+    return updateNew<MatchDetailProps>({ signal: signal, data: data })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Update new record failed!")
+      })
+  }
+)
+
 function isResponseProps(data: MatchDetailProps[] | Error): data is MatchDetailProps[] {
   return (data as MatchDetailProps[]).length !== undefined
 }
@@ -147,6 +162,10 @@ function isRollingProps(data: RollingProps[] | Error): data is RollingProps[] {
 
 function isMemberProps(data: MemberProps[] | Error): data is MemberProps[] {
   return (data as MemberProps[]) !== undefined
+}
+
+function isMatchDetailProps(data: MatchDetailProps | Error): data is MatchDetailProps {
+  return (data as MatchDetailProps) !== undefined
 }
 
 export const matchSlice = createSlice({
@@ -260,6 +279,27 @@ export const matchSlice = createSlice({
         state.match = action.payload
       })
       .addCase(fetchMatchAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
+      // update new
+      .addCase(updateMatchDetailAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(updateMatchDetailAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+        if (isMatchDetailProps(action.payload)) {
+          var item = action.payload
+          var index = state.data.findIndex(x => x.matchId === item.matchId && x.memberId === item.memberId)
+          if (index != -1) {
+            state.data[index] = { ...state.data[index], ...item }
+          }
+        }
+      })
+      .addCase(updateMatchDetailAsync.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
         state.isLoading = false

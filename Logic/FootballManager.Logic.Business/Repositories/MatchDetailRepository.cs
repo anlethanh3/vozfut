@@ -63,9 +63,57 @@ public class MatchDetailRepository : IMatchDetailRepository
             var match = entity.Matches.Where(x => x.Id == id).FirstOrDefault();
             if (match is null)
             {
-                return null;
+                return new List<MatchDetailResponse>();
             }
-            var result = await matchDetailContext.GetAllAsync(match.Id);
+            var members = entity.Members.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
+            var details = entity.MatchDetails.Where(x => !x.IsDeleted && x.MatchId == id).ToList();
+
+            Func<Member, MatchDetailResponse> func = member =>
+            {
+                var now = DateTime.Now;
+                var emptyDetail = new MatchDetailResponse
+                {
+                    Id = 0,
+                    IsPaid = false,
+                    IsSkip = false,
+                    CreatedDate = now,
+                    ModifiedDate = now,
+                    IsDeleted = false,
+                    MatchId = match.Id,
+                    MatchName = match.Name,
+                    MemberElo = member.Elo,
+                    MemberId = member.Id,
+                    MemberName = member.Name,
+                };
+
+                if (details.Count() == 0)
+                {
+                    return emptyDetail;
+                }
+
+                var detail = details.FirstOrDefault(x => x.MemberId == member.Id && x.MatchId == id);
+                if (detail is null)
+                {
+                    return emptyDetail;
+                }
+
+                return new MatchDetailResponse
+                {
+                    Id = detail.Id,
+                    IsPaid = detail.IsPaid,
+                    IsSkip = detail.IsSkip,
+                    CreatedDate = detail.CreatedDate,
+                    ModifiedDate = detail.ModifiedDate,
+                    IsDeleted = detail.IsDeleted,
+                    MatchId = match.Id,
+                    MatchName = match.Name,
+                    MemberElo = member.Elo,
+                    MemberId = member.Id,
+                    MemberName = member.Name,
+                };
+            };
+
+            var result = members.Select(member => func(member));
             return result;
         };
     }
@@ -94,5 +142,35 @@ public class MatchDetailRepository : IMatchDetailRepository
         record.ModifiedDate = DateTime.Now;
         _ = entityDbContext.SaveChanges();
         return true;
+    }
+
+    public async Task<MatchDetail> UpdateNewAsync(MatchDetail detail)
+    {
+        var now = DateTime.Now;
+        var record = await GetAsync(detail.MatchId, detail.MemberId);
+
+        if (record is null)
+        {
+            var result = await entityDbContext.MatchDetails.AddAsync(new()
+            {
+                MatchId = detail.MatchId,
+                MemberId = detail.MemberId,
+                IsPaid = detail.IsPaid,
+                IsSkip = detail.IsSkip,
+                CreatedDate = now,
+                ModifiedDate = now,
+                IsDeleted = false,
+            });
+            _ = entityDbContext.SaveChanges();
+            return result.Entity;
+        }
+
+        record.MatchId = detail.MatchId;
+        record.MemberId = detail.MemberId;
+        record.IsPaid = detail.IsPaid;
+        record.IsSkip = detail.IsSkip;
+        record.ModifiedDate = DateTime.Now;
+        _ = entityDbContext.SaveChanges();
+        return record;
     }
 }

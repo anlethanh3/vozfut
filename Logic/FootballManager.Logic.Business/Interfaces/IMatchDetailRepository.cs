@@ -10,6 +10,7 @@ public interface IMatchDetailRepository
     public Task<IEnumerable<MatchDetail>> GetAsync();
     public Task<MatchDetail?> AddAsync(MatchDetail detail);
     public Task<bool> UpdateAsync(MatchDetail detail);
+    public Task<MatchDetail> UpdateNewAsync(MatchDetail detail);
     public Task<bool> DeleteAsync(int id);
     public Task<IEnumerable<MatchDetailResponse>> GetAllAsync(int matchId);
 }

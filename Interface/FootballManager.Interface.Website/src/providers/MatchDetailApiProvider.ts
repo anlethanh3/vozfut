@@ -35,3 +35,9 @@ export const update = async (props: { signal: AbortSignal, data: MatchDetailProp
     var response = await axios.put(`${url}`, data, { signal: signal, })
     return response
 }
+
+export const updateNew = async <T>(props: { signal: AbortSignal, data: MatchDetailProps }) => {
+    let { signal, data } = props
+    var response = await axios.post<T>(`${url}/update`, data, { signal: signal, })
+    return response
+}

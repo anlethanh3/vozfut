@@ -66,7 +66,8 @@ public class MatchDetailController : ControllerBase
     public async Task<ActionResult> Add(MatchDetail detail)
     {
         var result = await unitOfWork.MatchDetailRepository.AddAsync(detail);
-        if(result == null){
+        if (result == null)
+        {
             return BadRequest("ERR_DATA_IS_EXIST");
         }
         return Ok(result);
@@ -80,6 +81,17 @@ public class MatchDetailController : ControllerBase
     public async Task<ActionResult> Update(MatchDetail detail)
     {
         var result = await unitOfWork.MatchDetailRepository.UpdateAsync(detail);
+        return Ok(result);
+    }
+    /// <summary>
+    /// Update or Create a match detail information
+    /// </summary>
+    /// <param name="detail">match detail model</param>
+    /// <returns>true: success, false: failure</returns>
+    [HttpPost("update")]
+    public async Task<ActionResult> UpdateNew(MatchDetail detail)
+    {
+        var result = await unitOfWork.MatchDetailRepository.UpdateNewAsync(detail);
         return Ok(result);
     }
     /// <summary>
@@ -104,22 +116,37 @@ public class MatchDetailController : ControllerBase
         }
         var details = await unitOfWork.MatchDetailRepository.GetAllAsync(id);
         var numTeams = match.TeamCount;
-        var players = details
-        .Select(x => new Member
+        var readyPlayers = details.Where(x => x.IsPaid && !x.IsSkip);
+        if (readyPlayers.Count() < numTeams * match.TeamSize)
         {
-            Id = x.MemberId,
-            Elo = x.MemberElo,
-            Name = x.MemberName,
-        })
-        .Take(numTeams * match.TeamSize);
-        var rnd = new Random();
+            return BadRequest("ERR_TEAM_SIZE");
+        }
+        var players = readyPlayers
+            .Select(x => new Member
+            {
+                Id = x.MemberId,
+                Elo = x.MemberElo,
+                Name = x.MemberName,
+            })
+            .Take(numTeams * match.TeamSize);
         var orders = players.OrderByDescending(item => item.Elo).ToList();
         var teams = new List<Member>[match.TeamCount];
-
+        var decrease = true;
+        var sumElo = orders.Sum(x => x.Elo);
         // random members
         for (int i = 0; i < match.TeamSize; i++)
         {
-            var random = orders.Take(match.TeamCount).OrderBy(x => rnd.Next()).ToList();
+
+            List<Member> random;
+            if (decrease)
+            {
+                random = orders.Take(match.TeamCount).ToList();
+            }
+            else
+            {
+                random = orders.Take(match.TeamCount).OrderBy(x => x.Elo).ToList();
+            }
+            decrease = !decrease;
             for (int j = 0; j < match.TeamCount; j++)
             {
                 if (teams[j] is null)

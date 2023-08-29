@@ -1,9 +1,10 @@
 import Modal from 'react-bootstrap/Modal';
-import { Container, ListGroup, Row, Col, Badge, } from 'react-bootstrap';
+import { Container, ListGroup, Row, Col, Badge, Alert } from 'react-bootstrap';
 import { RollingProps } from '../slices/matchDetailSlice';
+import { MatchProps } from '../slices/matchSlice';
 
-export default function Rivals(props: { show: boolean, rivals: RollingProps[], onClose: () => void }) {
-    const { show, rivals, onClose } = props
+export default function Rivals(props: { show: boolean, rivals: RollingProps[], onClose: () => void, match: MatchProps }) {
+    const { show, rivals, onClose, match } = props
 
     function Team(): JSX.Element {
         let items: JSX.Element[] = []
@@ -37,7 +38,7 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
                             </Badge>
                         </ListGroup.Item>
                     </ListGroup>
-                </Col >
+                </Col>
             )
             items.push(item)
         });
@@ -58,6 +59,10 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
                         <Row>
                             <Team />
                         </Row>
+                        <Alert variant='info' className='mt-2'>
+                            <h1>{match.name}</h1>
+                            <h3>{match.description}</h3>
+                        </Alert>
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>

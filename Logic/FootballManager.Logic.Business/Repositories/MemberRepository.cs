@@ -12,7 +12,7 @@ public class MemberRepository : IMemberRepository
         this.entityDbContext = entityDbContext;
     }
 
-    public async Task<Member?> AddAsync(Member member) 
+    public async Task<Member?> AddAsync(Member member)
     {
         var now = DateTime.Now;
         _ = await entityDbContext.Members.AddAsync(new()
@@ -53,7 +53,7 @@ public class MemberRepository : IMemberRepository
 
     public async Task<IEnumerable<Member>> SearchAsync(string name)
     {
-        return entityDbContext.Members.Where(m => m.Name.ToLower().Contains(name.ToLower())).ToList();
+        return entityDbContext.Members.Where(m => m.Name.ToLower().Contains(name.ToLower()) && m.IsDeleted == false).ToList();
     }
 
     public async Task<bool> UpdateAsync(Member member)
