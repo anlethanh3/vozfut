@@ -1,5 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
-import { Container, ListGroup, Row, Col, Badge, Alert } from 'react-bootstrap';
+import { Container, ListGroup, Row, Col, Badge, Alert, Stack } from 'react-bootstrap';
 import { RollingProps } from '../slices/matchDetailSlice';
 import { MatchProps } from '../slices/matchSlice';
 
@@ -12,7 +12,7 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
         let names = ['Yellow', 'Blue', 'Red', 'Orange']
         rivals.forEach((value, index) => {
             var item = (
-                <Col>
+                <Col key={`key-${index}`}>
                     <ListGroup>
                         <ListGroup.Item style={{ fontWeight: 'bold' }} variant={colors[index]}>Team {names[index]}</ListGroup.Item>
                         {
@@ -50,16 +50,21 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
 
     return (
         <>
-            <Modal centered aria-labelledby="contained-modal-title-vcenter" show={show} onHide={onClose} fullscreen>
+            <Modal show={show} onHide={onClose} fullscreen>
                 <Modal.Header closeButton>
                     <Modal.Title>Team Division Rivals</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <Container className='h-100 flex'>
-                        <Row>
+                <Modal.Body >
+                    <Container className='h-100' style={{
+                        backgroundImage: `url("../rivals.png")`,
+                        backgroundSize: '50% ',
+                        backgroundPosition: 'top',
+                        backgroundRepeat: 'no-repeat',
+                    }}>
+                        <Row style={{ opacity: '0.85' }}>
                             <Team />
                         </Row>
-                        <Alert variant='info' className='mt-2'>
+                        <Alert variant='info' className='mt-2' style={{ opacity: '0.85' }}>
                             <h1>{match.name}</h1>
                             <h3>{match.description}</h3>
                         </Alert>
