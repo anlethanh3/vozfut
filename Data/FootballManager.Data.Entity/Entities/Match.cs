@@ -7,6 +7,8 @@ public class Match
     public string Description { get; set; } = string.Empty;
     public int TeamSize { get; set; }
     public int TeamCount { get; set; }
+    public bool HasTeamRival { get; set; }
+    public string TeamRivals { get; set; } = string.Empty;
     public DateTime CreatedDate { get; set; }
     public DateTime ModifiedDate { get; set; }
     public bool IsDeleted { get; set; } = false;

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Button, Col, Row, Table, Alert, Form } from "react-bootstrap";
 import moment from 'moment';
-import { selectState, fetchAsync, rollingAsync, onCloseError, onCloseRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync } from '../slices/matchDetailSlice';
+import { selectState, fetchAsync, rollingAsync, onCloseError, onCloseRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps } from '../slices/matchDetailSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useParams } from "react-router-dom";
 import Rivals from "../components/Rivals";
@@ -73,6 +73,9 @@ export default function MatchDetail() {
         }
         return false
     }
+    function onSubmitRivals(rivals: RollingProps[]) {
+        dispatch(onCloseRivals())
+    }
 
     const updateDetail = (data: MatchDetailProps) => {
         dispatch(updateMatchDetailAsync({ data: data }))
@@ -98,7 +101,7 @@ export default function MatchDetail() {
             }
             {
                 state.isShowRivals && state.rolling && state.match &&
-                <Rivals show={state.isShowRivals} rivals={state.rolling} match={state.match} onClose={() => dispatch(onCloseRivals())} />
+                <Rivals onSubmit={(rivals) => onSubmitRivals(rivals)} show={state.isShowRivals} rivals={state.rolling} match={state.match} onClose={() => dispatch(onCloseRivals())} />
             }
             {
                 state.error &&

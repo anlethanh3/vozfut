@@ -58,64 +58,61 @@ public class MatchDetailRepository : IMatchDetailRepository
 
     public async Task<IEnumerable<MatchDetailResponse>> GetAllAsync(int id)
     {
-        using (var entity = entityDbContext)
+        var match = entityDbContext.Matches.Where(x => x.Id == id).FirstOrDefault();
+        if (match is null)
         {
-            var match = entity.Matches.Where(x => x.Id == id).FirstOrDefault();
-            if (match is null)
+            return new List<MatchDetailResponse>();
+        }
+        var members = entityDbContext.Members.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
+        var details = entityDbContext.MatchDetails.Where(x => !x.IsDeleted && x.MatchId == id).ToList();
+
+        Func<Member, MatchDetailResponse> func = member =>
+        {
+            var now = DateTime.Now;
+            var emptyDetail = new MatchDetailResponse
             {
-                return new List<MatchDetailResponse>();
-            }
-            var members = entity.Members.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
-            var details = entity.MatchDetails.Where(x => !x.IsDeleted && x.MatchId == id).ToList();
-
-            Func<Member, MatchDetailResponse> func = member =>
-            {
-                var now = DateTime.Now;
-                var emptyDetail = new MatchDetailResponse
-                {
-                    Id = 0,
-                    IsPaid = false,
-                    IsSkip = false,
-                    CreatedDate = now,
-                    ModifiedDate = now,
-                    IsDeleted = false,
-                    MatchId = match.Id,
-                    MatchName = match.Name,
-                    MemberElo = member.Elo,
-                    MemberId = member.Id,
-                    MemberName = member.Name,
-                };
-
-                if (details.Count() == 0)
-                {
-                    return emptyDetail;
-                }
-
-                var detail = details.FirstOrDefault(x => x.MemberId == member.Id && x.MatchId == id);
-                if (detail is null)
-                {
-                    return emptyDetail;
-                }
-
-                return new MatchDetailResponse
-                {
-                    Id = detail.Id,
-                    IsPaid = detail.IsPaid,
-                    IsSkip = detail.IsSkip,
-                    CreatedDate = detail.CreatedDate,
-                    ModifiedDate = detail.ModifiedDate,
-                    IsDeleted = detail.IsDeleted,
-                    MatchId = match.Id,
-                    MatchName = match.Name,
-                    MemberElo = member.Elo,
-                    MemberId = member.Id,
-                    MemberName = member.Name,
-                };
+                Id = 0,
+                IsPaid = false,
+                IsSkip = false,
+                CreatedDate = now,
+                ModifiedDate = now,
+                IsDeleted = false,
+                MatchId = match.Id,
+                MatchName = match.Name,
+                MemberElo = member.Elo,
+                MemberId = member.Id,
+                MemberName = member.Name,
             };
 
-            var result = members.Select(member => func(member));
-            return result;
+            if (details.Count() == 0)
+            {
+                return emptyDetail;
+            }
+
+            var detail = details.FirstOrDefault(x => x.MemberId == member.Id && x.MatchId == id);
+            if (detail is null)
+            {
+                return emptyDetail;
+            }
+
+            return new MatchDetailResponse
+            {
+                Id = detail.Id,
+                IsPaid = detail.IsPaid,
+                IsSkip = detail.IsSkip,
+                CreatedDate = detail.CreatedDate,
+                ModifiedDate = detail.ModifiedDate,
+                IsDeleted = detail.IsDeleted,
+                MatchId = match.Id,
+                MatchName = match.Name,
+                MemberElo = member.Elo,
+                MemberId = member.Id,
+                MemberName = member.Name,
+            };
         };
+
+        var result = members.Select(member => func(member));
+        return result;
     }
 
     public async Task<MatchDetail?> GetAsync(int matchId, int memberId)

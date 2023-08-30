@@ -12,6 +12,7 @@ export interface MatchProps {
   createdDate?: string,
   modifiedDate?: string,
   isDeleted?: boolean,
+  hasTeamRival?: boolean,
 }
 
 export interface State {

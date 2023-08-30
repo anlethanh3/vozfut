@@ -68,6 +68,8 @@ public class MatchRepository : IMatchRepository
         record.Description = match.Description;
         record.TeamSize = match.TeamSize;
         record.TeamCount = match.TeamCount;
+        record.TeamRivals = match.TeamRivals;
+        record.HasTeamRival = match.HasTeamRival;
         record.ModifiedDate = DateTime.Now;
         _ = entityDbContext.SaveChanges();
         return true;

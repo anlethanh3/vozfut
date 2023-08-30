@@ -8,16 +8,19 @@ public class UnitOfWork : IUnitOfWork
     public required IMatchRepository MatchRepository { get; set; }
     public required IMatchDetailRepository MatchDetailRepository { get; set; }
     public required IUserRepository UserRepository { get; set; }
+    public required ITeamRivalRepository TeamRivalRepository { get; set; }
 
     public UnitOfWork(
         IMemberRepository memberRepository,
         IMatchRepository matchRepository,
         IMatchDetailRepository matchDetailRepository,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        ITeamRivalRepository teamRivalRepository)
     {
         MemberRepository = memberRepository;
         MatchRepository = matchRepository;
         MatchDetailRepository = matchDetailRepository;
         UserRepository = userRepository;
+        TeamRivalRepository = teamRivalRepository;
     }
 }

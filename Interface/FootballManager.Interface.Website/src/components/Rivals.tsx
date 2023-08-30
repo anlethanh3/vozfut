@@ -1,15 +1,15 @@
 import Modal from 'react-bootstrap/Modal';
-import { Container, ListGroup, Row, Col, Badge, Alert, Stack } from 'react-bootstrap';
+import { Container, ListGroup, Row, Col, Badge, Alert, Button } from 'react-bootstrap';
 import { RollingProps } from '../slices/matchDetailSlice';
 import { MatchProps } from '../slices/matchSlice';
 import '../scss/custom.scss';
 
-export default function Rivals(props: { show: boolean, rivals: RollingProps[], onClose: () => void, match: MatchProps }) {
-    const { show, rivals, onClose, match } = props
+export default function Rivals(props: { show: boolean, rivals: RollingProps[], onSubmit: (rivals: RollingProps[]) => void, onClose: () => void, match: MatchProps }) {
+    const { show, rivals, onClose, onSubmit, match } = props
 
     function Team(): JSX.Element {
         let items: JSX.Element[] = []
-        let colors = ['danger', 'warning', 'success', 'primary']
+        let colors = ['danger', 'warning', 'secondary', 'primary']
         let names = ['Red', 'Banana', 'Orange', 'Blue',]
         rivals.forEach((value, index) => {
             var item = (
@@ -51,7 +51,7 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
 
     return (
         <>
-            <Modal show={show} onHide={onClose} fullscreen>
+            <Modal show={show} onHide={onClose} fullscreen keyboard={false} backdrop='static'>
                 <Modal.Header closeButton>
                     <Modal.Title>Team Division Rivals</Modal.Title>
                 </Modal.Header>
@@ -72,6 +72,7 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
+                    <Button variant="primary" onClick={() => { onSubmit(rivals) }}>Save Rivals</Button>
                 </Modal.Footer>
             </Modal>
         </>

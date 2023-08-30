@@ -17,6 +17,7 @@ builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 builder.Services.AddTransient<IMatchRepository, MatchRepository>();
 builder.Services.AddTransient<IMatchDetailRepository, MatchDetailRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<ITeamRivalRepository, TeamRivalRepository>();
 // Database context
 builder.Services.AddTransient<IDatabaseContext, DapperDbContext>();
 builder.Services.AddTransient<IMatchDetailContext, MatchDetailContext>();

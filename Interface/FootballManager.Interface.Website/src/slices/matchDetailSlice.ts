@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { add, rolling, search, remove, updateNew } from '../providers/MatchDetailApiProvider';
+import { add, search, remove, updateNew } from '../providers/MatchDetailApiProvider';
+import { get as getTeamRival } from '../providers/TeamRivalApiProvider';
 import { getId as getMatch } from '../providers/MatchApiProvider';
 import { get } from '../providers/MemberApiProvider';
 import { HttpStatusCode } from 'axios';
@@ -114,7 +115,7 @@ export const rollingAsync = createAsyncThunk(
   'matchDetail/rolling',
   async (request: { id: number, }, { signal }) => {
     let { id } = request
-    return rolling<RollingProps[]>({ signal: signal, matchId: id })
+    return getTeamRival<RollingProps[]>({ signal: signal, id: id })
       .then(response => {
         if (response.status === HttpStatusCode.Ok) {
           return response.data
