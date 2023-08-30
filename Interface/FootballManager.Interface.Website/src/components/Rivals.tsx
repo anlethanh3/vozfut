@@ -10,7 +10,7 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
     function Team(): JSX.Element {
         let items: JSX.Element[] = []
         let colors = ['danger', 'warning', 'success', 'primary']
-        let names = ['Red', 'Yellow', 'Orange', 'Blue',]
+        let names = ['Red', 'Banana', 'Orange', 'Blue',]
         rivals.forEach((value, index) => {
             var item = (
                 <Col key={`key-${index}`}>
