@@ -2,14 +2,15 @@ import Modal from 'react-bootstrap/Modal';
 import { Container, ListGroup, Row, Col, Badge, Alert, Stack } from 'react-bootstrap';
 import { RollingProps } from '../slices/matchDetailSlice';
 import { MatchProps } from '../slices/matchSlice';
+import '../scss/custom.scss';
 
 export default function Rivals(props: { show: boolean, rivals: RollingProps[], onClose: () => void, match: MatchProps }) {
     const { show, rivals, onClose, match } = props
 
     function Team(): JSX.Element {
         let items: JSX.Element[] = []
-        let colors = ['warning', 'primary', 'danger', 'success']
-        let names = ['Yellow', 'Blue', 'Red', 'Orange']
+        let colors = ['danger', 'warning', 'success', 'primary']
+        let names = ['Red', 'Yellow', 'Orange', 'Blue',]
         rivals.forEach((value, index) => {
             var item = (
                 <Col key={`key-${index}`}>
