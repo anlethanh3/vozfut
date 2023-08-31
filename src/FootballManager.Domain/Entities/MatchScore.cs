@@ -14,11 +14,16 @@ namespace FootballManager.Domain.Entities
         /// <summary>
         /// chứa số bàn thắng của đội 1
         /// </summary>
-        public short ScoreTeam1 { get; set; }
+        public short NumberGoalTeam1 { get; set; }
 
         /// <summary>
         /// chứa số bàn thắng của đội 2
         /// </summary>
-        public short ScoreTeam2 { get; set; }
+        public short NumberGoalTeam2 { get; set; }
+
+        /// <summary>
+        /// Lượt đi | lượt về
+        /// </summary>
+        public string Type { get; set; }
     }
 }

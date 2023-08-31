@@ -4,7 +4,7 @@
     {
         public GetDetailMatchDto()
         {
-            Members = new List<GetDetailMatchMemberDto>();
+            Teams = new List<TeamOfMatchDto>();
             Vote = new GetDetailMatchVoteDto();
         }
 
@@ -25,7 +25,8 @@
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public GetDetailMatchVoteDto Vote { get; set; }
-        public List<GetDetailMatchMemberDto> Members { get; set; }
+
+        public List<TeamOfMatchDto> Teams { get; set; }
     }
 
     public class GetDetailMatchVoteDto
@@ -44,6 +45,21 @@
         public bool IsPaid { get; set; }
         public bool IsSkip { get; set; }
         public string BibColour { get; set; }
+    }
+
+    public class TeamOfMatchDto
+    {
+        public string Name { get; set; }
+
+        public List<MemberOfTeamMatchDto> Members { get; set; }
+    }
+
+    public class MemberOfTeamMatchDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsPaid { get; set; }
+        public bool IsSkip { get; set; }
     }
 
     public class MatchDetailDto

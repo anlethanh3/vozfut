@@ -1,5 +1,6 @@
 ﻿using FootballManager.Application.Features.MatchDetails.Commands.Create;
 using FootballManager.Application.Features.MatchDetails.Commands.Update;
+using FootballManager.Application.Features.MatchDetails.Queries.GetTeam;
 using FootballManager.Application.Features.MatchDetails.Queries.Rolling;
 using FootballManager.Application.Features.Matches.Commands.Create;
 using FootballManager.Application.Features.Matches.Commands.Delete;
@@ -8,6 +9,8 @@ using FootballManager.Application.Features.Matches.Commands.UpdateStatus;
 using FootballManager.Application.Features.Matches.Queries.GetAll;
 using FootballManager.Application.Features.Matches.Queries.GetDetail;
 using FootballManager.Application.Features.Matches.Queries.GetPaging;
+using FootballManager.Application.Features.MatchScores.Commands.Create;
+using FootballManager.Application.Features.MatchScores.Queries.GetByMatch;
 using FootballManager.Application.Features.Members.Commands.Create;
 using FootballManager.Application.Features.Members.Commands.Delete;
 using FootballManager.Application.Features.Members.Commands.Update;
@@ -51,11 +54,12 @@ namespace FootballManager.WebApi.Extensions
         {
             return app.UseV1UserBuilder()
                       .UseV1MatchBuilder()
-                      .UseV1MatchDeatilBuilder()
+                      .UseV1MatchDetailBuilder()
                       .UseV1MemberBuilder()
                       .UseV1PositionBuilder()
                       .UseV1VoteBuilder()
-                      .UseV1MemberVoteBuilder();
+                      .UseV1MemberVoteBuilder()
+                      .UseV1MatchScoreBuilder();
         }
 
         private static WebApplication UseV1UserBuilder(this WebApplication app)
@@ -156,7 +160,7 @@ namespace FootballManager.WebApi.Extensions
             return app;
         }
 
-        private static WebApplication UseV1MatchDeatilBuilder(this WebApplication app)
+        private static WebApplication UseV1MatchDetailBuilder(this WebApplication app)
         {
             var matchDetails = app.NewVersionedApi("MatchDetails");
             var matcheDetailsV1 = matchDetails.MapGroup("/api/v{version:apiVersion}/match-details").RequireAuthorization();
@@ -173,11 +177,17 @@ namespace FootballManager.WebApi.Extensions
             })
             .WithMetadata(new SwaggerOperationAttribute("Endpoint using for update match detail"));
 
-            matcheDetailsV1.MapGet("/rolling", async (IMediator mediator, int matchId) =>
+            matcheDetailsV1.MapGet("/{matchId:int}/rolling", async (IMediator mediator, int matchId) =>
             {
                 return Results.Ok(await mediator.Send(new RollingTeamMatchDetailQuery(matchId)));
             })
             .WithMetadata(new SwaggerOperationAttribute("This endpoint using for rolling team"));
+
+            matcheDetailsV1.MapGet("/{matchId:int}/teams", async (IMediator mediator, int matchId) =>
+            {
+                return Results.Ok(await mediator.Send(new GetTeamByMatchQuery(matchId)));
+            })
+           .WithMetadata(new SwaggerOperationAttribute("This endpoint using for get teams"));
 
             return app;
         }
@@ -324,6 +334,26 @@ namespace FootballManager.WebApi.Extensions
                 return Results.Ok(await mediator.Send(command));
             })
            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for create or update member-votes"));
+
+            return app;
+        }
+
+        public static WebApplication UseV1MatchScoreBuilder(this WebApplication app)
+        {
+            var matchScores = app.NewVersionedApi("MatchScores");
+            var matchScoresV1 = matchScores.MapGroup("/api/v{version:apiVersion}/match-scores").RequireAuthorization();
+
+            matchScoresV1.MapPost("/", async (IMediator mediator, [FromBody] CreateMatchScoreCommand command) =>
+            {
+                return Results.Ok(await mediator.Send(command));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("Endpoint using for create match score"));
+
+            matchScoresV1.MapGet("/{matchId:int}/schedules", async (IMediator mediator, int matchId) =>
+            {
+                return Results.Ok(await mediator.Send(new GetMatchScoreByMatchQuery(matchId)));
+            })
+            .WithMetadata(new SwaggerOperationAttribute("This endpoint using for get schedule match"));
 
             return app;
         }

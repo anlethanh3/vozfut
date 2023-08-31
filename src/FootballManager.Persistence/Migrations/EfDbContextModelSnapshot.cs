@@ -243,10 +243,10 @@ namespace FootballManager.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<short>("ScoreTeam1")
+                    b.Property<short>("NumberGoalTeam1")
                         .HasColumnType("smallint");
 
-                    b.Property<short>("ScoreTeam2")
+                    b.Property<short>("NumberGoalTeam2")
                         .HasColumnType("smallint");
 
                     b.Property<string>("Team1")
@@ -255,6 +255,9 @@ namespace FootballManager.Persistence.Migrations
 
                     b.Property<string>("Team2")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

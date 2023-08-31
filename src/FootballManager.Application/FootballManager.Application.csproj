@@ -25,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Goals\Commands\" />
+    <Folder Include="Features\Goals\Queries\" />
     <Folder Include="Features\MatchDetails\Queries\GetPaging\" />
     <Folder Include="Features\Users\Queries\" />
   </ItemGroup>
