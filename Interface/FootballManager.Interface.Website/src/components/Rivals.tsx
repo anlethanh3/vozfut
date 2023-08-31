@@ -3,29 +3,47 @@ import { Container, ListGroup, Row, Col, Badge, Alert, Button } from 'react-boot
 import { RollingProps } from '../slices/matchDetailSlice';
 import { MatchProps } from '../slices/matchSlice';
 import '../scss/custom.scss';
+import { useCallback, useRef } from 'react';
+import { toPng, } from 'html-to-image';
+
 interface TeamRivalInfo {
     color: string,
     name: string,
 }
 export default function Rivals(props: { show: boolean, rivals: RollingProps[], onSubmit: (rivals: RollingProps[]) => void, onClose: () => void, match: MatchProps }) {
     const { show, rivals, onClose, onSubmit, match } = props
-
+    const ref = useRef<HTMLDivElement>(null);
+    const onButtonClick = useCallback(() => {
+        if (ref.current === null) {
+            return
+        }
+        toPng(ref.current, { cacheBust: true, width: 1024, height: 768, backgroundColor: 'white' })
+            .then((dataUrl) => {
+                const link = document.createElement('a')
+                link.download = 'image.png'
+                link.href = dataUrl
+                link.click()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }, [ref])
     function Team(): JSX.Element {
         let items: JSX.Element[] = []
         let infos: TeamRivalInfo[] = [
-            { color: 'warning', name: 'Banana' },
-            { color: 'primary', name: 'Blue' },
             { color: 'danger', name: 'Red' },
+            { color: 'primary', name: 'Blue' },
+            { color: 'warning', name: 'Banana' },
             { color: 'secondary', name: 'Orange' },
         ]
         rivals.forEach((value, index) => {
             var item = (
                 <Col key={`key-${index}`}>
-                    <ListGroup>
-                        <ListGroup.Item style={{ fontWeight: 'bold' }} variant={infos[index].color}>Team {infos[index].name}</ListGroup.Item>
+                    <ListGroup key={`key-group-${index}`}>
+                        <ListGroup.Item key={`key-list-${index}`} style={{ fontWeight: 'bold' }} variant={infos[index].color}>Team {infos[index].name}</ListGroup.Item>
                         {
                             value.players.map((v, i) =>
-                                <ListGroup.Item variant={infos[index].color} as="li"
+                                <ListGroup.Item key={`key-item-${index}`} variant={infos[index].color} as="li"
                                     className="d-flex justify-content-between align-items-start" >
                                     <div className="ms-2 me-auto">
                                         {i + 1}. {v.name}
@@ -36,7 +54,7 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
                                 </ListGroup.Item>
                             )
                         }
-                        <ListGroup.Item style={{ fontWeight: 'bold' }} variant={infos[index].color} as="li"
+                        <ListGroup.Item key={`key-sum-${index}`} style={{ fontWeight: 'bold' }} variant={infos[index].color} as="li"
                             className="d-flex justify-content-between align-items-start" >
                             <div className="ms-2 me-auto">
                                 Elo Sum
@@ -62,14 +80,13 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
                 <Modal.Header closeButton>
                     <Modal.Title>Team Division Rivals</Modal.Title>
                 </Modal.Header>
-                <Modal.Body >
-                    <Container className='h-100' style={{
+                <Modal.Body ref={ref}>
+                    <Container style={{
                         backgroundImage: `url("../rivals.png")`,
-                        backgroundSize: '50% ',
                         backgroundPosition: 'top',
                         backgroundRepeat: 'no-repeat',
                     }}>
-                        <Row style={{ opacity: '0.85' }}>
+                        <Row style={{ opacity: '0.85', padding: '2% 0%' }}>
                             <Team />
                         </Row>
                         <Alert variant='info' className='mt-2' style={{ opacity: '0.85' }}>
@@ -79,9 +96,9 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={() => { onSubmit(rivals) }}>Save Rivals</Button>
+                    <Button variant="primary" onClick={() => { onButtonClick() }}>Save as Image</Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal >
         </>
     )
 }
