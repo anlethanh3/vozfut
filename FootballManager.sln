@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootballManager.Interface.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootballManager.Data.Entity", "Data\FootballManager.Data.Entity\FootballManager.Data.Entity.csproj", "{03160608-CA71-4E53-9E79-9AFC64D352B3}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{719A0567-B4D1-4830-9A2A-32FDBF24F4B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FooballManager.Logic.BusinessTest", "Testing\FooballManager.Logic.BusinessTest\FooballManager.Logic.BusinessTest.csproj", "{6B2492F1-CAB2-4ABF-9682-521099ACDC88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,11 +54,16 @@ Global
 		{03160608-CA71-4E53-9E79-9AFC64D352B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03160608-CA71-4E53-9E79-9AFC64D352B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03160608-CA71-4E53-9E79-9AFC64D352B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B2492F1-CAB2-4ABF-9682-521099ACDC88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B2492F1-CAB2-4ABF-9682-521099ACDC88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B2492F1-CAB2-4ABF-9682-521099ACDC88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B2492F1-CAB2-4ABF-9682-521099ACDC88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C834BDA9-07FA-40D2-94D6-922C2CC838C3} = {5E0C1C3B-662C-432D-A23F-B83D6BD512B8}
 		{19BF3550-CAEF-4CF7-AA47-074BE65F6A8F} = {E37B342E-5225-427B-A7B5-DB74C7B2E2B7}
 		{B165F866-5525-41AC-AFB2-01737B5EDD1E} = {7B2A1F3F-AB63-4AC0-9FA4-83EA84D7AE3A}
 		{03160608-CA71-4E53-9E79-9AFC64D352B3} = {5E0C1C3B-662C-432D-A23F-B83D6BD512B8}
+		{6B2492F1-CAB2-4ABF-9682-521099ACDC88} = {719A0567-B4D1-4830-9A2A-32FDBF24F4B9}
 	EndGlobalSection
 EndGlobal
