@@ -3,38 +3,45 @@ import { Container, ListGroup, Row, Col, Badge, Alert, Button } from 'react-boot
 import { RollingProps } from '../slices/matchDetailSlice';
 import { MatchProps } from '../slices/matchSlice';
 import '../scss/custom.scss';
-
+interface TeamRivalInfo {
+    color: string,
+    name: string,
+}
 export default function Rivals(props: { show: boolean, rivals: RollingProps[], onSubmit: (rivals: RollingProps[]) => void, onClose: () => void, match: MatchProps }) {
     const { show, rivals, onClose, onSubmit, match } = props
 
     function Team(): JSX.Element {
         let items: JSX.Element[] = []
-        let colors = ['danger', 'warning', 'secondary', 'primary']
-        let names = ['Red', 'Banana', 'Orange', 'Blue',]
+        let infos: TeamRivalInfo[] = [
+            { color: 'warning', name: 'Banana' },
+            { color: 'primary', name: 'Blue' },
+            { color: 'danger', name: 'Red' },
+            { color: 'secondary', name: 'Orange' },
+        ]
         rivals.forEach((value, index) => {
             var item = (
                 <Col key={`key-${index}`}>
                     <ListGroup>
-                        <ListGroup.Item style={{ fontWeight: 'bold' }} variant={colors[index]}>Team {names[index]}</ListGroup.Item>
+                        <ListGroup.Item style={{ fontWeight: 'bold' }} variant={infos[index].color}>Team {infos[index].name}</ListGroup.Item>
                         {
                             value.players.map((v, i) =>
-                                <ListGroup.Item variant={colors[index]} as="li"
+                                <ListGroup.Item variant={infos[index].color} as="li"
                                     className="d-flex justify-content-between align-items-start" >
                                     <div className="ms-2 me-auto">
                                         {i + 1}. {v.name}
                                     </div>
-                                    <Badge bg={colors[index]} pill>
+                                    <Badge bg={infos[index].color} pill>
                                         +{v.elo}
                                     </Badge>
                                 </ListGroup.Item>
                             )
                         }
-                        <ListGroup.Item style={{ fontWeight: 'bold' }} variant={colors[index]} as="li"
+                        <ListGroup.Item style={{ fontWeight: 'bold' }} variant={infos[index].color} as="li"
                             className="d-flex justify-content-between align-items-start" >
                             <div className="ms-2 me-auto">
                                 Elo Sum
                             </div>
-                            <Badge bg={colors[index]} pill>
+                            <Badge bg={infos[index].color} pill>
                                 +{value.eloSum}
                             </Badge>
                         </ListGroup.Item>
