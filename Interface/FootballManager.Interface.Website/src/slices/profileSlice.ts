@@ -45,7 +45,7 @@ export const initialState: State = {
 // typically used to make async requests.
 export const loginAsync = createAsyncThunk(
   'user/login',
-  async (request: LoginRequestProps, { dispatch, signal }) => {
+  async (request: LoginRequestProps, { signal }) => {
 
     return authenticate({ signal: signal, data: request })
       .then(response => {
@@ -53,21 +53,6 @@ export const loginAsync = createAsyncThunk(
           throw new Error("Unauthorized")
         }
         return response.data
-      })
-      .then(token => {
-        dispatch(onToken(token))
-        return token
-      })
-      .then(token => profile({ signal: signal, token: token }))
-      .then(response => {
-        if (response.status !== HttpStatusCode.Ok) {
-          throw new Error("Unauthorized")
-        }
-        return response.data
-      })
-      .then(profile => {
-        dispatch(onProfile(profile))
-        return profile
       })
       .catch((ex: Error) => {
         if (ex instanceof AxiosError && ex.response?.status === HttpStatusCode.Unauthorized) {
@@ -80,7 +65,7 @@ export const loginAsync = createAsyncThunk(
 
 export const profileAsync = createAsyncThunk(
   'user/profile',
-  async (request: TokenProps, { rejectWithValue, signal }) => {
+  async (request: TokenProps, { signal }) => {
 
     return profile({ signal: signal, token: request })
       .then(response => {
@@ -104,10 +89,6 @@ export const profileSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     signOut: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
       state.token = undefined;
       state.profile = undefined;
     },
@@ -119,8 +100,6 @@ export const profileSlice = createSlice({
     },
     onToken: (state, action: PayloadAction<TokenProps>) => {
       state.token = action.payload
-      let token = action.payload
-      axios.defaults.headers.common['Authorization'] =  `${token.tokenType} ${token.accessToken}`
     },
     onCloseSuccess: (state) => {
       state.isSuccess = false
@@ -139,8 +118,25 @@ export const profileSlice = createSlice({
         state.status = 'idle'
         state.isLoading = false
         state.isSuccess = true
+        state.token = action.payload
       })
       .addCase(loginAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
+      // profile
+      .addCase(profileAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(profileAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+        state.isSuccess = true
+        state.profile = action.payload
+      })
+      .addCase(profileAsync.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
         state.isLoading = false

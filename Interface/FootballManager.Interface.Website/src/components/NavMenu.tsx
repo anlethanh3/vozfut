@@ -1,15 +1,29 @@
-import { PropsWithChildren, ReactNode, useState } from "react";
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import { Container, Navbar, Nav, Button, Dropdown, Image, Row, Col, DropdownButton, NavItem } from "react-bootstrap";
 import Login from "./Login";
-import { selectProfile, signOut, } from '../slices/profileSlice';
+import { ProfileProps, TokenProps, onProfile, onToken, selectProfile, signOut, } from '../slices/profileSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { Link, NavLink, useMatch, useResolvedPath } from "react-router-dom";
-
+import { Link, useMatch, useResolvedPath } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import axios from "axios";
 export default function NavMenu() {
     const [isLogin, setIsLogin] = useState(false)
     const profile = useAppSelector(selectProfile)
     const dispatch = useAppDispatch()
     const imageId = '1oFAxwi-7N4QM2VJ-t9r2fAItp-DiSm8n'
+    let key = { token: 'token', profile: 'profile' }
+    const [cookies, setCookie, removeCookie] = useCookies([key.token, key.profile])
+
+    useEffect(() => {
+        if (cookies && cookies.token) {
+            var token = cookies.token as TokenProps
+            var profile = cookies.token as ProfileProps
+            axios.defaults.headers.common['Authorization'] = `${token.tokenType} ${token.accessToken}`
+            dispatch(onToken(token))
+            dispatch(onProfile(profile))
+        }
+    }, [])
+
     function imageUri(imageId: string) {
         return `https://drive.google.com/uc?export=view&id=${imageId}`
     }
@@ -22,6 +36,13 @@ export default function NavMenu() {
                 </Col>
             </Row>
         )
+    }
+
+    function onSignOut() {
+        dispatch(signOut())
+        removeCookie(key.token)
+        removeCookie(key.profile)
+        axios.defaults.headers.common['Authorization'] = ``
     }
 
     function Profile() {
@@ -41,7 +62,7 @@ export default function NavMenu() {
                 <Dropdown.Divider />
                 <Dropdown.Item>Specialist</Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item onClick={() => dispatch(signOut())}>
+                <Dropdown.Item onClick={() => onSignOut()}>
                     Sign Out
                 </Dropdown.Item>
             </DropdownButton >

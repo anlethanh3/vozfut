@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form'
 import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import { Modal, Button, Alert, Spinner } from 'react-bootstrap';
-import { LoginRequestProps, ProfileProps, onCloseError, onCloseSuccess, loginAsync, selectState } from '../slices/profileSlice';
+import { LoginRequestProps, ProfileProps, onCloseError, onCloseSuccess, loginAsync, selectState, profileAsync, onToken, onProfile } from '../slices/profileSlice';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-
+import { useCookies } from 'react-cookie';
+import axios from 'axios';
 
 export default function Login(props: { show: boolean, onSubmit: (profile: ProfileProps) => void, onClose: () => void }) {
     const { show, onSubmit, onClose } = props
@@ -12,6 +13,9 @@ export default function Login(props: { show: boolean, onSubmit: (profile: Profil
     const dispatch = useAppDispatch();
     const [info, setInfo] = useState<LoginRequestProps>({ email: '', password: '', username: '' })
     const [invalid, setInvalid] = useState({ email: false, password: false })
+    let key = { token: 'token', profile: 'profile' }
+    const [cookies, setCookie, removeCookie] = useCookies([key.token, key.profile])
+
     const onValid = () => {
         var check = { email: true, password: true }
         if (info.email) {
@@ -34,8 +38,14 @@ export default function Login(props: { show: boolean, onSubmit: (profile: Profil
 
     const onAuthenticate = (login: LoginRequestProps) => {
         dispatch(loginAsync(login)).unwrap()
+            .then((token) => {
+                axios.defaults.headers.common['Authorization'] = `${token.tokenType} ${token.accessToken}`
+                setCookie(key.token, token,)
+                return dispatch(profileAsync(token)).unwrap()
+            })
             .then((profile) => {
                 setTimeout(() => {
+                    setCookie(key.profile, profile)
                     onSubmit(profile)
                 }, 1000)
             })

@@ -68,7 +68,7 @@ public class MatchDetailRepository : IMatchDetailRepository
 
         Func<Member, MatchDetailResponse> func = member =>
         {
-            var now = DateTime.Now;
+            var now = DateTime.MinValue;
             var emptyDetail = new MatchDetailResponse
             {
                 Id = 0,
@@ -111,7 +111,7 @@ public class MatchDetailRepository : IMatchDetailRepository
             };
         };
 
-        var result = members.Select(member => func(member));
+        var result = members.Select(member => func(member)).OrderByDescending(c=>c.ModifiedDate);
         return result;
     }
 

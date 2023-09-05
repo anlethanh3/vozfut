@@ -97,7 +97,7 @@ public class UserController : ControllerBase
         {
             AccessToken = tokenHandler.WriteToken(token),
             TokenType = "Bearer",
-            ExpiredIn = 3600,
+            ExpiredIn = TimeSpan.FromDays(7).TotalSeconds,
         };
         return Ok(result);
     }
