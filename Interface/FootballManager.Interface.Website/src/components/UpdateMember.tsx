@@ -30,6 +30,12 @@ const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined,
             </Modal.Header>
             <Modal.Body>
                 <Form>
+                    <Form.Group className="mb-3" controlId="addMember.realName">
+                        <FloatingLabel controlId="floatingrealName" label="realName">
+                            <Form.Control type="text" required placeholder="Input realName" value={member.realName} onChange={(e) => setMember({ ...member, realName: e.target.value })} />
+                            <Form.Control.Feedback type="invalid">realName is required.</Form.Control.Feedback>
+                        </FloatingLabel>
+                    </Form.Group>
                     <Form.Group className="mb-3" controlId="addMember.Name">
                         <FloatingLabel controlId="floatingName" label="Name">
                             <Form.Control type="text" required isInvalid={!valid.name} placeholder="Input name" value={member.name} onChange={(e) => setMember({ ...member, name: e.target.value })} />
@@ -39,17 +45,6 @@ const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined,
                     <Form.Group className="mb-3" controlId="addMember.Description">
                         <FloatingLabel controlId="floatingDescription" label="Description">
                             <Form.Control type="text" placeholder="Input description" value={member.description} onChange={(e) => setMember({ ...member, description: e.target.value })} />
-                        </FloatingLabel>
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMember.Elo">
-                        <FloatingLabel controlId="floatingElo" label="Elo">
-                            <Form.Select value={member.elo} onChange={(e) => setMember({ ...member, elo: parseInt(e.target.value) })}>
-                                {
-                                    stats.map(value =>
-                                        <option key={`elo.id-${value}`} value={value}>+{value}</option>
-                                    )
-                                }
-                            </Form.Select>
                         </FloatingLabel>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="addMember.Speed">
