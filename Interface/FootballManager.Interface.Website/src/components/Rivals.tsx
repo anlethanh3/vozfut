@@ -10,7 +10,7 @@ interface TeamRivalInfo {
     color: string,
     name: string,
 }
-export default function Rivals(props: { show: boolean, rivals: RollingProps[], onSubmit: (rivals: RollingProps[]) => void, onClose: () => void, match: MatchProps }) {
+export default function Rivals(props: { show: boolean, rivals: RollingProps[], onSubmit: (rivals: RollingProps[]) => void, onClose: () => void, match: MatchProps | undefined }) {
     const { show, rivals, onClose, onSubmit, match } = props
     const ref = useRef<HTMLDivElement>(null);
     const onButtonClick = useCallback(() => {
@@ -90,8 +90,8 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
                             <Team />
                         </Row>
                         <Alert variant='info' className='mt-2' style={{ opacity: '0.85' }}>
-                            <h1>{match.name}</h1>
-                            <h3>{match.description}</h3>
+                            <h1>{match?.name}</h1>
+                            <h3>{match?.description}</h3>
                         </Alert>
                     </Container>
                 </Modal.Body>

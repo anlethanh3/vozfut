@@ -3,10 +3,12 @@ import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown } 
 import moment from 'moment';
 import SearchMember from "../components/SearchMember";
 import AddMatch from "../components/AddMatch";
-import { selectState, onChangePageIndex, onChangePageSize, fetchAsync, onShowAdd, addAsync, MatchProps, deleteAsync, onShowDelete, onSelectedId, onCloseError } from '../slices/matchSlice';
+import { selectState, onChangePageIndex, onChangePageSize, fetchAsync, onShowAdd, addAsync, MatchProps, deleteAsync, onShowDelete, onSelectedId, onCloseError, updateAsync, onShowUpdate, onShowTeamRival, rollingAsync } from '../slices/matchSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { NavLink } from "react-router-dom";
 import Confirmation from "../components/Confirmation";
+import UpdateMatch from "../components/UpdateMatch";
+import Rivals from "../components/Rivals";
 
 export default function Match() {
     let sizes = [10, 50, 100]
@@ -39,9 +41,26 @@ export default function Match() {
         dispatch(onSelectedId(id))
     }
 
+    const onTeamRivalEvent = (id: number) => {
+        dispatch(onSelectedId(id))
+        dispatch(rollingAsync({ id: id })).unwrap()
+            .then(value => dispatch(onShowTeamRival(true)))
+            .catch(error => {
+
+            })
+    }
+
     const deleteMatch = (id: number) => {
         dispatch(onShowDelete(false))
         dispatch(deleteAsync(id)).unwrap()
+            .then(values => dispatch(fetchAsync({ name: state.search.name, pageIndex: state.pageIndex, pageSize: state.pageSize })).unwrap())
+            .catch(err => { console.log('ui', err) })
+
+    }
+
+    const updateMatch = (data: MatchProps) => {
+        dispatch(onShowUpdate(false))
+        dispatch(updateAsync(data)).unwrap()
             .then(values => dispatch(fetchAsync({ name: state.search.name, pageIndex: state.pageIndex, pageSize: state.pageSize })).unwrap())
             .catch(err => { console.log('ui', err) })
 
@@ -71,6 +90,14 @@ export default function Match() {
             {
                 state.isShowAdd &&
                 <AddMatch onSubmit={(match) => { addMatch(match) }} show={state.isShowAdd} onClose={() => { dispatch(onShowAdd(false)) }} />
+            }
+            {
+                state.isShowRivals && state.rolling &&
+                <Rivals onSubmit={(rivals) => { }} show={state.isShowRivals} rivals={state.rolling} match={state.data.find(x => x.id === state.selectedId)} onClose={() => dispatch(onShowTeamRival(false))} />
+            }
+            {
+                state.isShowUpdate &&
+                <UpdateMatch initData={state.data.find(x => x.id === state.selectedId)} onSubmit={(match) => { updateMatch(match) }} show={state.isShowUpdate} onClose={() => { dispatch(onShowUpdate(false)) }} />
             }
             {
                 state.isShowDelete &&
@@ -115,8 +142,12 @@ export default function Match() {
                                     <NavLink to={`${value.id}`}>
                                         <Button variant="primary" className="me-2" onClick={() => { }}>Member</Button>
                                     </NavLink>
-                                    <Button variant="warning" className="me-2" onClick={() => { }}>Edit</Button>
+                                    <Button variant="warning" className="me-2" onClick={() => {
+                                        dispatch(onSelectedId(value.id))
+                                        dispatch(onShowUpdate(true))
+                                    }}>Edit</Button>
                                     <Button variant="danger" className="me-2" onClick={() => { onDeleteEvent(value.id) }}>Delete</Button>
+                                    <Button variant="success" disabled={!value.hasTeamRival} className="me-2" onClick={() => { onTeamRivalEvent(value.id) }}>Team Rivals</Button>
                                 </td>
                             </tr>
                         )

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { MemberProps } from "../reducers/MemberReducer"
+import { MemberProps } from "../slices/memberSlice"
 
 const url = `${process.env.REACT_APP_API_URL}/member`
 
@@ -21,9 +21,9 @@ export const paging = async (props: { pageIndex: number, pageSize: number, signa
     return response
 }
 
-export const search = async (props: { pageIndex: number, pageSize: number, name: string, signal: AbortSignal }) => {
+export const search = async <T>(props: { pageIndex: number, pageSize: number, name: string, signal: AbortSignal }) => {
     let { pageIndex, pageSize, name, signal } = props
-    var response = await axios.post(`${url}/search`,
+    var response = await axios.post<T>(`${url}/search`,
         {
             pageIndex,
             pageSize,

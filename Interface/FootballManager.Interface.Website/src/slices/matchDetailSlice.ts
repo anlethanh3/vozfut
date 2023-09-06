@@ -5,7 +5,7 @@ import { get as getTeamRival } from '../providers/TeamRivalApiProvider';
 import { getId as getMatch } from '../providers/MatchApiProvider';
 import { get } from '../providers/MemberApiProvider';
 import { HttpStatusCode } from 'axios';
-import { MemberProps } from '../reducers/MemberReducer';
+import { MemberProps } from '../slices/memberSlice';
 import { MatchProps } from './matchSlice';
 
 export interface MatchDetailProps {

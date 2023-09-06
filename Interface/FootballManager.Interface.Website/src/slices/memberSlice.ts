@@ -1,55 +1,57 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { add, remove, search, update } from '../providers/MatchApiProvider';
 import { HttpStatusCode } from 'axios';
-import { RollingProps } from './matchDetailSlice';
-import { getAnonymous } from '../providers/TeamRivalApiProvider';
+import { add, remove, update, search } from '../providers/MemberApiProvider';
 
-export interface MatchProps {
+export interface MemberProps {
   id: number,
   name: string,
-  description: string,
-  teamSize: number,
-  teamCount: number,
+  realName?: string,
+  description?: string,
+  elo: number,
   createdDate?: string,
   modifiedDate?: string,
+  speed?: number,
+  finishing?: number,
+  stamina?: number,
+  passing?: number,
+  skill?: number,
   isDeleted?: boolean,
-  hasTeamRival?: boolean,
+}
+export interface SearchProps {
+  name: string,
+}
+export interface State {
+  data: MemberProps[],
+  status: string,
+  isLoading: boolean,
+  error: string | undefined,
+  isShowLegend: boolean,
+  isShowAdd: boolean,
+  isShowUpdate: boolean,
+  isShowDelete: boolean,
+  selectedId: number,
+  pageIndex: number,
+  pageSize: number,
+  totalPage: number,
+  search: SearchProps,
 }
 
-export interface State {
-  data: MatchProps[],
-  status: "loading" | "idle" | "failed",
-  error: string | undefined,
-  isLoading: boolean,
-  pageSize: number,
-  pageIndex: number,
-  totalPage: number,
-  isShowAdd: boolean,
-  selectedId: number,
-  isShowDelete: boolean,
-  isShowUpdate: boolean,
-  isShowRivals: boolean,
-  rolling: RollingProps[] | undefined,
-  search: { name: string },
-}
 export const initialState: State = {
   data: [],
   status: "idle",
   isLoading: false,
   error: undefined,
-  pageIndex: 0,
-  totalPage: 0,
-  pageSize: 50,
-  selectedId: -1,
-  search: { name: '' },
+  isShowLegend: false,
   isShowAdd: false,
   isShowUpdate: false,
   isShowDelete: false,
-  isShowRivals: false,
-  rolling: undefined,
+  selectedId: 0,
+  pageIndex: 0,
+  pageSize: 50,
+  totalPage: 0,
+  search: { name: '' }
 }
-
 export interface SearchResponseProps<T> {
   data: T,
   pageSize: number,
@@ -58,10 +60,10 @@ export interface SearchResponseProps<T> {
 }
 
 export const fetchAsync = createAsyncThunk(
-  'match/fetch',
+  'member/fetch',
   async (request: { name: string, pageSize: number, pageIndex: number, }, { signal }) => {
     let { name, pageSize, pageIndex } = request
-    return search<SearchResponseProps<MatchProps[]>>({ signal: signal, name: name, pageIndex: pageIndex, pageSize: pageSize })
+    return search<SearchResponseProps<MemberProps[]>>({ signal: signal, name: name, pageIndex: pageIndex, pageSize: pageSize })
       .then(response => {
         if (response.status === HttpStatusCode.Ok) {
           return response.data
@@ -72,27 +74,27 @@ export const fetchAsync = createAsyncThunk(
 )
 
 export const addAsync = createAsyncThunk(
-  'match/add',
-  async (data: MatchProps, { signal }) => {
+  'member/add',
+  async (data: MemberProps, { signal }) => {
     return add({ signal: signal, data: data })
       .then(response => {
         if (response.status === HttpStatusCode.Ok) {
           return response.data
         }
-        return new Error("Add match failed!")
+        return new Error("Add Member failed!")
       })
   }
 )
 
 export const updateAsync = createAsyncThunk(
-  'match/update',
-  async (data: MatchProps, { signal }) => {
+  'member/update',
+  async (data: MemberProps, { signal }) => {
     return update({ signal: signal, data: data })
       .then(response => {
         if (response.status === HttpStatusCode.Ok) {
           return response.data
         }
-        return new Error("Add match failed!")
+        return new Error("Add Member failed!")
       })
   }
 )
@@ -110,29 +112,12 @@ export const deleteAsync = createAsyncThunk(
   }
 )
 
-export const rollingAsync = createAsyncThunk(
-  'matchDetail/rolling',
-  async (request: { id: number, }, { signal }) => {
-    let { id } = request
-    return getAnonymous<RollingProps[]>({ signal: signal, id: id })
-      .then(response => {
-        if (response.status === HttpStatusCode.Ok) {
-          return response.data
-        }
-        return new Error("Rolling data failed!")
-      })
-  }
-)
-
-function isSearchResponseProps(data: SearchResponseProps<MatchProps[]> | Error): data is SearchResponseProps<MatchProps[]> {
-  return (data as SearchResponseProps<MatchProps[]>).pageIndex !== undefined;
-}
-function isRollingProps(data: RollingProps[] | Error): data is RollingProps[] {
-  return (data as RollingProps[]) !== undefined
+function isSearchResponseProps(data: SearchResponseProps<MemberProps[]> | Error): data is SearchResponseProps<MemberProps[]> {
+  return (data as SearchResponseProps<MemberProps[]>).pageIndex !== undefined;
 }
 
-export const matchSlice = createSlice({
-  name: 'match',
+export const memberSlice = createSlice({
+  name: 'member',
   initialState,
   reducers: {
     onChangePageIndex: (state, action: PayloadAction<number>) => {
@@ -150,11 +135,14 @@ export const matchSlice = createSlice({
     onShowUpdate: (state, action: PayloadAction<boolean>) => {
       state.isShowUpdate = action.payload
     },
-    onShowTeamRival: (state, action: PayloadAction<boolean>) => {
-      state.isShowRivals = action.payload
+    onShowLegend: (state, action: PayloadAction<boolean>) => {
+      state.isShowLegend = action.payload
     },
     onSelectedId: (state, action: PayloadAction<number>) => {
       state.selectedId = action.payload
+    },
+    onSearchChanged: (state, action: PayloadAction<string>) => {
+      state.search.name = action.payload
     },
     onCloseError: (state) => {
       state.error = undefined
@@ -232,27 +220,6 @@ export const matchSlice = createSlice({
         state.error = action.error.message
         state.isLoading = false
       })
-      // rolling
-      .addCase(rollingAsync.pending, (state) => {
-        state.status = 'loading'
-        state.isShowRivals = false
-        state.isLoading = true
-      })
-      .addCase(rollingAsync.fulfilled, (state, action) => {
-        state.status = 'idle'
-        state.isLoading = false
-        state.isShowRivals = true
-        let payload = action.payload
-        if (isRollingProps(payload)) {
-          state.rolling = payload
-        }
-      })
-      .addCase(rollingAsync.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.error.message
-        state.isLoading = false
-        state.isShowRivals = false
-      })
   },
 });
 
@@ -260,9 +227,9 @@ export const {
   onChangePageIndex, onChangePageSize,
   onShowAdd, onShowDelete, onShowUpdate,
   onSelectedId, onCloseError,
-  onShowTeamRival,
-} = matchSlice.actions;
+  onShowLegend, onSearchChanged,
+} = memberSlice.actions;
 
-export const selectState = (state: RootState) => state.match
+export const selectState = (state: RootState) => state.member
 
-export default matchSlice.reducer;
+export default memberSlice.reducer;

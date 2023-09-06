@@ -3,7 +3,7 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel'
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useEffect, useState } from 'react';
-import { MemberProps } from '../reducers/MemberReducer';
+import { MemberProps } from '../slices/memberSlice';
 
 const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined, onSubmit: (member: MemberProps) => void, onClose: () => void }) => {
     const { show, initData, onSubmit, onClose } = props

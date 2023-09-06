@@ -1,9 +1,6 @@
-import Form from 'react-bootstrap/Form'
-import FloatingLabel from 'react-bootstrap/FloatingLabel'
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
+import { Form, FloatingLabel, Button, Modal } from 'react-bootstrap';
 import { useState } from 'react';
-import { MemberProps } from '../reducers/MemberReducer';
+import { MemberProps } from '../slices/memberSlice';
 
 const AddMember = (props: { show: boolean, onSubmit: (member: MemberProps) => void, onClose: () => void }) => {
     const { show, onSubmit, onClose } = props

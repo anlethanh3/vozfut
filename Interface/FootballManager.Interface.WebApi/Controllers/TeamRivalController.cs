@@ -46,4 +46,32 @@ public class TeamRivalController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    /// <summary>
+    /// Get Team Division Rivals
+    /// </summary>
+    /// <param name="id">Match Id</param>
+    /// <returns></returns>
+    [HttpGet("{id}/anonymous"), AllowAnonymous]
+    public async Task<ActionResult> Get(int id)
+    {
+        try
+        {
+            IEnumerable<TeamRival> result;
+            var match = await unitOfWork.MatchRepository.GetAsync(id);
+            if (match is null)
+            {
+                return BadRequest("ERR_MATCH_NOT_EXIST");
+            }
+            if (match.HasTeamRival)
+            {
+                result = await unitOfWork.TeamRivalRepository.GetAsync(id);
+                return Ok(result);
+            }
+            return BadRequest("ERR_TEAM_RIVALS_NOT_EXIST");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

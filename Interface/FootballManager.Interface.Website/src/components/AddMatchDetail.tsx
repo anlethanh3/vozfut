@@ -1,7 +1,7 @@
 import { Button, Modal, FloatingLabel, Form } from 'react-bootstrap';
 import { useState } from 'react';
 import { MatchDetailProps } from '../slices/matchDetailSlice';
-import { MemberProps } from '../reducers/MemberReducer';
+import { MemberProps } from '../slices/memberSlice';
 
 export default function AddMatchDetail(props: { show: boolean, members: MemberProps[], matchId: number, onSubmit: (model: MatchDetailProps) => void, onClose: () => void }) {
     const { matchId, members, show, onSubmit, onClose } = props
