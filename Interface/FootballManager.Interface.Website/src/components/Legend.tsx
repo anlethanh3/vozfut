@@ -74,7 +74,7 @@ export default function Legend(props: { show: boolean, onClose: () => void, }) {
         <>
             <Modal show={show} onHide={onClose} size='lg'>
                 <Modal.Header closeButton>
-                    <Modal.Title>Bảng công thức tính chỉ số</Modal.Title>
+                    <Modal.Title>Bảng công thức tính Elo</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Tabs
@@ -82,7 +82,7 @@ export default function Legend(props: { show: boolean, onClose: () => void, }) {
                         id="uncontrolled-tab-example"
                         className="mb-3"
                     >
-                        <Tab eventKey="stats" title="Cách tính chỉ số">
+                        <Tab eventKey="stats" title="Cách tính Elo">
                             <ShowStats />
                         </Tab>
                         <Tab eventKey="boostup" title="Tiêu chuẩn đánh giá">
