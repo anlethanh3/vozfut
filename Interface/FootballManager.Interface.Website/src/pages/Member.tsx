@@ -172,12 +172,12 @@ export default function Member() {
                                 <td>{index+1}</td>
                                 <td>{value.name}</td>
                                 <td>{value.description}</td>
-                                <td>+{value.elo}</td>
-                                <td>{value.speed}</td>
-                                <td>{value.stamina}</td>
-                                <td>{value.finishing}</td>
-                                <td>{value.passing}</td>
-                                <td>{value.skill}</td>
+                                <td className="col-sm-1">+{value.elo}</td>
+                                <td className="col-sm-1">{value.speed}</td>
+                                <td className="col-sm-1">{value.stamina}</td>
+                                <td className="col-sm-1">{value.finishing}</td>
+                                <td className="col-sm-1">{value.passing}</td>
+                                <td className="col-sm-1">{value.skill}</td>
                                 <td>{value.modifiedDate && moment(value.modifiedDate).format()}</td>
                                 <td>
                                     <Button variant="warning" onClick={() => onShowUpdate(true, value.id)}>Edit</Button>{' '}
