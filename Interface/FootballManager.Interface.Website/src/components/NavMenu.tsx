@@ -117,7 +117,7 @@ export default function NavMenu() {
                     <Navbar.Brand href="/">
                         <img
                             alt=""
-                            src="/icon.jpg"
+                            src="/icon.png"
                             width="30"
                             height="30"
                             className="d-inline-block align-top"
