@@ -152,22 +152,32 @@ export default function Member() {
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>No</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Elo</th>
+                        <th>Speed</th>
+                        <th>Stamina</th>
+                        <th>Finishing</th>
+                        <th>Passing</th>
+                        <th>Skill</th>
                         <th>Modified Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        state.data && state.data.map(value =>
+                        state.data && state.data.map((value,index) =>
                             <tr key={`key-${value.id}`}>
-                                <td>{value.id}</td>
+                                <td>{index+1}</td>
                                 <td>{value.name}</td>
                                 <td>{value.description}</td>
                                 <td>+{value.elo}</td>
+                                <td>{value.speed}</td>
+                                <td>{value.stamina}</td>
+                                <td>{value.finishing}</td>
+                                <td>{value.passing}</td>
+                                <td>{value.skill}</td>
                                 <td>{value.modifiedDate && moment(value.modifiedDate).format()}</td>
                                 <td>
                                     <Button variant="warning" onClick={() => onShowUpdate(true, value.id)}>Edit</Button>{' '}

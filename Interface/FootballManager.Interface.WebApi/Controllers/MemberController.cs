@@ -33,7 +33,7 @@ public class MemberController : ControllerBase
     public async Task<ActionResult> GetAll()
     {
         var members = await unitOfWork.MemberRepository.GetAsync();
-        var result = members.OrderBy(x=>x.Name);
+        var result = members.OrderBy(x => x.Name);
         return Ok(result);
     }
     /// <summary>
@@ -120,5 +120,48 @@ public class MemberController : ControllerBase
             });
         }
         return Ok();
+    }
+    /// <summary>
+    /// Import members from csv
+    /// </summary>
+    /// <returns>true: success, false: fail</returns>
+    [HttpGet("import2")]
+    public async Task<ActionResult> Import2()
+    {
+        var lines = System.IO.File.ReadAllLines("test3.csv");
+        var members = await unitOfWork.MemberRepository.GetAsync();
+        var unprocess = new List<string>();
+        foreach (var line in lines)
+        {
+            var array = line.Split(',');
+            _ = int.TryParse(array[4], out int speed);
+            _ = int.TryParse(array[5], out int stamina);
+            _ = int.TryParse(array[6], out int finishing);
+            _ = int.TryParse(array[7], out int passing);
+            _ = int.TryParse(array[8], out int skill);
+            var member = new Member
+            {
+                Id = 0,
+                Name = array[1],
+                RealName = array[2],
+                Description = array[3],
+                Speed = speed,
+                Stamina = stamina,
+                Finishing = finishing,
+                Passing = passing,
+                Skill = skill,
+            };
+            var search = members.FirstOrDefault(x => x.Name.ToLower().Contains(member.Name.ToLower()));
+            if (search is not null)
+            {
+                member.Id = search.Id;
+                _ = await unitOfWork.MemberRepository.UpdateAsync(member);
+            }
+            else
+            {
+                unprocess.Add(member.Name);
+            }
+        }
+        return Ok(unprocess);
     }
 }

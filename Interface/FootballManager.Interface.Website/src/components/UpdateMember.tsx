@@ -7,6 +7,7 @@ import { MemberProps } from '../reducers/MemberReducer';
 
 const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined, onSubmit: (member: MemberProps) => void, onClose: () => void }) => {
     const { show, initData, onSubmit, onClose } = props
+    const stats = [1, 2, 3, 4, 5]
     const [member, setMember] = useState<MemberProps>({ id: 0, name: '', description: '', elo: 1, })
     const [valid, setValid] = useState({ name: true });
     const onValid = () => {
@@ -44,8 +45,63 @@ const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined,
                         <FloatingLabel controlId="floatingElo" label="Elo">
                             <Form.Select value={member.elo} onChange={(e) => setMember({ ...member, elo: parseInt(e.target.value) })}>
                                 {
-                                    [1, 2, 3, 4, 5].map(value =>
+                                    stats.map(value =>
                                         <option key={`elo.id-${value}`} value={value}>+{value}</option>
+                                    )
+                                }
+                            </Form.Select>
+                        </FloatingLabel>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="addMember.Speed">
+                        <FloatingLabel controlId="floatingSpeed" label="Speed">
+                            <Form.Select value={member.speed} onChange={(e) => setMember({ ...member, speed: parseInt(e.target.value) })}>
+                                {
+                                    stats.map(value =>
+                                        <option key={`speed.id-${value}`} value={value}>{value}</option>
+                                    )
+                                }
+                            </Form.Select>
+                        </FloatingLabel>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="addMember.Stamina">
+                        <FloatingLabel controlId="floatingstamina" label="stamina">
+                            <Form.Select value={member.stamina} onChange={(e) => setMember({ ...member, stamina: parseInt(e.target.value) })}>
+                                {
+                                    stats.map(value =>
+                                        <option key={`stamina.id-${value}`} value={value}>{value}</option>
+                                    )
+                                }
+                            </Form.Select>
+                        </FloatingLabel>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="addMember.finishing">
+                        <FloatingLabel controlId="floatingfinishing" label="finishing">
+                            <Form.Select value={member.finishing} onChange={(e) => setMember({ ...member, finishing: parseInt(e.target.value) })}>
+                                {
+                                    stats.map(value =>
+                                        <option key={`finishing.id-${value}`} value={value}>{value}</option>
+                                    )
+                                }
+                            </Form.Select>
+                        </FloatingLabel>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="addMember.passing">
+                        <FloatingLabel controlId="floatingpassing" label="passing">
+                            <Form.Select value={member.passing} onChange={(e) => setMember({ ...member, passing: parseInt(e.target.value) })}>
+                                {
+                                    stats.map(value =>
+                                        <option key={`passing.id-${value}`} value={value}>{value}</option>
+                                    )
+                                }
+                            </Form.Select>
+                        </FloatingLabel>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="addMember.skill">
+                        <FloatingLabel controlId="floatingskill" label="skill">
+                            <Form.Select value={member.skill} onChange={(e) => setMember({ ...member, skill: parseInt(e.target.value) })}>
+                                {
+                                    stats.map(value =>
+                                        <option key={`skill.id-${value}`} value={value}>{value}</option>
                                     )
                                 }
                             </Form.Select>

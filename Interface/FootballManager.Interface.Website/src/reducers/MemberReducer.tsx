@@ -6,6 +6,11 @@ export interface MemberProps {
     elo: number,
     createdDate?: string,
     modifiedDate?: string,
+    speed?:number,
+    finishing?:number,
+    stamina?:number,
+    passing?:number,
+    skill?:number,
     isDeleted?: boolean,
 }
 export interface SearchProps {

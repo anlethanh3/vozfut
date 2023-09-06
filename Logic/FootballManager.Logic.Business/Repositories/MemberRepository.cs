@@ -15,13 +15,20 @@ public class MemberRepository : IMemberRepository
     public async Task<Member?> AddAsync(Member member)
     {
         var now = DateTime.Now;
+        var elo = CalculateElo(member);
         _ = await entityDbContext.Members.AddAsync(new()
         {
             Name = member.Name,
             Description = member.Description,
             CreatedDate = now,
             ModifiedDate = now,
-            Elo = member.Elo,
+            Elo = elo,
+            Finishing = member.Finishing,
+            Passing = member.Passing,
+            RealName = member.RealName,
+            Skill = member.Skill,
+            Speed = member.Speed,
+            Stamina = member.Stamina,
             IsDeleted = false,
         });
         _ = entityDbContext.SaveChanges();
@@ -65,9 +72,32 @@ public class MemberRepository : IMemberRepository
         }
         record.Name = member.Name;
         record.Description = member.Description;
-        record.Elo = member.Elo;
+        record.RealName = member.RealName;
+        record.Finishing = member.Finishing;
+        record.Passing = member.Passing;
+        record.Skill = member.Skill;
+        record.Speed = member.Speed;
+        record.Stamina = member.Stamina;
+        record.Elo = CalculateElo(member);
         record.ModifiedDate = DateTime.Now;
         _ = entityDbContext.SaveChanges();
         return true;
+    }
+
+    public int CalculateElo(Member member)
+    {
+        var percents = new[] { 0.8f, 0.8f, 1.15f, 1.15f, 1.1f };
+        var stats = new[] { member.Speed, member.Stamina, member.Finishing, member.Passing, member.Skill, };
+        var sum = 0f;
+        for (int i = 0; i < percents.Length; i++)
+        {
+            sum += stats[i] * percents[i];
+        }
+        var average = (int)(sum / percents.Length * 10);
+        if (average % 10 > 5)
+        {
+            return (average / 10) + 1;
+        }
+        return average / 10;
     }
 }
