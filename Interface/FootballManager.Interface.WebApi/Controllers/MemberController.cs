@@ -67,7 +67,7 @@ public class MemberController : ControllerBase
     public async Task<ActionResult> Search(SearchPagingRequest request)
     {
         var members = await unitOfWork.MemberRepository.SearchAsync(request.Name);
-        var result = members.Skip(request.PageIndex * request.PageSize).Take(request.PageSize);
+        var result = members.Skip(request.PageIndex * request.PageSize).Take(request.PageSize).OrderBy(x => x.RealName);
         return Ok(new Paging<IEnumerable<Member>>
         {
             Data = result,

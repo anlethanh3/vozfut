@@ -154,6 +154,7 @@ export default function Member() {
                     <tr>
                         <th>No</th>
                         <th>Name</th>
+                        <th>Nick Name</th>
                         <th>Description</th>
                         <th>Elo</th>
                         <th>Speed</th>
@@ -170,6 +171,7 @@ export default function Member() {
                         state.data && state.data.map((value,index) =>
                             <tr key={`key-${value.id}`}>
                                 <td>{index+1}</td>
+                                <td>{value.realName}</td>
                                 <td>{value.name}</td>
                                 <td>{value.description}</td>
                                 <td className="col-sm-1">+{value.elo}</td>

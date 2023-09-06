@@ -2,6 +2,7 @@ import { Reducer } from 'react'
 export interface MemberProps {
     id: number,
     name: string,
+    realName?: string,
     description?: string,
     elo: number,
     createdDate?: string,
