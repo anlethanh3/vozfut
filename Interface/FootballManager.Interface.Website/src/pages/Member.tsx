@@ -1,5 +1,5 @@
 import { useEffect, } from "react";
-import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, } from "react-bootstrap";
+import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, OverlayTrigger, Tooltip, } from "react-bootstrap";
 import moment from 'moment'
 import AddMember from "../components/AddMember"
 import UpdateMember from "../components/UpdateMember"
@@ -8,6 +8,7 @@ import SearchMember from "../components/SearchMember";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectState, fetchAsync, MemberProps, SearchProps, onChangePageIndex, onChangePageSize, onShowLegend, onShowAdd, onShowDelete, onSelectedId, onShowUpdate, updateAsync, addAsync, deleteAsync, onSearchChanged, } from '../slices/memberSlice';
 import Legend from "../components/Legend";
+import { FaEdit, FaTrash, FaPlus, FaFileUpload, FaBeer } from "react-icons/fa";
 
 export default function Member() {
     const sizes = [10, 50, 100]
@@ -103,9 +104,15 @@ export default function Member() {
 
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
-                    <Button variant="primary" onClick={() => onShowAdd(true)}>Add Member</Button>
-                    <Button variant="secondary" className="mx-2">Import CSV</Button>
-                    <Button variant="success" onClick={() => dispatch(onShowLegend(true))}>Legend</Button>
+                    <OverlayTrigger overlay={<Tooltip>Add a Member</Tooltip>}>
+                        <Button variant="primary" onClick={() => dispatch(onShowAdd(true))}>  <FaPlus /> </Button>
+                    </OverlayTrigger>
+                    <OverlayTrigger overlay={<Tooltip>Import CSV</Tooltip>}>
+                        <Button variant="secondary" className="mx-2"><FaFileUpload /></Button>
+                    </OverlayTrigger>
+                    <OverlayTrigger overlay={<Tooltip>Show legend</Tooltip>}>
+                        <Button variant="success" onClick={() => dispatch(onShowLegend(true))}><FaBeer /></Button>
+                    </OverlayTrigger>
                 </Col>
             </Row>
 
@@ -123,7 +130,7 @@ export default function Member() {
                         <th>Passing</th>
                         <th>Skill</th>
                         <th>Modified Date</th>
-                        <th>Actions</th>
+                        <th className="col-sm-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -142,14 +149,18 @@ export default function Member() {
                                 <td className="col-sm-1">{value.skill}</td>
                                 <td>{value.modifiedDate && moment(value.modifiedDate).format()}</td>
                                 <td>
-                                    <Button variant="warning" className="mx-2" onClick={() => {
-                                        dispatch(onSelectedId(value.id))
-                                        dispatch(onShowUpdate(true))
-                                    }}>Edit</Button>
-                                    <Button variant="danger" onClick={() => {
+                                    <OverlayTrigger overlay={<Tooltip>Edit</Tooltip>}>
+                                        <Button variant="warning" onClick={() => {
+                                            dispatch(onSelectedId(value.id))
+                                            dispatch(onShowUpdate(true))
+                                        }}><FaEdit /></Button>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
+                                    <Button variant="danger" className="mx-2" onClick={() => {
                                         dispatch(onSelectedId(value.id))
                                         dispatch(onShowDelete(true))
-                                    }}>Delete</Button>
+                                    }}><FaTrash /></Button>
+                                    </OverlayTrigger>
                                 </td>
                             </tr>
                         )

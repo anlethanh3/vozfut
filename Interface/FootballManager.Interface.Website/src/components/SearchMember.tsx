@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Button, Accordion, Form, FormGroup, FloatingLabel } from "react-bootstrap";
+import { Button, Accordion, Form, FormGroup, FloatingLabel, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { FaRemoveFormat, FaSearch } from "react-icons/fa";
 
 const SearchMember = (props: { onSearchChanged: (props: { name: string }) => void, onSubmit: (props: { name: string }) => void }) => {
     const { onSearchChanged, onSubmit } = props
@@ -33,12 +34,12 @@ const SearchMember = (props: { onSearchChanged: (props: { name: string }) => voi
                             </FloatingLabel>
                         </FormGroup>
                     </Form>
-                    <Button className="me-2" variant="primary" onClick={onSearch}>
-                        Search
-                    </Button>
-                    <Button variant="secondary" onClick={onClear}>
-                        Clear
-                    </Button>
+                    <OverlayTrigger overlay={<Tooltip>Search</Tooltip>}>
+                        <Button className="me-2" variant="primary" onClick={onSearch}><FaSearch /></Button>
+                    </OverlayTrigger>
+                    <OverlayTrigger overlay={<Tooltip>Clear</Tooltip>}>
+                        <Button variant="secondary" onClick={onClear}><FaRemoveFormat /></Button>
+                    </OverlayTrigger>
                 </Accordion.Body>
             </Accordion.Item>
         </Accordion>

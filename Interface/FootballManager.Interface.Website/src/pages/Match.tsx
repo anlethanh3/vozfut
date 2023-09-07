@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown } from "react-bootstrap";
+import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, Tooltip, OverlayTrigger } from "react-bootstrap";
 import moment from 'moment';
 import SearchMember from "../components/SearchMember";
 import AddMatch from "../components/AddMatch";
@@ -9,6 +9,7 @@ import { NavLink } from "react-router-dom";
 import Confirmation from "../components/Confirmation";
 import UpdateMatch from "../components/UpdateMatch";
 import Rivals from "../components/Rivals";
+import { FaEdit, FaFutbol, FaPlus, FaTrash, FaUsers } from "react-icons/fa";
 
 export default function Match() {
     let sizes = [10, 50, 100]
@@ -112,7 +113,9 @@ export default function Match() {
 
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
-                    <Button variant="primary" onClick={() => { dispatch(onShowAdd(true)) }}>Add match</Button><div className="mx-2" />
+                    <OverlayTrigger overlay={<Tooltip>Add match</Tooltip>}>
+                        <Button variant="primary" onClick={() => { dispatch(onShowAdd(true)) }}><FaPlus /></Button>
+                    </OverlayTrigger>
                 </Col>
             </Row>
 
@@ -125,7 +128,7 @@ export default function Match() {
                         <th>Team count</th>
                         <th>Team size</th>
                         <th>Modified Date</th>
-                        <th>Actions</th>
+                        <th className="col-sm-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -140,14 +143,22 @@ export default function Match() {
                                 <td>{value.modifiedDate && moment(value.modifiedDate).format()}</td>
                                 <td>
                                     <NavLink to={`${value.id}`}>
-                                        <Button variant="primary" className="me-2" onClick={() => { }}>Member</Button>
+                                        <OverlayTrigger overlay={<Tooltip>Member</Tooltip>}>
+                                            <Button className="me-2" variant="primary" onClick={() => { }}><FaUsers /></Button>
+                                        </OverlayTrigger>
                                     </NavLink>
-                                    <Button variant="warning" className="me-2" onClick={() => {
-                                        dispatch(onSelectedId(value.id))
-                                        dispatch(onShowUpdate(true))
-                                    }}>Edit</Button>
-                                    <Button variant="danger" className="me-2" onClick={() => { onDeleteEvent(value.id) }}>Delete</Button>
-                                    <Button variant="success" disabled={!value.hasTeamRival} className="me-2" onClick={() => { onTeamRivalEvent(value.id) }}>Team Rivals</Button>
+                                    <OverlayTrigger overlay={<Tooltip>Edit</Tooltip>}>
+                                        <Button variant="warning" onClick={() => {
+                                            dispatch(onSelectedId(value.id))
+                                            dispatch(onShowUpdate(true))
+                                        }}><FaEdit /></Button>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
+                                        <Button className="mx-2" variant="danger" onClick={() => { onDeleteEvent(value.id) }}><FaTrash /></Button>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger overlay={<Tooltip>Team Division Rivals</Tooltip>}>
+                                        <Button variant="success" disabled={!value.hasTeamRival} onClick={() => { onTeamRivalEvent(value.id) }}><FaFutbol /></Button>
+                                    </OverlayTrigger>
                                 </td>
                             </tr>
                         )

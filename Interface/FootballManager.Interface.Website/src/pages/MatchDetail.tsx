@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { Button, Col, Row, Table, Alert, Form } from "react-bootstrap";
+import { Button, Col, Row, Table, Alert, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import moment from 'moment';
 import { selectState, fetchAsync, rollingAsync, onCloseError, onCloseRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps } from '../slices/matchDetailSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useParams } from "react-router-dom";
 import Rivals from "../components/Rivals";
 import AddMatchDetail from "../components/AddMatchDetail";
+import { FaFutbol } from "react-icons/fa";
 
 export default function MatchDetail() {
     let { id } = useParams()
@@ -111,7 +112,9 @@ export default function MatchDetail() {
             }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
-                    <Button disabled={isInvalidRivals()} variant="success" onClick={() => { rolling() }}>Team Division Rivals</Button>
+                    <OverlayTrigger overlay={<Tooltip>Team Division Rivals</Tooltip>}>
+                        <Button disabled={isInvalidRivals()} variant="success" onClick={() => { rolling() }}><FaFutbol /></Button>
+                    </OverlayTrigger>
                 </Col>
             </Row>
             {
