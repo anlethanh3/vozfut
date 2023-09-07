@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { Button, Accordion, Form, FormGroup, FloatingLabel, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { FaRemoveFormat, FaSearch } from "react-icons/fa";
+import { Button, Accordion, Form, FormGroup, FloatingLabel, OverlayTrigger, Tooltip, InputGroup } from "react-bootstrap";
+import { FaSearch, FaTimesCircle } from "react-icons/fa";
 
 const SearchMember = (props: { onSearchChanged: (props: { name: string }) => void, onSubmit: (props: { name: string }) => void }) => {
     const { onSearchChanged, onSubmit } = props
@@ -9,11 +9,12 @@ const SearchMember = (props: { onSearchChanged: (props: { name: string }) => voi
 
     const onChanged = (e: any) => {
         const value = e.target.value
-        onSearchChanged({ name: name })
+        onSearchChanged({ name: value })
         setName(value)
     }
 
-    const onSearch = () => {
+    const onSearch = (e: any) => {
+        e.preventDefault();
         onSubmit({ name: name })
     }
 
@@ -27,19 +28,17 @@ const SearchMember = (props: { onSearchChanged: (props: { name: string }) => voi
             <Accordion.Item eventKey="0">
                 <Accordion.Header>Search box</Accordion.Header>
                 <Accordion.Body>
-                    <Form>
-                        <FormGroup className="mb-3" controlId="addMember.Name">
-                            <FloatingLabel controlId="floatingName" label="Name">
-                                <Form.Control type="text" placeholder="Input name" value={name} onChange={onChanged} onBlur={onChanged} />
-                            </FloatingLabel>
+                    <Form onSubmit={onSearch}>
+                        <FormGroup controlId="addMember.Name">
+                            <InputGroup>
+                                <InputGroup.Text><FaSearch/></InputGroup.Text>
+                                <Form.Control type="text" placeholder="Input name" value={name} onChange={onChanged} />
+                                <OverlayTrigger overlay={<Tooltip>Clear</Tooltip>}>
+                                    <Button variant="danger" onClick={onClear}><FaTimesCircle /></Button>
+                                </OverlayTrigger>
+                            </InputGroup>
                         </FormGroup>
                     </Form>
-                    <OverlayTrigger overlay={<Tooltip>Search</Tooltip>}>
-                        <Button className="me-2" variant="primary" onClick={onSearch}><FaSearch /></Button>
-                    </OverlayTrigger>
-                    <OverlayTrigger overlay={<Tooltip>Clear</Tooltip>}>
-                        <Button variant="secondary" onClick={onClear}><FaRemoveFormat /></Button>
-                    </OverlayTrigger>
                 </Accordion.Body>
             </Accordion.Item>
         </Accordion>

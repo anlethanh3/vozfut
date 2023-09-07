@@ -73,6 +73,20 @@ export const fetchAsync = createAsyncThunk(
   }
 )
 
+export const searchChangedAsync = createAsyncThunk(
+  'member/searchChanged',
+  async (request: { name: string, pageSize: number, pageIndex: number, }, { signal }) => {
+    let { name, pageSize, pageIndex } = request
+    return search<SearchResponseProps<MemberProps[]>>({ signal: signal, name: name, pageIndex: pageIndex, pageSize: pageSize })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Fetch data failed!")
+      })
+  }
+)
+
 export const addAsync = createAsyncThunk(
   'member/add',
   async (data: MemberProps, { signal }) => {
@@ -172,7 +186,7 @@ export const memberSlice = createSlice({
         state.error = action.error.message
         state.isLoading = false
       })
-      // fetch
+      // add
       .addCase(addAsync.pending, (state) => {
         state.status = 'loading'
         state.isLoading = true
@@ -217,6 +231,28 @@ export const memberSlice = createSlice({
       .addCase(updateAsync.rejected, (state, action) => {
         state.status = 'failed'
         console.log('slice',)
+        state.error = action.error.message
+        state.isLoading = false
+      })
+      // search changed
+      .addCase(searchChangedAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = false
+      })
+      .addCase(searchChangedAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+        state.error = undefined
+        let payload = action.payload
+        if (isSearchResponseProps(payload)) {
+          state.data = payload.data
+          state.pageIndex = payload.pageIndex
+          state.pageSize = payload.pageSize
+          state.totalPage = payload.totalPage
+        }
+      })
+      .addCase(searchChangedAsync.rejected, (state, action) => {
+        state.status = 'failed'
         state.error = action.error.message
         state.isLoading = false
       })

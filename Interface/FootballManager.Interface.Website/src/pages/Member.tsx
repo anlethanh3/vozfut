@@ -1,4 +1,4 @@
-import { useEffect, } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { Button, Col, Row, Table, Pagination, Alert, DropdownButton, Dropdown, OverlayTrigger, Tooltip, } from "react-bootstrap";
 import moment from 'moment'
 import AddMember from "../components/AddMember"
@@ -6,9 +6,10 @@ import UpdateMember from "../components/UpdateMember"
 import Confirmation from "../components/Confirmation"
 import SearchMember from "../components/SearchMember";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectState, fetchAsync, MemberProps, SearchProps, onChangePageIndex, onChangePageSize, onShowLegend, onShowAdd, onShowDelete, onSelectedId, onShowUpdate, updateAsync, addAsync, deleteAsync, onSearchChanged, } from '../slices/memberSlice';
+import { selectState, fetchAsync, MemberProps, SearchProps, onChangePageIndex, onChangePageSize, onShowLegend, onShowAdd, onShowDelete, onSelectedId, onShowUpdate, updateAsync, addAsync, deleteAsync, onSearchChanged, searchChangedAsync, } from '../slices/memberSlice';
 import Legend from "../components/Legend";
 import { FaEdit, FaTrash, FaPlus, FaFileUpload, FaBeer } from "react-icons/fa";
+import { debounce } from 'lodash'
 
 export default function Member() {
     const sizes = [10, 50, 100]
@@ -51,9 +52,16 @@ export default function Member() {
     const onSearchEvent = () => {
         fetchData()
     }
+    const searchRequest = useCallback((search: SearchProps) =>
+        dispatch(searchChangedAsync({ name: search.name, pageIndex: state.pageIndex, pageSize: state.pageSize }))
+            .unwrap()
+            .then(value => dispatch(onSearchChanged(search.name)))
+            .catch(ex => {
+            }), [])
 
-    const onSearchChangedEvent = (search: SearchProps) => {
-        dispatch(onSearchChanged(search.name))
+    const debouncedSendRequest = useMemo(() => debounce(searchRequest, 500), [searchRequest]);
+    const onSearchChangedEvent = async (search: SearchProps) => {
+        debouncedSendRequest(search)
     }
 
     useEffect(() => {
@@ -64,7 +72,7 @@ export default function Member() {
             console.log('unmount', state)
         }
 
-    }, [state.pageIndex, state.pageSize])
+    }, [state.pageIndex, state.pageSize,])
     return (
         <>
             <h1>Members</h1>
@@ -156,10 +164,10 @@ export default function Member() {
                                         }}><FaEdit /></Button>
                                     </OverlayTrigger>
                                     <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
-                                    <Button variant="danger" className="mx-2" onClick={() => {
-                                        dispatch(onSelectedId(value.id))
-                                        dispatch(onShowDelete(true))
-                                    }}><FaTrash /></Button>
+                                        <Button variant="danger" className="mx-2" onClick={() => {
+                                            dispatch(onSelectedId(value.id))
+                                            dispatch(onShowDelete(true))
+                                        }}><FaTrash /></Button>
                                     </OverlayTrigger>
                                 </td>
                             </tr>
