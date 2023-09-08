@@ -28,14 +28,25 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
                 console.log(err)
             })
     }, [ref])
-    function Team(): JSX.Element {
-        let items: JSX.Element[] = []
-        let infos: TeamRivalInfo[] = [
+
+    function teamColors(teamCount: number) {
+        if (teamCount < 4) {
+            return [
+                { color: 'secondary', name: 'Orange' },
+                { color: 'primary', name: 'Blue' },
+                { color: 'warning', name: 'Banana' },
+            ]
+        }
+        return [
             { color: 'danger', name: 'Red' },
             { color: 'primary', name: 'Blue' },
             { color: 'warning', name: 'Banana' },
             { color: 'secondary', name: 'Orange' },
         ]
+    }
+    function Team(): JSX.Element {
+        let items: JSX.Element[] = []
+        let infos = teamColors(match?.teamCount ?? 3)
         rivals.forEach((value, index) => {
             var item = (
                 <Col key={`key-${index}`}>
