@@ -50,6 +50,7 @@ public class UserController : ControllerBase
             Email = claims.FindFirst("Email")?.Value ?? string.Empty,
             Username = claims.FindFirst("Username")?.Value ?? string.Empty,
             Role = claims.FindFirst(ClaimTypes.Role)?.Value ?? "User",
+            AvatarUri = claims.FindFirst("AvatarUri")?.Value ?? string.Empty,
         });
     }
     /// <summary>
@@ -78,6 +79,7 @@ public class UserController : ControllerBase
             new Claim("Name",$"{user.Name}"),
             new Claim("Email",$"{user.Email}"),
             new Claim("Username",$"{user.Username}"),
+            new Claim("AvatarUri",$"{user.AvatarUri}"),
             new Claim(ClaimTypes.Role, user.IsAdmin?"Admin":"User"),
         };
 

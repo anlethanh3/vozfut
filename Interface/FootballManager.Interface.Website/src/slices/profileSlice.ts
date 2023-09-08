@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { profile, authenticate } from '../providers/UserApiProvider';
-import axios, { AxiosError, HttpStatusCode } from 'axios';
+import { AxiosError, HttpStatusCode } from 'axios';
 
 export interface ProfileProps {
   userId: number,
   email: string,
   username: string,
   role: string,
+  avatarUri: string,
 }
 export interface TokenProps {
   tokenType: string,

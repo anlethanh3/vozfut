@@ -10,14 +10,13 @@ export default function NavMenu() {
     const [isLogin, setIsLogin] = useState(false)
     const profile = useAppSelector(selectProfile)
     const dispatch = useAppDispatch()
-    const imageId = '1oFAxwi-7N4QM2VJ-t9r2fAItp-DiSm8n'
     let key = { token: 'token', profile: 'profile' }
     const [cookies, setCookie, removeCookie] = useCookies([key.token, key.profile])
 
     useEffect(() => {
         if (cookies && cookies.token) {
             var token = cookies.token as TokenProps
-            var profile = cookies.token as ProfileProps
+            var profile = cookies.profile as ProfileProps
             axios.defaults.headers.common['Authorization'] = `${token.tokenType} ${token.accessToken}`
             dispatch(onToken(token))
             dispatch(onProfile(profile))
@@ -32,7 +31,9 @@ export default function NavMenu() {
         return (
             <Row className="d-inline-block">
                 <Col>
-                    <Image className="px-0" style={{ width: '40px' }} src={imageUri(imageId)} roundedCircle />
+                    {
+                        <Image className="px-0" style={{ width: '40px' }} src={imageUri(profile!.avatarUri)} roundedCircle />
+                    }
                 </Col>
             </Row>
         )
@@ -54,7 +55,7 @@ export default function NavMenu() {
         return (
             <DropdownButton flip id="dropdown-basic-button" title={showProfile()}>
                 <Dropdown.Header>
-                    <Image style={{ width: '100px' }} src={imageUri(imageId)} roundedCircle />
+                    <Image style={{ width: '100px' }} src={imageUri(profile.avatarUri)} roundedCircle />
                     <Dropdown.ItemText>Email: {profile.email}</Dropdown.ItemText>
                     <Dropdown.ItemText>Role: {profile.role}</Dropdown.ItemText>
                     <Dropdown.ItemText>Elo: +5</Dropdown.ItemText>

@@ -11,6 +11,7 @@ public class User
     public bool IsAdmin { get; set; }
     public DateTime CreatedDate { get; set; }
     public DateTime ModifiedDate { get; set; }
+    public string AvatarUri { get; set; } = string.Empty;
     public bool IsDeleted { get; set; } = false;
 
 }
