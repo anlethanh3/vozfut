@@ -39,17 +39,6 @@ const AddMember = (props: { show: boolean, onSubmit: (member: MemberProps) => vo
                             <Form.Control type="text" placeholder="Input description" value={member.description} onChange={(e) => setMember({ ...member, description: e.target.value })} />
                         </FloatingLabel>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMember.Elo">
-                        <FloatingLabel controlId="floatingElo" label="Elo">
-                            <Form.Select value={member.elo} onChange={(e) => setMember({ ...member, elo: parseInt(e.target.value) })}>
-                                {
-                                    stats.map(value =>
-                                        <option key={`elo.id-${value}`} value={value}>+{value}</option>
-                                    )
-                                }
-                            </Form.Select>
-                        </FloatingLabel>
-                    </Form.Group>
                     <Form.Group className="mb-3" controlId="addMember.Speed">
                         <FloatingLabel controlId="floatingSpeed" label="Speed">
                             <Form.Select value={member.speed} onChange={(e) => setMember({ ...member, speed: parseInt(e.target.value) })}>
