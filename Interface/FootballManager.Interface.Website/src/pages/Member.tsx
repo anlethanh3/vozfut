@@ -183,7 +183,7 @@ export default function Member() {
                             <DropdownButton className="d-inline" size="lg" variant="secondary" id="dropdown-basic-button" title={state.pageSize}>
                                 {
                                     sizes.map(element =>
-                                        <Dropdown.Item key={`ditem-${element}`} onClick={() => onChangePageSize(element)}>{element}</Dropdown.Item>
+                                        <Dropdown.Item key={`ditem-${element}`} onClick={() => dispatch(onChangePageSize(element))}>{element}</Dropdown.Item>
                                     )
                                 }
                             </DropdownButton> <p className="d-inline">Records Page {state.pageIndex + 1} of {state.totalPage}</p></Col>
