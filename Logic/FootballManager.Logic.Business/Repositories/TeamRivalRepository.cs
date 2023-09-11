@@ -52,16 +52,20 @@ public class TeamRivalRepository : ITeamRivalRepository
             int teamIndex = 0;
             for (var index = 0; index < elos.Count(); index++)
             {
+                if (teams[index] is null)
+                {
+                    teams[index] = new();
+                }
                 if (elos[teamIndex] > elos[index])
+                {
+                    teamIndex = index;
+                }
+                else if (teams[teamIndex].Count() > teams[index].Count())
                 {
                     teamIndex = index;
                 }
             }
             var maxElos = orders.Where(x => x.Elo == orders[0].Elo).ToList();
-            if (teams[teamIndex] is null)
-            {
-                teams[teamIndex] = new();
-            }
             var randomIndex = rng.Next(-1, maxElos.Count() - 1) + 1;
             var player = maxElos[randomIndex];
             teams[teamIndex].Add(player);
