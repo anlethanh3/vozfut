@@ -36,7 +36,7 @@ export default function AddMatch(props: { show: boolean, onSubmit: (model: Match
                         <FloatingLabel controlId="floatingTeamCount" label="TeamCount">
                             <Form.Select value={match.teamCount} onChange={(e) => setMatch({ ...match, teamCount: parseInt(e.target.value) })}>
                                 {
-                                    [3, 4].map(value =>
+                                    [2, 3, 4].map(value =>
                                         <option key={`teamcount.id-${value}`} value={value}>{value}</option>
                                     )
                                 }

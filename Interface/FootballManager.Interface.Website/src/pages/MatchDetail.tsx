@@ -65,13 +65,13 @@ export default function MatchDetail() {
     }
 
     function isInvalidRivals() {
-        if (state.match === undefined) {
-            return true
-        }
-        var count = memberReadyCount()
-        if (count < state.match.teamCount * state.match.teamSize) {
-            return true
-        }
+        // if (state.match === undefined) {
+        //     return true
+        // }
+        // var count = memberReadyCount()
+        // if (count < state.match.teamCount * state.match.teamSize) {
+        //     return true
+        // }
         return false
     }
     function onSubmitRivals(rivals: RollingProps[]) {
@@ -79,7 +79,9 @@ export default function MatchDetail() {
     }
 
     const updateDetail = (data: MatchDetailProps) => {
-        dispatch(updateMatchDetailAsync({ data: data }))
+        dispatch(updateMatchDetailAsync({ data: data })).unwrap()
+            .then(value => fetch())
+            .catch(ex => { console.log(ex) })
     }
 
     return (

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FootballManager.Data.DataAccess.Migrations
 {
     [DbContext(typeof(EntityDbContext))]
-    [Migration("20230830164836_TeamRivalsCreate")]
-    partial class TeamRivalsCreate
+    [Migration("20230911063116_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,6 +120,9 @@ namespace FootballManager.Data.DataAccess.Migrations
                     b.Property<int>("Elo")
                         .HasColumnType("int");
 
+                    b.Property<int>("Finishing")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -129,6 +132,22 @@ namespace FootballManager.Data.DataAccess.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Passing")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RealName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Skill")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Speed")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Stamina")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -142,6 +161,10 @@ namespace FootballManager.Data.DataAccess.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AvatarUri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
