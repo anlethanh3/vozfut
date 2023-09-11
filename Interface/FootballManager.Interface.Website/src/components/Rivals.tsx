@@ -30,6 +30,12 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
     }, [ref])
 
     function teamColors(teamCount: number) {
+        if (teamCount < 3) {
+            return [
+                { color: 'secondary', name: 'Orange' },
+                { color: 'warning', name: 'Banana' },
+            ]
+        }
         if (teamCount < 4) {
             return [
                 { color: 'secondary', name: 'Orange' },

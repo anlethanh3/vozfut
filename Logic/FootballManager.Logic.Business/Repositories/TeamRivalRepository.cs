@@ -41,8 +41,7 @@ public class TeamRivalRepository : ITeamRivalRepository
                 Id = x.MemberId,
                 Elo = x.MemberElo,
                 Name = x.MemberName,
-            })
-            .Take(numTeams * match.TeamSize);
+            });
         var orders = players.OrderByDescending(item => item.Elo).ToList();
         var teams = new List<Member>[match.TeamCount];
         var rng = new Random();
