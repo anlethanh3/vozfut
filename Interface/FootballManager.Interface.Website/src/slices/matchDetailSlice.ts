@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { add, search, remove, updateNew } from '../providers/MatchDetailApiProvider';
-import { get as getTeamRival } from '../providers/TeamRivalApiProvider';
+import { add, search, remove, updateNew, getMembers } from '../providers/MatchDetailApiProvider';
+import { exchangeMembers, get as getTeamRival } from '../providers/TeamRivalApiProvider';
 import { getId as getMatch } from '../providers/MatchApiProvider';
-import { get } from '../providers/MemberApiProvider';
 import { HttpStatusCode } from 'axios';
 import { MemberProps } from '../slices/memberSlice';
 import { MatchProps } from './matchSlice';
@@ -27,6 +26,12 @@ export interface PlayerProps {
   name: string,
 }
 
+export interface ExchangeMemberProps {
+  matchId: number,
+  memberInId: number,
+  memberOutId: number,
+}
+
 export interface RollingProps {
   players: PlayerProps[],
   eloSum: number,
@@ -38,6 +43,7 @@ export interface State {
   error: string | undefined,
   isLoading: boolean,
   isShowRivals: boolean,
+  isShowExchange: boolean,
   rolling: RollingProps[] | undefined,
   isShowAdd: boolean,
   members: MemberProps[],
@@ -52,6 +58,7 @@ export const initialState: State = {
   error: undefined,
   rolling: undefined,
   isShowAdd: false,
+  isShowExchange: false,
   members: [],
   match: undefined,
   search: { name: '' },
@@ -74,7 +81,7 @@ export const fetchAsync = createAsyncThunk(
 export const fetchMembersAsync = createAsyncThunk(
   'matchDetail/fetchMembers',
   async (id: number, { signal }) => {
-    return get<MemberProps[]>({ signal: signal, })
+    return getMembers<MemberProps[]>({ matchId: id, signal: signal, })
       .then(response => {
         if (response.status === HttpStatusCode.Ok) {
           return response.data
@@ -124,6 +131,21 @@ export const rollingAsync = createAsyncThunk(
       })
   }
 )
+
+export const exchangeMembersAsync = createAsyncThunk(
+  'matchDetail/exchangemembers',
+  async (request: { data: ExchangeMemberProps, }, { signal }) => {
+    let { data } = request
+    return exchangeMembers<boolean>({ signal: signal, data: data })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Exchange members failed!")
+      })
+  }
+)
+
 
 export const fetchMatchAsync = createAsyncThunk(
   'matchDetail/fetchMatch',
@@ -181,6 +203,9 @@ export const matchSlice = createSlice({
     },
     onShowAdd: (state, action: PayloadAction<boolean>) => {
       state.isShowAdd = action.payload
+    },
+    onShowExchange: (state, action: PayloadAction<boolean>) => {
+      state.isShowExchange = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -305,10 +330,24 @@ export const matchSlice = createSlice({
         state.error = action.error.message
         state.isLoading = false
       })
+      // update new
+      .addCase(exchangeMembersAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(exchangeMembersAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+      })
+      .addCase(exchangeMembersAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
   },
 });
 
-export const { onCloseError, onCloseRivals, onShowAdd } = matchSlice.actions;
+export const { onCloseError, onCloseRivals, onShowAdd, onShowExchange } = matchSlice.actions;
 
 export const selectState = (state: RootState) => state.matchDetail
 

@@ -105,4 +105,15 @@ public class MatchDetailController : ControllerBase
         var result = await unitOfWork.MatchDetailRepository.DeleteAsync(id);
         return Ok(result);
     }
+    /// <summary>
+    /// Get members of match
+    /// </summary>
+    /// <param name="id">MatchDetail id</param>
+    /// <returns>list members of match</returns>
+    [HttpGet("{id}/members")]
+    public async Task<ActionResult> GetMembers(int id)
+    {
+        var result = await unitOfWork.MatchDetailRepository.GetMembersAsync(id);
+        return Ok(result);
+    }
 }

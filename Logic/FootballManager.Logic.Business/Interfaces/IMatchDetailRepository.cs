@@ -13,4 +13,5 @@ public interface IMatchDetailRepository
     public Task<MatchDetail> UpdateNewAsync(MatchDetail detail);
     public Task<bool> DeleteAsync(int id);
     public Task<IEnumerable<MatchDetailResponse>> GetAllAsync(int matchId);
+    public Task<IEnumerable<Member>> GetMembersAsync(int matchId);
 }

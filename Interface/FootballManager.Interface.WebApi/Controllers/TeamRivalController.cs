@@ -1,5 +1,6 @@
 using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.Entity.Entities;
+using FootballManager.Data.Entity.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -68,6 +69,24 @@ public class TeamRivalController : ControllerBase
                 return Ok(result);
             }
             return BadRequest("ERR_TEAM_RIVALS_NOT_EXIST");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    /// <summary>
+    /// Exchange member of match
+    /// </summary>
+    /// <param name="model">Exchange model</param>
+    /// <returns>true: success, false: failure</returns>
+    [HttpPost("{id}/exchange")]
+    public async Task<ActionResult> ExchangeMembers([FromBody] ExchangeMemberRequest model)
+    {
+        try
+        {
+            var result = await unitOfWork.TeamRivalRepository.ExchangeMemberAsync(model);
+            return Ok(result);
         }
         catch (Exception ex)
         {

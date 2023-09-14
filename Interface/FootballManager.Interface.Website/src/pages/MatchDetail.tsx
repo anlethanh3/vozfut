@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { Button, Col, Row, Table, Alert, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import moment from 'moment';
-import { selectState, fetchAsync, rollingAsync, onCloseError, onCloseRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps } from '../slices/matchDetailSlice';
+import { selectState, fetchAsync, rollingAsync, onCloseError, onCloseRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps } from '../slices/matchDetailSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useParams } from "react-router-dom";
 import Rivals from "../components/Rivals";
 import AddMatchDetail from "../components/AddMatchDetail";
-import { FaFutbol } from "react-icons/fa";
+import { FaExchangeAlt, FaFutbol } from "react-icons/fa";
+import ExchangeMember from "../components/ExchangeMember";
+import { MemberProps } from "../slices/memberSlice";
 
 export default function MatchDetail() {
     let { id } = useParams()
@@ -17,7 +19,7 @@ export default function MatchDetail() {
 
     const fetch = () => {
         dispatch(fetchAsync({ id: matchId })).unwrap()
-            .then(value => dispatch(fetchMembersAsync(0)).unwrap())
+            .then(value => dispatch(fetchMembersAsync(matchId)).unwrap())
             .catch(ex => { console.log(ex) })
     }
 
@@ -84,6 +86,11 @@ export default function MatchDetail() {
             .catch(ex => { console.log(ex) })
     }
 
+    const exchangeMembers = (data: ExchangeMemberProps) => {
+        dispatch(exchangeMembersAsync({ data: { ...data, matchId: matchId } })).unwrap()
+            .catch(ex => { console.log(ex) })
+    }
+
     return (
         <>
             {
@@ -107,6 +114,10 @@ export default function MatchDetail() {
                 <Rivals onSubmit={(rivals) => onSubmitRivals(rivals)} show={state.isShowRivals} rivals={state.rolling} match={state.match} onClose={() => dispatch(onCloseRivals())} />
             }
             {
+                state.isShowExchange && state.members &&
+                <ExchangeMember onSubmit={(data) => exchangeMembers(data)} show={state.isShowExchange} members={state.members} onClose={() => dispatch(onShowExchange(false))} />
+            }
+            {
                 state.error &&
                 <Alert show={state.error !== undefined} variant="danger" onClose={() => dispatch(onCloseError())} dismissible>
                     {state.error}
@@ -114,6 +125,9 @@ export default function MatchDetail() {
             }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
+                    <OverlayTrigger overlay={<Tooltip>Exchange Players</Tooltip>}>
+                        <Button className="me-2" disabled={isInvalidRivals()} variant="secondary" onClick={() => { dispatch(onShowExchange(true)) }}><FaExchangeAlt /></Button>
+                    </OverlayTrigger>
                     <OverlayTrigger overlay={<Tooltip>Team Division Rivals</Tooltip>}>
                         <Button disabled={isInvalidRivals()} variant="success" onClick={() => { rolling() }}><FaFutbol /></Button>
                     </OverlayTrigger>

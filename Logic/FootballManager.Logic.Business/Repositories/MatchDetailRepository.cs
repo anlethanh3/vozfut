@@ -170,4 +170,18 @@ public class MatchDetailRepository : IMatchDetailRepository
         _ = entityDbContext.SaveChanges();
         return record;
     }
+
+    public async Task<IEnumerable<Member>> GetMembersAsync(int id)
+    {
+        var match = entityDbContext.Matches.Where(x => x.Id == id).FirstOrDefault();
+        if (match is null)
+        {
+            return new List<Member>();
+        }
+        var members = entityDbContext.Members.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
+        var details = entityDbContext.MatchDetails.Where(x => !x.IsDeleted && x.MatchId == id).ToList();
+
+        var result = members.Where(member => details.Any(x=>x.MemberId==member.Id)).OrderBy(c=>c.Name);
+        return result;
+    }
 }
