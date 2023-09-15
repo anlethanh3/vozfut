@@ -146,4 +146,54 @@ public class TeamRivalRepository : ITeamRivalRepository
         var _ = await SaveAsync(model.MatchId, result);
         return true;
     }
+    public async Task<TeamRivalSchedule> GetMatchScheduleAsync(int id)
+    {
+        var match = await matchRepository.GetAsync(id);
+        if (match is null)
+        {
+            throw new Exception("ERR_MATCH_NOT_EXIST");
+        }
+        var list = new List<TeamRivalSchedule>(){
+            new TeamRivalSchedule()
+            {
+                HomeMatches = {
+                    new() { Home=2, Away=0 },
+                    new() { Home=1, Away=0 },
+                    new() { Home=1, Away=2 },
+                    new() { Home=0, Away=2 },
+                    new() { Home=0, Away=1 },
+                },
+                AwayMatches = {
+                    new() { Home=1, Away=2 },
+                    new() { Home=0, Away=2 },
+                    new() { Home=0, Away=1 },
+                    new() { Home=2, Away=1 },
+                },
+                Colors = new() {  "orange","blue","banana" },
+            },
+            new TeamRivalSchedule()
+            {
+                HomeMatches = {
+                    new() { Home=3, Away=1 },
+                    new() { Home=0, Away=2 },
+                    new() { Home=3, Away=0 },
+                    new() { Home=1, Away=2 },
+                    new() { Home=1, Away=3 },
+                    new() { Home=0, Away=2 },
+                },
+                AwayMatches = {
+                    new() { Home=3, Away=2 },
+                    new() { Home=1, Away=0 },
+                    new() { Home=1, Away=2 },
+                    new() { Home=3, Away=0 },
+                    new() { Home=3, Away=1 },
+                    new() { Home=1, Away=2 },
+                },
+                Colors = new() { "red", "blue", "banana", "orange" },
+            }
+        };
+
+        var result = match.TeamCount > 3 ? list[1] : list[0];
+        return result;
+    }
 }

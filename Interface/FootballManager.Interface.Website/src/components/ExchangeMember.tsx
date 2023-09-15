@@ -16,24 +16,24 @@ export default function ExchangeMember(props: { show: boolean, members: MemberPr
     return (<>
         <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Exchange players</Modal.Title>
+                <Modal.Title>Exchange Members</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Form.Group className="mb-3" controlId="addMatch.PlayerIn">
-                        <FloatingLabel controlId="floatingPlayerIn" label="PlayerIn">
+                    <Form.Group className="mb-3" controlId="addMatch.MemberIn">
+                        <FloatingLabel controlId="floatingMemberIn" label="Member In">
                             <Form.Select value={exchange.memberInId} onChange={(e) => setMatch({ ...exchange, memberInId: parseInt(e.target.value) })}>
-                                <option hidden value={0}>Select a Player In</option>
+                                <option hidden value={0}>Select a Member In</option>
                                 {
                                     members.map(value =>
-                                        <option key={`playerIn.id-${value.id}`} value={value.id}>{value.name}</option>
+                                        <option key={`MemberIn.id-${value.id}`} value={value.id}>{value.name}</option>
                                     )
                                 }
                             </Form.Select>
                         </FloatingLabel>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMatch.playerOut">
-                        <FloatingLabel controlId="floatingplayerOut" label="playerOut">
+                    <Form.Group className="mb-3" controlId="addMatch.MemberOut">
+                        <FloatingLabel controlId="floatingMemberOut" label="Member Out">
                             <Form.Select value={exchange.memberOutId} onChange={(e) => setMatch({ ...exchange, memberOutId: parseInt(e.target.value) })}>
                                 <option hidden value={0}>Select a Player Out</option>
                                 {

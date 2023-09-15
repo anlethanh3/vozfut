@@ -93,4 +93,22 @@ public class TeamRivalController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    /// <summary>
+    /// Exchange member of match
+    /// </summary>
+    /// <param name="id">match Id</param>
+    /// <returns>TeamRivalSchedule model</returns>
+    [HttpPost("{id}/schedule")]
+    public async Task<ActionResult> GetSchedule(int id)
+    {
+        try
+        {
+            var result = await unitOfWork.TeamRivalRepository.GetMatchScheduleAsync(id);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

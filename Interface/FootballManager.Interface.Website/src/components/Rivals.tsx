@@ -1,15 +1,12 @@
 import Modal from 'react-bootstrap/Modal';
 import { Container, ListGroup, Row, Col, Badge, Alert, Button } from 'react-bootstrap';
-import { RollingProps } from '../slices/matchDetailSlice';
+import { RivalScheduleProps, RollingProps } from '../slices/matchDetailSlice';
 import { MatchProps } from '../slices/matchSlice';
 import '../scss/custom.scss';
 import { useCallback, useRef } from 'react';
 import { toPng, } from 'html-to-image';
+import RivalSchedule from './RivalSchedule';
 
-interface TeamRivalInfo {
-    color: string,
-    name: string,
-}
 export default function Rivals(props: { show: boolean, rivals: RollingProps[], onSubmit: (rivals: RollingProps[]) => void, onClose: () => void, match: MatchProps | undefined }) {
     const { show, rivals, onClose, onSubmit, match } = props
     const ref = useRef<HTMLDivElement>(null);
@@ -90,10 +87,58 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
         return (<>{items}</>)
     }
 
+    function getSchedule(teamCount: number) {
+        let schedules: RivalScheduleProps[] = [
+            {
+                homeMatches: [
+                    { home: 0, away: 1 },
+                ],
+                awayMatches: [
+                    { home: 1, away: 0 },
+                ]
+            },
+            {
+                homeMatches: [
+                    { home: 2, away: 0 },
+                    { home: 1, away: 0 },
+                    { home: 1, away: 2 },
+                    { home: 0, away: 2 },
+                    { home: 0, away: 1 },
+                ],
+                awayMatches: [
+                    { home: 1, away: 2 },
+                    { home: 0, away: 2 },
+                    { home: 0, away: 1 },
+                    { home: 2, away: 1 },
+                ]
+            },
+            {
+                homeMatches: [
+                    { home: 3, away: 1 },
+                    { home: 0, away: 2 },
+                    { home: 0, away: 3 },
+                    { home: 1, away: 2 },
+                    { home: 3, away: 2 },
+                    { home: 1, away: 0 },
+                ],
+                awayMatches: [
+                    { home: 3, away: 2 },
+                    { home: 1, away: 0 },
+                    { home: 1, away: 2 },
+                    { home: 3, away: 0 },
+                    { home: 3, away: 1 },
+                    { home: 0, away: 2 },
+                ],
+            }]
+        if (teamCount > 3) {
+            return schedules[2]
+        }
+        return teamCount > 2 ? schedules[1] : schedules[0]
+    }
 
     return (
         <>
-            <Modal show={show} onHide={onClose} fullscreen keyboard={false} backdrop='static'>
+            <Modal show={show} onHide={onClose} fullscreen backdrop='static'>
                 <Modal.Header closeButton>
                     <Modal.Title>Team Division Rivals</Modal.Title>
                 </Modal.Header>
@@ -110,6 +155,10 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
                             <h1>{match?.name}</h1>
                             <h3>{match?.description}</h3>
                         </Alert>
+                        {
+                            match &&
+                            <RivalSchedule data={getSchedule(match.teamCount)} match={match} />
+                        }
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>

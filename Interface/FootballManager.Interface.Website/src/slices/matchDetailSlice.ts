@@ -36,6 +36,14 @@ export interface RollingProps {
   players: PlayerProps[],
   eloSum: number,
 }
+export interface RivalMatchProps {
+  home: number,
+  away: number,
+}
+export interface RivalScheduleProps {
+  homeMatches: RivalMatchProps[],
+  awayMatches: RivalMatchProps[],
+}
 
 export interface State {
   data: MatchDetailProps[],

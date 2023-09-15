@@ -125,7 +125,7 @@ export default function MatchDetail() {
             }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
-                    <OverlayTrigger overlay={<Tooltip>Exchange Players</Tooltip>}>
+                    <OverlayTrigger overlay={<Tooltip>Exchange Members</Tooltip>}>
                         <Button className="me-2" disabled={isInvalidRivals()} variant="secondary" onClick={() => { dispatch(onShowExchange(true)) }}><FaExchangeAlt /></Button>
                     </OverlayTrigger>
                     <OverlayTrigger overlay={<Tooltip>Team Division Rivals</Tooltip>}>
