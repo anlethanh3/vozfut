@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FootballManager.Controllers;
 
 [ApiController]
-[Route("[controller]"), Authorize(Roles = "Admin")]
+[Route("[controller]"), Authorize]
 public class TeamRivalController : ControllerBase
 {
     private readonly IUnitOfWork unitOfWork;
@@ -23,7 +23,7 @@ public class TeamRivalController : ControllerBase
     /// </summary>
     /// <param name="id">Match Id</param>
     /// <returns></returns>
-    [HttpGet("{id}")]
+    [HttpGet("{id}"), Authorize(Policy = "CreateTeamRival")]
     public async Task<ActionResult> Create(int id)
     {
         try
@@ -80,7 +80,7 @@ public class TeamRivalController : ControllerBase
     /// </summary>
     /// <param name="model">Exchange model</param>
     /// <returns>true: success, false: failure</returns>
-    [HttpPost("{id}/exchange")]
+    [HttpPost("{id}/exchange"), Authorize(Roles = "Admin")]
     public async Task<ActionResult> ExchangeMembers([FromBody] ExchangeMemberRequest model)
     {
         try

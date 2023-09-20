@@ -13,7 +13,7 @@ namespace FootballManager.Controllers;
 /// User Controller
 /// </summary>
 [ApiController]
-[Route("[controller]"), Authorize(Roles = "Admin")]
+[Route("[controller]")]
 public class UserController : ControllerBase
 {
     private readonly ILogger<UserController> logger;
@@ -35,7 +35,7 @@ public class UserController : ControllerBase
     /// Get profile
     /// </summary>
     /// <returns>A profile</returns>
-    [HttpGet("profile")]
+    [HttpGet("profile"), Authorize]
     public async Task<ActionResult> Profile()
     {
         var identity = User.Identity;
@@ -81,6 +81,7 @@ public class UserController : ControllerBase
             new Claim("Username",$"{user.Username}"),
             new Claim("AvatarUri",$"{user.AvatarUri}"),
             new Claim(ClaimTypes.Role, user.IsAdmin?"Admin":"User"),
+            new Claim("Permissions", user.Permissions),
         };
 
         // generate token that is valid for 1 hour

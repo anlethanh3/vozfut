@@ -9,6 +9,7 @@ public class User
     public string Name { get; set; } = string.Empty;
     public int? MemberId { get; set; }
     public bool IsAdmin { get; set; }
+    public string Permissions { get; set; } = string.Empty;
     public DateTime CreatedDate { get; set; }
     public DateTime ModifiedDate { get; set; }
     public string AvatarUri { get; set; } = string.Empty;

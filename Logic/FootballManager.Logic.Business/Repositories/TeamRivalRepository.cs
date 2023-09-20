@@ -132,14 +132,18 @@ public class TeamRivalRepository : ITeamRivalRepository
         {
             throw new Exception("ERR_MATCH_DETAIL_MEMBER_OUT_NOT_EXIST");
         }
+        if (result is null){
+            throw new Exception("ERR_MATCH_DETAIL_TEAM_RIVAL_NOT_EXIST");
+        }
         foreach (var item in result)
         {
-            var player = item.Players.FirstOrDefault(x => x.Id == memberOut.Id);
-            if (player is not null)
+            var index = item.Players.FindIndex(x => x.Id == memberOut.Id);
+            if (index != -1)
             {
+                var player = item.Players[index];
                 item.EloSum += memberIn.Elo - player.Elo;
-                item.Players.Remove(player);
-                item.Players.Add(memberIn);
+                item.Players.RemoveAt(index);
+                item.Players.Insert(index, memberIn);
                 break;
             }
         }

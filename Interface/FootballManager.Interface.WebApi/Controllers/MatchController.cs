@@ -10,7 +10,7 @@ namespace FootballManager.Controllers;
 /// Match Controller
 /// </summary>
 [ApiController]
-[Route("[controller]"), Authorize(Roles = "Admin")]
+[Route("[controller]"), Authorize]
 public class MatchController : ControllerBase
 {
     private readonly ILogger<MatchController> logger;
@@ -29,7 +29,7 @@ public class MatchController : ControllerBase
     /// Get all matches
     /// </summary>
     /// <returns>List member</returns>
-    [HttpGet]
+    [HttpGet, AllowAnonymous]
     public async Task<ActionResult> GetAll()
     {
         var matches = await unitOfWork.MatchRepository.GetAsync();
@@ -40,7 +40,7 @@ public class MatchController : ControllerBase
     /// </summary>
     /// <param name="id">Match id</param>
     /// <returns>A member</returns>
-    [HttpGet("{id}")]
+    [HttpGet("{id}"), AllowAnonymous]
     public async Task<ActionResult> Get(int id)
     {
         var result = await unitOfWork.MatchRepository.GetAsync(id);
@@ -62,11 +62,11 @@ public class MatchController : ControllerBase
     /// </summary>
     /// <param name="request">Search model</param>
     /// <returns>Paging matches</returns>
-    [HttpPost("search"),AllowAnonymous]
+    [HttpPost("search"), AllowAnonymous]
     public async Task<ActionResult> Search(SearchPagingRequest request)
     {
         var matches = await unitOfWork.MatchRepository.SearchAsync(request.Name);
-        var result = matches.Skip(request.PageIndex * request.PageSize).Take(request.PageSize).OrderByDescending(x=>x.ModifiedDate);
+        var result = matches.Skip(request.PageIndex * request.PageSize).Take(request.PageSize).OrderByDescending(x => x.ModifiedDate);
         return Ok(new Paging<IEnumerable<Match>>
         {
             Data = result,
@@ -80,7 +80,7 @@ public class MatchController : ControllerBase
     /// </summary>
     /// <param name="member">member model</param>
     /// <returns>true: success, false: failure</returns>
-    [HttpPut]
+    [HttpPut, Authorize(Roles = "Admin")]
     public async Task<ActionResult> Update(Match member)
     {
         var result = await unitOfWork.MatchRepository.UpdateAsync(member);
@@ -91,7 +91,7 @@ public class MatchController : ControllerBase
     /// </summary>
     /// <param name="id">member id</param>
     /// <returns>true: deleted, false: error</returns>
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), Authorize(Roles = "Admin")]
     public async Task<ActionResult> Delete(int id)
     {
         var result = await unitOfWork.MatchRepository.DeleteAsync(id);

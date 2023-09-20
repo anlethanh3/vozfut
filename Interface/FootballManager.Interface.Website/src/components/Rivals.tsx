@@ -14,7 +14,7 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
         if (ref.current === null) {
             return
         }
-        toPng(ref.current, { cacheBust: true, width: 1600, height: 768, backgroundColor: 'white' })
+        toPng(ref.current, { cacheBust: true, width: 2000, height: 1200, backgroundColor: 'white' })
             .then((dataUrl) => {
                 const link = document.createElement('a')
                 link.download = 'image.png'

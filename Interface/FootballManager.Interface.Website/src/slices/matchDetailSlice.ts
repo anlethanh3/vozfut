@@ -206,8 +206,8 @@ export const matchSlice = createSlice({
     onCloseError: (state) => {
       state.error = undefined
     },
-    onCloseRivals: (state) => {
-      state.isShowRivals = false
+    onShowRivals: (state, action: PayloadAction<boolean>) => {
+      state.isShowRivals = action.payload
     },
     onShowAdd: (state, action: PayloadAction<boolean>) => {
       state.isShowAdd = action.payload
@@ -238,13 +238,11 @@ export const matchSlice = createSlice({
       // rolling
       .addCase(rollingAsync.pending, (state) => {
         state.status = 'loading'
-        state.isShowRivals = false
         state.isLoading = true
       })
       .addCase(rollingAsync.fulfilled, (state, action) => {
         state.status = 'idle'
         state.isLoading = false
-        state.isShowRivals = true
         let payload = action.payload
         if (isRollingProps(payload)) {
           state.rolling = payload
@@ -254,7 +252,6 @@ export const matchSlice = createSlice({
         state.status = 'failed'
         state.error = action.error.message
         state.isLoading = false
-        state.isShowRivals = false
       })
       // members
       .addCase(fetchMembersAsync.pending, (state) => {
@@ -355,7 +352,7 @@ export const matchSlice = createSlice({
   },
 });
 
-export const { onCloseError, onCloseRivals, onShowAdd, onShowExchange } = matchSlice.actions;
+export const { onCloseError, onShowRivals, onShowAdd, onShowExchange } = matchSlice.actions;
 
 export const selectState = (state: RootState) => state.matchDetail
 

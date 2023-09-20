@@ -7,6 +7,7 @@ using FootballManager.Logic.Business.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 // Health check
@@ -38,7 +39,18 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
     };
 });
-
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CreateTeamRival", policy =>
+        policy.RequireAssertion(context =>
+        {
+            var hasPermission = context.User.HasClaim(claim =>
+                (claim.Type == ClaimTypes.Role && claim.Value == "Admin") ||
+                (claim.Type == "Permissions" && (claim.Value == "create:teamrival")));
+            return hasPermission;
+        })
+    );
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

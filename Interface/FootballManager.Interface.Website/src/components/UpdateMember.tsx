@@ -30,24 +30,29 @@ const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined,
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Form.Group className="mb-3" controlId="addMember.realName">
-                        <FloatingLabel controlId="floatingrealName" label="realName">
-                            <Form.Control type="text" required placeholder="Input realName" value={member.realName} onChange={(e) => setMember({ ...member, realName: e.target.value })} />
-                            <Form.Control.Feedback type="invalid">realName is required.</Form.Control.Feedback>
+                    <Form.Group className="mb-3" controlId="updateMember.id">
+                        <FloatingLabel controlId="floatingid" label="id">
+                            <Form.Control type="text" required placeholder="Input realName" value={member.id} disabled />
                         </FloatingLabel>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMember.Name">
+                    <Form.Group className="mb-3" controlId="updateMember.Name">
                         <FloatingLabel controlId="floatingName" label="Name">
                             <Form.Control type="text" required isInvalid={!valid.name} placeholder="Input name" value={member.name} onChange={(e) => setMember({ ...member, name: e.target.value })} />
                             <Form.Control.Feedback type="invalid">Name is required.</Form.Control.Feedback>
                         </FloatingLabel>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMember.Description">
+                    <Form.Group className="mb-3" controlId="updateMember.realName">
+                        <FloatingLabel controlId="floatingrealName" label="realName">
+                            <Form.Control type="text" required placeholder="Input realName" value={member.realName} onChange={(e) => setMember({ ...member, realName: e.target.value })} />
+                            <Form.Control.Feedback type="invalid">realName is required.</Form.Control.Feedback>
+                        </FloatingLabel>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="updateMember.Description">
                         <FloatingLabel controlId="floatingDescription" label="Description">
                             <Form.Control type="text" placeholder="Input description" value={member.description} onChange={(e) => setMember({ ...member, description: e.target.value })} />
                         </FloatingLabel>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMember.Speed">
+                    <Form.Group className="mb-3" controlId="updateMember.Speed">
                         <FloatingLabel controlId="floatingSpeed" label="Speed">
                             <Form.Select value={member.speed} onChange={(e) => setMember({ ...member, speed: parseInt(e.target.value) })}>
                                 {
@@ -58,7 +63,7 @@ const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined,
                             </Form.Select>
                         </FloatingLabel>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMember.Stamina">
+                    <Form.Group className="mb-3" controlId="updateMember.Stamina">
                         <FloatingLabel controlId="floatingstamina" label="stamina">
                             <Form.Select value={member.stamina} onChange={(e) => setMember({ ...member, stamina: parseInt(e.target.value) })}>
                                 {
@@ -69,7 +74,7 @@ const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined,
                             </Form.Select>
                         </FloatingLabel>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMember.finishing">
+                    <Form.Group className="mb-3" controlId="updateMember.finishing">
                         <FloatingLabel controlId="floatingfinishing" label="finishing">
                             <Form.Select value={member.finishing} onChange={(e) => setMember({ ...member, finishing: parseInt(e.target.value) })}>
                                 {
@@ -80,7 +85,7 @@ const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined,
                             </Form.Select>
                         </FloatingLabel>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMember.passing">
+                    <Form.Group className="mb-3" controlId="updateMember.passing">
                         <FloatingLabel controlId="floatingpassing" label="passing">
                             <Form.Select value={member.passing} onChange={(e) => setMember({ ...member, passing: parseInt(e.target.value) })}>
                                 {
@@ -91,7 +96,7 @@ const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined,
                             </Form.Select>
                         </FloatingLabel>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="addMember.skill">
+                    <Form.Group className="mb-3" controlId="updateMember.skill">
                         <FloatingLabel controlId="floatingskill" label="skill">
                             <Form.Select value={member.skill} onChange={(e) => setMember({ ...member, skill: parseInt(e.target.value) })}>
                                 {

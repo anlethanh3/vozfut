@@ -9,7 +9,7 @@ namespace FootballManager.Controllers;
 /// Match Detail Controller
 /// </summary>
 [ApiController]
-[Route("[controller]"), Authorize(Roles = "Admin")]
+[Route("[controller]"), Authorize]
 public class MatchDetailController : ControllerBase
 {
     private readonly ILogger<MatchDetailController> logger;
