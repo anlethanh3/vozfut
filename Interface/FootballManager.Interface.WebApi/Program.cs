@@ -8,8 +8,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Security.Claims;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+// Config serilog
+builder.Host.UseSerilog((host, service, config) => config.ReadFrom.Configuration(host.Configuration));
 // Health check
 builder.Services.AddHealthChecks();
 // Dependency Injection
@@ -101,7 +104,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-
+app.UseSerilogRequestLogging();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsProduction())
 {
