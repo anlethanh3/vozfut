@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ExchangeMemberProps } from "../slices/matchDetailSlice"
+import { ExchangeMemberProps, UpdateRivalMemberProps } from "../slices/matchDetailSlice"
 
 const url = `${process.env.REACT_APP_API_URL}/teamrival`
 
@@ -15,8 +15,14 @@ export const getAnonymous = async <T>(props: { signal: AbortSignal, id: number }
     return response
 }
 
-export const exchangeMembers = async <T>(props: { signal: AbortSignal, data:ExchangeMemberProps }) => {
+export const exchangeMembers = async <T>(props: { signal: AbortSignal, data: ExchangeMemberProps }) => {
     let { data, signal } = props
-    let response = await axios.post<T>(`${url}/${data.matchId}/exchange`,data, { signal: signal })
+    let response = await axios.post<T>(`${url}/${data.matchId}/exchange`, data, { signal: signal })
+    return response
+}
+
+export const updateRivalMember = async <T>(props: { signal: AbortSignal, data: UpdateRivalMemberProps }) => {
+    let { data, signal } = props
+    let response = await axios.post<T>(`${url}/${data.matchId}/memberInOut`, data, { signal: signal })
     return response
 }

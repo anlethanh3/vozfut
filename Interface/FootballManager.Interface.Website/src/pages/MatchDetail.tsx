@@ -1,13 +1,15 @@
 import { useEffect } from "react";
 import { Button, Col, Row, Table, Alert, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import moment from 'moment';
-import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps } from '../slices/matchDetailSlice';
+import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps, onShowUpdateRivalMember, UpdateRivalMemberProps, updateRivalMemberAsync } from '../slices/matchDetailSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useParams } from "react-router-dom";
 import Rivals from "../components/Rivals";
 import AddMatchDetail from "../components/AddMatchDetail";
-import { FaExchangeAlt, FaFutbol } from "react-icons/fa";
+import { FaExchangeAlt, FaFutbol, } from "react-icons/fa";
+import { FaArrowsRotate } from "react-icons/fa6";
 import ExchangeMember from "../components/ExchangeMember";
+import UpdateRivalMember from "../components/UpdateRivalMember";
 
 export default function MatchDetail() {
     let { id } = useParams()
@@ -90,6 +92,12 @@ export default function MatchDetail() {
             .catch(ex => { console.log(ex) })
     }
 
+    const onConfirmRivalMember = (data: UpdateRivalMemberProps) => {
+        dispatch(updateRivalMemberAsync({ data: { ...data, matchId: matchId } })).unwrap()
+            .then(value => dispatch(onShowUpdateRivalMember(false)))
+            .catch(ex => { console.log(ex) })
+    }
+
     return (
         <>
             {
@@ -122,8 +130,15 @@ export default function MatchDetail() {
                     {state.error}
                 </Alert>
             }
+            {
+                state.isShowUpdateRivalMember && state.match && state.members &&
+                <UpdateRivalMember match={state.match} onSubmit={(data) => { onConfirmRivalMember(data) }} show={state.isShowUpdateRivalMember} members={state.members} onClose={() => dispatch(onShowUpdateRivalMember(false))} />
+            }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
+                    <OverlayTrigger overlay={<Tooltip>Update Team Member</Tooltip>}>
+                        <Button className="me-2" disabled={isInvalidRivals()} variant="danger" onClick={() => { dispatch(onShowUpdateRivalMember(true)) }}><FaArrowsRotate /></Button>
+                    </OverlayTrigger>
                     <OverlayTrigger overlay={<Tooltip>Exchange Members</Tooltip>}>
                         <Button className="me-2" disabled={isInvalidRivals()} variant="secondary" onClick={() => { dispatch(onShowExchange(true)) }}><FaExchangeAlt /></Button>
                     </OverlayTrigger>

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { add, search, remove, updateNew, getMembers } from '../providers/MatchDetailApiProvider';
-import { exchangeMembers, get as getTeamRival } from '../providers/TeamRivalApiProvider';
+import { exchangeMembers, get as getTeamRival, updateRivalMember } from '../providers/TeamRivalApiProvider';
 import { getId as getMatch } from '../providers/MatchApiProvider';
 import { HttpStatusCode } from 'axios';
 import { MemberProps } from '../slices/memberSlice';
@@ -32,6 +32,14 @@ export interface ExchangeMemberProps {
   memberOutId: number,
 }
 
+export interface UpdateRivalMemberProps {
+  matchId: number,
+  memberId: number,
+  isIn: boolean,
+  teamId: number,
+  isGK: boolean,
+}
+
 export interface RollingProps {
   players: PlayerProps[],
   eloSum: number,
@@ -54,6 +62,7 @@ export interface State {
   isShowExchange: boolean,
   rolling: RollingProps[] | undefined,
   isShowAdd: boolean,
+  isShowUpdateRivalMember:boolean,
   members: MemberProps[],
   match: MatchProps | undefined,
   search: { name: string }
@@ -69,6 +78,7 @@ export const initialState: State = {
   isShowExchange: false,
   members: [],
   match: undefined,
+  isShowUpdateRivalMember:false,
   search: { name: '' },
 }
 
@@ -154,7 +164,6 @@ export const exchangeMembersAsync = createAsyncThunk(
   }
 )
 
-
 export const fetchMatchAsync = createAsyncThunk(
   'matchDetail/fetchMatch',
   async (request: { id: number, }, { signal }) => {
@@ -179,6 +188,20 @@ export const updateMatchDetailAsync = createAsyncThunk(
           return response.data
         }
         return new Error("Update new record failed!")
+      })
+  }
+)
+
+export const updateRivalMemberAsync = createAsyncThunk(
+  'matchDetail/updaterivalmember',
+  async (request: { data: UpdateRivalMemberProps, }, { signal }) => {
+    let { data } = request
+    return updateRivalMember<boolean>({ signal: signal, data: data })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Update Rival Member failed!")
       })
   }
 )
@@ -214,6 +237,9 @@ export const matchSlice = createSlice({
     },
     onShowExchange: (state, action: PayloadAction<boolean>) => {
       state.isShowExchange = action.payload
+    },
+    onShowUpdateRivalMember: (state, action: PayloadAction<boolean>) => {
+      state.isShowUpdateRivalMember = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -352,7 +378,7 @@ export const matchSlice = createSlice({
   },
 });
 
-export const { onCloseError, onShowRivals, onShowAdd, onShowExchange } = matchSlice.actions;
+export const { onCloseError, onShowRivals, onShowAdd, onShowExchange,onShowUpdateRivalMember } = matchSlice.actions;
 
 export const selectState = (state: RootState) => state.matchDetail
 

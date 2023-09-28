@@ -26,6 +26,7 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
     environment:
       - TZ=Asia/Bangkok
+      - ASPNETCORE_ENVIRONMENT=Production
     # restart: always
   server-test:
     image: anlt/vozfut-webapi:latest

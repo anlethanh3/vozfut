@@ -5,10 +5,10 @@ GET https://vozfc.io.vn/test/healthz
 POST https://vozfc.io.vn/test/user/init
 
 ### authenticate
-POST https://vozfc.io.vn/test/user/authenticate
+POST https://vozfc.io.vn/api/user/authenticate
 Content-Type: application/json
 
-{"email":"an.lethanh3@gmail.com","password":"12345678"}
+{"email":"anle","password":"12345678"}
 
 ### profile
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKV1RWb3pGdXRBY2Nlc3NUb2tlbiIsImp0aSI6Ijk1OTk3YTdjLTI0YmItNDU1Yi04YWJkLTJkOTc4N2VmYjhlYyIsImlhdCI6MTY5MjAwNzcyOCwiVXNlcklkIjoiMSIsIk5hbWUiOiJBbkxlIiwiRW1haWwiOiJhbi5sZXRoYW5oM0BnbWFpbC5jb20iLCJVc2VybmFtZSI6ImFubGUiLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE2OTIwMDc3MjgsImV4cCI6MTY5MjAxMTMyOCwiaXNzIjoiSldUVm96RnV0V2ViQXBpIiwiYXVkIjoiSldUVm96RnV0V2Vic2l0ZSJ9.uYpqalMocOBuHMF_HMm3DHc7SQkM8dd1Pcwmnm3dKP4
@@ -19,3 +19,12 @@ Authorization: Bearer {{token}}
 GET https://vozfc.io.vn/test/match
 Authorization: Bearer {{token}}
 
+### export members 
+GET http://localhost:5002/member/export
+
+// Testing
+### authenticate
+POST http://localhost:5002/user/authenticate
+Content-Type: application/json
+
+{"email":"anle","password":"12345678"}

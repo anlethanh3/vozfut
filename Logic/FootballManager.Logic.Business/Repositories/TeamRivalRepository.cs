@@ -132,7 +132,8 @@ public class TeamRivalRepository : ITeamRivalRepository
         {
             throw new Exception("ERR_MATCH_DETAIL_MEMBER_OUT_NOT_EXIST");
         }
-        if (result is null){
+        if (result is null)
+        {
             throw new Exception("ERR_MATCH_DETAIL_TEAM_RIVAL_NOT_EXIST");
         }
         foreach (var item in result)
@@ -146,6 +147,52 @@ public class TeamRivalRepository : ITeamRivalRepository
                 item.Players.Insert(index, memberIn);
                 break;
             }
+        }
+        var _ = await SaveAsync(model.MatchId, result);
+        return true;
+    }
+    public async Task<bool> MemberInOutAsync(MemberInOutRequest model)
+    {
+        var match = await matchRepository.GetAsync(model.MatchId);
+        if (match is null)
+        {
+            throw new Exception("ERR_MATCH_NOT_EXIST");
+        }
+        if (!match.HasTeamRival)
+        {
+            throw new Exception("ERR_MATCH_NO_TEAM_RIVAL");
+        }
+        var result = JsonConvert.DeserializeObject<TeamRival[]>(match.TeamRivals);
+        var member = await memberRepository.GetAsync(model.MemberId);
+        if (member is null)
+        {
+            throw new Exception("ERR_MATCH_DETAIL_MEMBER_IN_NOT_EXIST");
+        }
+        if (result is null)
+        {
+            throw new Exception("ERR_TEAM_RIVAL_NOT_EXIST");
+        }
+        var item = result[model.TeamId];
+        if (item is null)
+        {
+            throw new Exception("ERR_TEAM_RIVAL_ID_NOT_EXIST");
+        }
+
+        if (model.IsIn)
+        {
+            member.Elo = model.IsGK ? 0 : member.Elo;
+            item.EloSum += member.Elo;
+            item.Players.Add(member);
+        }
+        else
+        {
+            var index = item.Players.FindIndex(x => x.Id == member.Id);
+            if (index == -1)
+            {
+                throw new Exception("ERR_TEAM_RIVAL_MERMBER_ID_NOT_EXIST");
+            }
+            item.EloSum -= member.Elo;
+            item.Players.RemoveAt(index);
         }
         var _ = await SaveAsync(model.MatchId, result);
         return true;

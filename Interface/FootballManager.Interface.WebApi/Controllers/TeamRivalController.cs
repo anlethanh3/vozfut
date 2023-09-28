@@ -94,6 +94,24 @@ public class TeamRivalController : ControllerBase
         }
     }
     /// <summary>
+    /// Add or remove member in a team
+    /// </summary>
+    /// <param name="model">Member in out</param>
+    /// <returns>true: success, false: failure</returns>
+    [HttpPost("{id}/memberinout"), Authorize(Roles = "Admin")]
+    public async Task<ActionResult> MemberInOut([FromBody] MemberInOutRequest model)
+    {
+        try
+        {
+            var result = await unitOfWork.TeamRivalRepository.MemberInOutAsync(model);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    /// <summary>
     /// Exchange member of match
     /// </summary>
     /// <param name="id">match Id</param>

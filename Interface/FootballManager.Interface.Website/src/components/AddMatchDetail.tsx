@@ -28,9 +28,9 @@ export default function AddMatchDetail(props: { show: boolean, members: MemberPr
                                 }
                             </Form.Select>
                         </FloatingLabel>
-                        <Form.Check className='my-2' label="Is Paid" type='switch' value={detail.isPaid ? 1 : 0}
+                        <Form.Check className='my-2' label="Is Paid" type='switch' checked={detail.isPaid}
                             onChange={(e) => setDetail({ ...detail, isPaid: e.target.checked })} />
-                        <Form.Check label="Is Skip" type='switch' value={detail.isSkip ? 1 : 0}
+                        <Form.Check label="Is Skip" type='switch' checked={detail.isSkip}
                             onChange={(e) => setDetail({ ...detail, isSkip: e.target.checked })} />
                     </Form.Group>
                 </Form>

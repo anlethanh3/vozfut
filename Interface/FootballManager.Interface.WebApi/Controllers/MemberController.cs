@@ -1,9 +1,11 @@
+using System.Text;
 using FootballManager.Data.DataAccess.Interfaces;
 using FootballManager.Data.Entity.Entities;
 using FootballManager.Data.Entity.Requests;
 using FootballManager.Data.Entity.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FootballManager.Controllers;
 /// <summary>
@@ -120,6 +122,35 @@ public class MemberController : ControllerBase
             });
         }
         return Ok();
+    }
+    /// <summary>
+    /// Export members to csv file
+    /// </summary>
+    /// <returns>true: success, false: fail</returns>
+    [HttpGet("export"), AllowAnonymous]
+    public async Task<ActionResult> Export()
+    {
+
+        var members = await unitOfWork.MemberRepository.GetAsync();
+        if (members.IsNullOrEmpty())
+        {
+            throw new Exception("ERR_MEMBERS_IS_EMPTY");
+        }
+        using (var memoryStream = new MemoryStream())
+        {
+            using (var writer = new StreamWriter(memoryStream))
+            {
+                var i = 0;
+                writer.WriteLine("No,Id,Name,RealName,Elo");
+                foreach (var member in members)
+                {
+                    writer.WriteLine($"{i + 1},{member.Id},{member.Name},{member.RealName},{member.Elo}");
+                    i++;
+                }
+            }
+            var bytes = memoryStream.ToArray();
+            return File(bytes, "application/octet-stream", "export.csv");
+        }
     }
     /// <summary>
     /// Import members from csv
