@@ -131,7 +131,6 @@ export default function NavMenu() {
                             <CustomLink route="member">Member</CustomLink>
                             <CustomLink route="donate">Donate</CustomLink>
                             <CustomLink route="history">History</CustomLink>
-                            <CustomLink route="counter">Counter</CustomLink>
                         </Nav>
                         <Nav>
                             <Profile />

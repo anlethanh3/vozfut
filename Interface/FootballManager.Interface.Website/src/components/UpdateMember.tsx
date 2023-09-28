@@ -8,7 +8,7 @@ import { MemberProps } from '../slices/memberSlice';
 const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined, onSubmit: (member: MemberProps) => void, onClose: () => void }) => {
     const { show, initData, onSubmit, onClose } = props
     const stats = [1, 2, 3, 4, 5]
-    const [member, setMember] = useState<MemberProps>({ id: 0, name: '', description: '', elo: 1, })
+    const [member, setMember] = useState<MemberProps>({ id: 0, name: '', description: '', elo: 1, championCount: 0 })
     const [valid, setValid] = useState({ name: true });
     const onValid = () => {
         if (member.name === '') {
@@ -50,6 +50,11 @@ const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined,
                     <Form.Group className="mb-3" controlId="updateMember.Description">
                         <FloatingLabel controlId="floatingDescription" label="Description">
                             <Form.Control type="text" placeholder="Input description" value={member.description} onChange={(e) => setMember({ ...member, description: e.target.value })} />
+                        </FloatingLabel>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="updateMember.ChampionCount">
+                        <FloatingLabel controlId="floatingDescription" label="Champion Count">
+                            <Form.Control type="number" placeholder="Input Champion Count" value={member.championCount} onChange={(e) => setMember({ ...member, championCount: parseInt(e.target.value) })} />
                         </FloatingLabel>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="updateMember.Speed">

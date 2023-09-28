@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
 import profileReducer from '../slices/profileSlice';
 import memberReducer from '../slices/memberSlice'
 import matchReducer from '../slices/matchSlice'
@@ -7,7 +6,6 @@ import matchDetailReducer from '../slices/matchDetailSlice'
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     profile: profileReducer,
     member: memberReducer,
     match: matchReducer,

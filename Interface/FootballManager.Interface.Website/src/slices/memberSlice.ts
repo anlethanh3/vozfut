@@ -17,6 +17,7 @@ export interface MemberProps {
   passing?: number,
   skill?: number,
   isDeleted?: boolean,
+  championCount?:number,
 }
 export interface SearchProps {
   name: string,

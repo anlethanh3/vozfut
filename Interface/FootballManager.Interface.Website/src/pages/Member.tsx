@@ -8,7 +8,7 @@ import SearchMember from "../components/SearchMember";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectState, fetchAsync, MemberProps, SearchProps, onChangePageIndex, onChangePageSize, onShowLegend, onShowAdd, onShowDelete, onSelectedId, onShowUpdate, updateAsync, addAsync, deleteAsync, onSearchChanged, searchChangedAsync, } from '../slices/memberSlice';
 import Legend from "../components/Legend";
-import { FaEdit, FaTrash, FaPlus, FaFileUpload, FaBeer } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlus, FaFileUpload, FaBeer, FaStar } from "react-icons/fa";
 import { debounce } from 'lodash'
 
 export default function Member() {
@@ -62,6 +62,15 @@ export default function Member() {
     const debouncedSendRequest = useMemo(() => debounce(searchRequest, 500), [searchRequest]);
     const onSearchChangedEvent = async (search: SearchProps) => {
         debouncedSendRequest(search)
+    }
+
+    function ChampionStars(props: { championCount: number }): JSX.Element {
+        let { championCount } = props
+        let items: JSX.Element[] = []
+        for (let index = 0; index < championCount; index++) {
+            items.push(<FaStar />)
+        }
+        return (<>{items}</>)
     }
 
     useEffect(() => {
@@ -131,6 +140,7 @@ export default function Member() {
                         <th>Name</th>
                         <th>Nick Name</th>
                         <th>Description</th>
+                        <th>Champion Count</th>
                         <th>Elo</th>
                         <th>Speed</th>
                         <th>Stamina</th>
@@ -149,6 +159,7 @@ export default function Member() {
                                 <td>{value.realName}</td>
                                 <td>{value.name}</td>
                                 <td>{value.description}</td>
+                                <td><ChampionStars championCount={value?.championCount ?? 0} /></td>
                                 <td className="col-sm-1">+{value.elo}</td>
                                 <td className="col-sm-1">{value.speed}</td>
                                 <td className="col-sm-1">{value.stamina}</td>

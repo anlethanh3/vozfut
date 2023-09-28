@@ -15,4 +15,5 @@ public class Member
     public int Finishing { get; set; }
     public int Passing { get; set; }
     public int Skill { get; set; }
+    public int ChampionCount { get; set; }
 }

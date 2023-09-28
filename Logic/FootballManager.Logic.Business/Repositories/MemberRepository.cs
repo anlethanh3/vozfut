@@ -29,6 +29,7 @@ public class MemberRepository : IMemberRepository
             Skill = member.Skill,
             Speed = member.Speed,
             Stamina = member.Stamina,
+            ChampionCount = 0,
             IsDeleted = false,
         });
         _ = entityDbContext.SaveChanges();
@@ -78,6 +79,7 @@ public class MemberRepository : IMemberRepository
         record.Skill = member.Skill;
         record.Speed = member.Speed;
         record.Stamina = member.Stamina;
+        record.ChampionCount = member.ChampionCount;
         record.Elo = CalculateElo(member);
         record.ModifiedDate = DateTime.Now;
         _ = entityDbContext.SaveChanges();
