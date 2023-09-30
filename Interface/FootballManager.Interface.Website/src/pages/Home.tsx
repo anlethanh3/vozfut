@@ -1,10 +1,11 @@
 import { Carousel, Image, Card, Container, Row, Col, Button, OverlayTrigger, Tooltip, Alert } from "react-bootstrap"
-import { FaExpand, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaExpand, FaPlus, FaTrash } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectState, fetchAsync, onCloseError, NewsProps, onShowAdd, addAsync, onShowDetail, onSelectedId, deleteAsync } from '../slices/newsSlice'
+import { selectState, fetchAsync, onCloseError, NewsProps, onShowAdd, addAsync, onShowDetail, onSelectedId, deleteAsync, onShowUpdate, updateAsync } from '../slices/newsSlice'
 import { useEffect } from "react";
 import AddNews from "../components/AddNews";
 import NewsDetailModal from "../components/NewsDetailModal";
+import UpdateNews from "../components/UpdateNews";
 export interface Photo {
     uri: string,
     title: string,
@@ -45,14 +46,18 @@ export default function Home() {
                     <Slider data={item} />
                     <Card.Body>
                         <Card.Title>{item.title}</Card.Title>
-                        <Card.Text> {item.content}</Card.Text>
+                        <Card.Text className="text-nowrap text-truncate" style={{ maxWidth: '20em', }}>{item.content}</Card.Text>
                         <Row>
                             <Col className="d-flex justify-content-end">
-                                <Button className="me-2" onClick={() => { removeNews(item.id) }} variant="danger"><FaTrash /></Button>
-                                <Button onClick={() => {
+                                <Button className="me-2" onClick={() => {
                                     dispatch(onSelectedId(item.id))
                                     dispatch(onShowDetail(true))
                                 }} variant="success"><FaExpand /></Button>
+                                <Button className="me-2" onClick={() => {
+                                    dispatch(onSelectedId(item.id))
+                                    dispatch(onShowUpdate(true))
+                                }} variant="secondary"><FaEdit /></Button>
+                                <Button onClick={() => { removeNews(item.id) }} variant="danger"><FaTrash /></Button>
                             </Col>
                         </Row>
                     </Card.Body>
@@ -95,6 +100,16 @@ export default function Home() {
             })
     }
 
+    const updateNews = (model: NewsProps) => {
+        dispatch(updateAsync(model)).unwrap()
+            .then(values => dispatch(onShowUpdate(false)))
+            .then(values => fetch())
+            .then(values => {
+            })
+            .catch(error => {
+            })
+    }
+
     const removeNews = (id: number) => {
         dispatch(deleteAsync(id)).unwrap()
             .then(values => fetch())
@@ -120,6 +135,10 @@ export default function Home() {
             {
                 state.isShowDetail &&
                 <NewsDetailModal model={state.data.find(i => i.id === state.selectedId)} show={state.isShowDetail} onClose={() => { dispatch(onShowDetail(false)) }} />
+            }
+            {
+                state.isShowUpdate &&
+                <UpdateNews onSubmit={(model) => {updateNews(model)}} model={state.data.find(i => i.id === state.selectedId)} show={state.isShowUpdate} onClose={() => { dispatch(onShowUpdate(false)) }} />
             }
             <Row>
                 <Col><h1>News</h1></Col>

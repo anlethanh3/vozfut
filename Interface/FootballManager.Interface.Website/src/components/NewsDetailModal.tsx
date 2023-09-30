@@ -1,4 +1,4 @@
-import { Button, Modal, Image, Carousel } from 'react-bootstrap';
+import { Button, Modal, Image, Carousel, } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { NewsProps } from '../slices/newsSlice';
 
@@ -33,7 +33,7 @@ export default function NewsDetailModal(props: { show: boolean, model: NewsProps
                 <Modal.Title>{news.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {news.content}
+                <pre>{news.content}</pre>
                 <Slider data={news}/>
             </Modal.Body>
             <Modal.Footer>
