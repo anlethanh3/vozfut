@@ -3,6 +3,7 @@ import profileReducer from '../slices/profileSlice';
 import memberReducer from '../slices/memberSlice'
 import matchReducer from '../slices/matchSlice'
 import matchDetailReducer from '../slices/matchDetailSlice'
+import newsReducer from '../slices/newsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     member: memberReducer,
     match: matchReducer,
     matchDetail: matchDetailReducer,
+    news: newsReducer,
   },
 });
 

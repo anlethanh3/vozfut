@@ -8,4 +8,5 @@ public interface IUnitOfWork
     IMatchDetailRepository MatchDetailRepository { get; set; }
     IUserRepository UserRepository { get; set; }
     ITeamRivalRepository TeamRivalRepository { get; set; }
+    INewsRepository NewsRepository { get; set; }
 }

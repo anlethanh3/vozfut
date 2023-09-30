@@ -12,6 +12,7 @@ public class EntityDbContext : DbContext
     public DbSet<Match> Matches { get; set; }
     public DbSet<MatchDetail> MatchDetails { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<News> Newses { get; set; }
 
     public EntityDbContext(IConfiguration configuration)
     {
