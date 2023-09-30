@@ -28,14 +28,10 @@ export default function AddNews(props: { show: boolean, onSubmit: (model: NewsPr
                         </FloatingLabel>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="addNews.content">
-                        <FloatingLabel controlId="floatingcontent" label="Content">
-                            <Form.Control type="text" placeholder="Input content" value={news.content} onChange={(e) => setNews({ ...news, content: e.target.value })} />
-                        </FloatingLabel>
+                        <Form.Control as="textarea" rows={5} placeholder="Input content" value={news.content} onChange={(e) => setNews({ ...news, content: e.target.value })} />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="addNews.imageUris">
-                        <FloatingLabel controlId="floatingimageUris" label="GoogleDrive Ids split by a character ';'" placeholder='Split by character ";"'>
-                            <Form.Control type="text" placeholder="Input image uris" value={news.imageUris} onChange={(e) => setNews({ ...news, imageUris: e.target.value })} />
-                        </FloatingLabel>
+                        <Form.Control as="textarea"  placeholder='Input Image Ids per new line' rows={4} value={news.imageUris} onChange={(e) => setNews({ ...news, imageUris: e.target.value })} />
                     </Form.Group>
                 </Form>
             </Modal.Body>

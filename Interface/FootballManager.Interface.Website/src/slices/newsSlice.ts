@@ -25,6 +25,7 @@ export interface State {
   selectedId: number,
   isShowDelete: boolean,
   isShowUpdate: boolean,
+  isShowDetail:boolean,
   search: { name: string },
 }
 export const initialState: State = {
@@ -40,6 +41,7 @@ export const initialState: State = {
   isShowAdd: false,
   isShowUpdate: false,
   isShowDelete: false,
+  isShowDetail:false,
 }
 
 export interface SearchResponseProps<T> {
@@ -124,6 +126,9 @@ export const newsSlice = createSlice({
     },
     onShowUpdate: (state, action: PayloadAction<boolean>) => {
       state.isShowUpdate = action.payload
+    },
+    onShowDetail: (state, action: PayloadAction<boolean>) => {
+      state.isShowDetail = action.payload
     },
     onSelectedId: (state, action: PayloadAction<number>) => {
       state.selectedId = action.payload
@@ -210,7 +215,7 @@ export const newsSlice = createSlice({
 export const {
   onChangePageIndex, onChangePageSize,
   onShowAdd, onShowDelete, onShowUpdate,
-  onSelectedId, onCloseError,
+  onSelectedId, onCloseError, onShowDetail,
 } = newsSlice.actions;
 
 export const selectState = (state: RootState) => state.news

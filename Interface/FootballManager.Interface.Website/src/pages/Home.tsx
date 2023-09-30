@@ -1,9 +1,10 @@
 import { Carousel, Image, Card, Container, Row, Col, Button, OverlayTrigger, Tooltip, Alert } from "react-bootstrap"
-import { FaPlus } from "react-icons/fa";
+import { FaExpand, FaPlus, FaTrash } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectState, fetchAsync, onCloseError, NewsProps, onShowAdd, addAsync, deleteAsync, updateAsync } from '../slices/newsSlice'
+import { selectState, fetchAsync, onCloseError, NewsProps, onShowAdd, addAsync, onShowDetail, onSelectedId, deleteAsync } from '../slices/newsSlice'
 import { useEffect } from "react";
 import AddNews from "../components/AddNews";
+import NewsDetailModal from "../components/NewsDetailModal";
 export interface Photo {
     uri: string,
     title: string,
@@ -45,6 +46,15 @@ export default function Home() {
                     <Card.Body>
                         <Card.Title>{item.title}</Card.Title>
                         <Card.Text> {item.content}</Card.Text>
+                        <Row>
+                            <Col className="d-flex justify-content-end">
+                                <Button className="me-2" onClick={() => { removeNews(item.id) }} variant="danger"><FaTrash /></Button>
+                                <Button onClick={() => {
+                                    dispatch(onSelectedId(item.id))
+                                    dispatch(onShowDetail(true))
+                                }} variant="success"><FaExpand /></Button>
+                            </Col>
+                        </Row>
                     </Card.Body>
                 </Card>)
             cols.push((<Col>{element}</Col>))
@@ -74,41 +84,22 @@ export default function Home() {
             }
         </Carousel>)
     }
-    const images: Photo[] = [
-        {
-            uri: '1-11G8FaCF11AQY8e7t4l2qvMYmIfNY9R',
-            title: '27/08/2023 - Sân vận động Gia Định',
-            description: '2A Phan Chu Trinh, Phường 12, Bình Thạnh, Thành phố Hồ Chí Minh'
-        },
-        {
-            uri: '1XaXAF748LhyETpvTIt5sN3NCaSqS0nkb',
-            title: '6/8/2023 - Sân bóng đá 367',
-            description: '168A Hoàng Hoa Thám, Phường 12, Tân Bình, Thành phố Hồ Chí Minh, Việt Nam'
-        },
-        {
-            uri: '1sPvLQSiQxjolJICC2SQXBU7zsmI1fZdl',
-            title: '6/8/2023 - Sân bóng đá 367',
-            description: '168A Hoàng Hoa Thám, Phường 12, Tân Bình, Thành phố Hồ Chí Minh, Việt Nam'
-        },
-        {
-            uri: '12EyfF8H0S2s6OEb7NQmuI3Oph3Um0D5r',
-            title: '6/8/2023 - Sân bóng đá 367',
-            description: '168A Hoàng Hoa Thám, Phường 12, Tân Bình, Thành phố Hồ Chí Minh, Việt Nam'
-        },
-        {
-            uri: '1ykvBN_i7xaRVuwoe1BPAGEue1dS8vOSS',
-            title: '6/8/2023 - Sân bóng đá 367',
-            description: '168A Hoàng Hoa Thám, Phường 12, Tân Bình, Thành phố Hồ Chí Minh, Việt Nam'
-        },
-    ]
 
     const addNews = (model: NewsProps) => {
         dispatch(addAsync(model)).unwrap()
+            .then(values => dispatch(onShowAdd(false)))
             .then(values => fetch())
             .then(values => {
             })
             .catch(error => {
             })
+    }
+
+    const removeNews = (id: number) => {
+        dispatch(deleteAsync(id)).unwrap()
+            .then(values => fetch())
+            .then(values => { })
+            .catch(error => { })
     }
     return (
         <>
@@ -125,6 +116,10 @@ export default function Home() {
             {
                 state.isShowAdd &&
                 <AddNews onSubmit={(news) => { addNews(news) }} show={state.isShowAdd} onClose={() => { dispatch(onShowAdd(false)) }} />
+            }
+            {
+                state.isShowDetail &&
+                <NewsDetailModal model={state.data.find(i => i.id === state.selectedId)} show={state.isShowDetail} onClose={() => { dispatch(onShowDetail(false)) }} />
             }
             <Row>
                 <Col><h1>News</h1></Col>
