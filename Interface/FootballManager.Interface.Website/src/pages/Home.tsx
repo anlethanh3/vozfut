@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import AddNews from "../components/AddNews";
 import NewsDetailModal from "../components/NewsDetailModal";
 import UpdateNews from "../components/UpdateNews";
+import { selectProfile } from "../slices/profileSlice";
 export interface Photo {
     uri: string,
     title: string,
@@ -14,6 +15,7 @@ export interface Photo {
 
 export default function Home() {
     const state = useAppSelector(selectState)
+    const profileState = useAppSelector(selectProfile)
     const dispatch = useAppDispatch()
 
     const fetch = () => {
@@ -53,15 +55,19 @@ export default function Home() {
                             <Card.Text className="text-nowrap text-truncate" style={{ maxWidth: '20em', }}>{item.content}</Card.Text>
                             <Row>
                                 <Col className="d-flex justify-content-end">
-                                    <Button className="me-2" onClick={() => {
+                                    <Button onClick={() => {
                                         dispatch(onSelectedId(item.id))
                                         dispatch(onShowDetail(true))
                                     }} variant="success"><FaExpand /></Button>
-                                    <Button className="me-2" onClick={() => {
-                                        dispatch(onSelectedId(item.id))
-                                        dispatch(onShowUpdate(true))
-                                    }} variant="secondary"><FaEdit /></Button>
-                                    <Button onClick={() => { removeNews(item.id) }} variant="danger"><FaTrash /></Button>
+                                    {
+                                        profileState?.role === "Admin" && <>
+                                            <Button className="mx-2" onClick={() => {
+                                                dispatch(onSelectedId(item.id))
+                                                dispatch(onShowUpdate(true))
+                                            }} variant="secondary"><FaEdit /></Button>
+                                            <Button onClick={() => { removeNews(item.id) }} variant="danger"><FaTrash /></Button>
+                                        </>
+                                    }
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -143,11 +149,13 @@ export default function Home() {
             }
             <Row>
                 <Col><h1>News</h1></Col>
-                <Col className="d-flex align-items-center justify-content-end">
-                    <OverlayTrigger overlay={<Tooltip>Add news</Tooltip>}>
-                        <Button variant="primary" onClick={() => { dispatch(onShowAdd(true)) }}><FaPlus /></Button>
-                    </OverlayTrigger>
-                </Col>
+                {
+                    profileState?.role === "Admin" && <Col className="d-flex align-items-center justify-content-end">
+                        <OverlayTrigger overlay={<Tooltip>Add news</Tooltip>}>
+                            <Button variant="primary" onClick={() => { dispatch(onShowAdd(true)) }}><FaPlus /></Button>
+                        </OverlayTrigger>
+                    </Col>
+                }
             </Row>
             <News col={3} data={state.data} />
         </>
