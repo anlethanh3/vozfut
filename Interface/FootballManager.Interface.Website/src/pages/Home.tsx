@@ -36,41 +36,42 @@ export default function Home() {
 
     }, [state.pageIndex, state.pageSize])
 
-    function News(props: { data: NewsProps[] }) {
-        let { data } = props
+    function News(props: { data: NewsProps[], col: number }) {
+        let { data, col } = props
         let items: JSX.Element[] = []
-        var cols: JSX.Element[] = []
-        data.forEach(item => {
-            let element =
-                (<Card>
-                    <Slider data={item} />
-                    <Card.Body>
-                        <Card.Title>{item.title}</Card.Title>
-                        <Card.Text className="text-nowrap text-truncate" style={{ maxWidth: '20em', }}>{item.content}</Card.Text>
-                        <Row>
-                            <Col className="d-flex justify-content-end">
-                                <Button className="me-2" onClick={() => {
-                                    dispatch(onSelectedId(item.id))
-                                    dispatch(onShowDetail(true))
-                                }} variant="success"><FaExpand /></Button>
-                                <Button className="me-2" onClick={() => {
-                                    dispatch(onSelectedId(item.id))
-                                    dispatch(onShowUpdate(true))
-                                }} variant="secondary"><FaEdit /></Button>
-                                <Button onClick={() => { removeNews(item.id) }} variant="danger"><FaTrash /></Button>
-                            </Col>
-                        </Row>
-                    </Card.Body>
-                </Card>)
-            cols.push((<Col>{element}</Col>))
-            if (cols.length === 3) {
-                items.push((<Row className="mb-2">{cols}</Row>))
-                cols = []
+        let length = data.length / col;
+        for (let index = 0; index < length; index++) {
+            let cols: JSX.Element[] = []
+            for (let j = 0; j < col; j++) {
+                let ind = index * col + j
+                if (ind < data.length) {
+                    let item = data[ind]
+                    let element = (<Card>
+                        <Slider data={item} />
+                        <Card.Body>
+                            <Card.Title>{item.title}</Card.Title>
+                            <Card.Text className="text-nowrap text-truncate" style={{ maxWidth: '20em', }}>{item.content}</Card.Text>
+                            <Row>
+                                <Col className="d-flex justify-content-end">
+                                    <Button className="me-2" onClick={() => {
+                                        dispatch(onSelectedId(item.id))
+                                        dispatch(onShowDetail(true))
+                                    }} variant="success"><FaExpand /></Button>
+                                    <Button className="me-2" onClick={() => {
+                                        dispatch(onSelectedId(item.id))
+                                        dispatch(onShowUpdate(true))
+                                    }} variant="secondary"><FaEdit /></Button>
+                                    <Button onClick={() => { removeNews(item.id) }} variant="danger"><FaTrash /></Button>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>)
+                    cols.push((<Col>{element}</Col>))
+                    continue;
+                }
+                cols.push((<Col><></></Col>))
             }
-        })
-        if (cols.length >= 0) {
             items.push((<Row className="mb-2">{cols}</Row>))
-            cols = []
         }
         return (<Container>{items}</Container>)
     }
@@ -138,7 +139,7 @@ export default function Home() {
             }
             {
                 state.isShowUpdate &&
-                <UpdateNews onSubmit={(model) => {updateNews(model)}} model={state.data.find(i => i.id === state.selectedId)} show={state.isShowUpdate} onClose={() => { dispatch(onShowUpdate(false)) }} />
+                <UpdateNews onSubmit={(model) => { updateNews(model) }} model={state.data.find(i => i.id === state.selectedId)} show={state.isShowUpdate} onClose={() => { dispatch(onShowUpdate(false)) }} />
             }
             <Row>
                 <Col><h1>News</h1></Col>
@@ -148,7 +149,7 @@ export default function Home() {
                     </OverlayTrigger>
                 </Col>
             </Row>
-            <News data={state.data} />
+            <News col={3} data={state.data} />
         </>
     )
 }
