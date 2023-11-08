@@ -7,7 +7,7 @@ import { MemberProps } from '../slices/memberSlice';
 
 const UpdateMember = (props: { show: boolean, initData: MemberProps | undefined, onSubmit: (member: MemberProps) => void, onClose: () => void }) => {
     const { show, initData, onSubmit, onClose } = props
-    const stats = [1, 2, 3, 4, 5]
+    const stats = [0, 1, 2, 3, 4, 5]
     const [member, setMember] = useState<MemberProps>({ id: 0, name: '', description: '', elo: 1, championCount: 0 })
     const [valid, setValid] = useState({ name: true });
     const onValid = () => {

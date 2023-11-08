@@ -30,6 +30,8 @@ public class MatchDetailRepository : IMatchDetailRepository
             MemberId = detail.MemberId,
             IsPaid = detail.IsPaid,
             IsSkip = detail.IsSkip,
+            Assist = detail.Assist,
+            Goal = detail.Goal,
             CreatedDate = now,
             ModifiedDate = now,
             IsDeleted = false,
@@ -82,6 +84,8 @@ public class MatchDetailRepository : IMatchDetailRepository
                 MemberElo = member.Elo,
                 MemberId = member.Id,
                 MemberName = member.Name,
+                Goal = 0,
+                Assist = 0,
             };
 
             if (details.Count() == 0)
@@ -108,10 +112,12 @@ public class MatchDetailRepository : IMatchDetailRepository
                 MemberElo = member.Elo,
                 MemberId = member.Id,
                 MemberName = member.Name,
+                Goal = detail.Goal,
+                Assist = detail.Assist,
             };
         };
 
-        var result = members.Select(member => func(member)).OrderByDescending(c=>c.ModifiedDate);
+        var result = members.Select(member => func(member)).OrderByDescending(c => c.ModifiedDate);
         return result;
     }
 
@@ -136,6 +142,8 @@ public class MatchDetailRepository : IMatchDetailRepository
         record.MemberId = detail.MemberId;
         record.IsPaid = detail.IsPaid;
         record.IsSkip = detail.IsSkip;
+        record.Goal = detail.Goal;
+        record.Assist = detail.Assist;
         record.ModifiedDate = DateTime.Now;
         _ = entityDbContext.SaveChanges();
         return true;
@@ -156,6 +164,8 @@ public class MatchDetailRepository : IMatchDetailRepository
                 IsSkip = detail.IsSkip,
                 CreatedDate = now,
                 ModifiedDate = now,
+                Assist = 0,
+                Goal = 0,
                 IsDeleted = false,
             });
             _ = entityDbContext.SaveChanges();
@@ -166,6 +176,8 @@ public class MatchDetailRepository : IMatchDetailRepository
         record.MemberId = detail.MemberId;
         record.IsPaid = detail.IsPaid;
         record.IsSkip = detail.IsSkip;
+        record.Goal = detail.Goal;
+        record.Assist = detail.Assist;
         record.ModifiedDate = DateTime.Now;
         _ = entityDbContext.SaveChanges();
         return record;
@@ -181,7 +193,7 @@ public class MatchDetailRepository : IMatchDetailRepository
         var members = entityDbContext.Members.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
         var details = entityDbContext.MatchDetails.Where(x => !x.IsDeleted && x.MatchId == id).ToList();
 
-        var result = members.Where(member => details.Any(x=>x.MemberId==member.Id)).OrderBy(c=>c.Name);
+        var result = members.Where(member => details.Any(x => x.MemberId == member.Id)).OrderBy(c => c.Name);
         return result;
     }
 }

@@ -1,15 +1,17 @@
 import { useEffect } from "react";
 import { Button, Col, Row, Table, Alert, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import moment from 'moment';
-import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps, onShowUpdateRivalMember, UpdateRivalMemberProps, updateRivalMemberAsync } from '../slices/matchDetailSlice';
+import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps, onShowUpdateRivalMember, UpdateRivalMemberProps, updateRivalMemberAsync, onSelectedId, onShowGoal, GoalProps } from '../slices/matchDetailSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useParams } from "react-router-dom";
 import Rivals from "../components/Rivals";
 import AddMatchDetail from "../components/AddMatchDetail";
 import { FaExchangeAlt, FaFutbol, } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
+import { GrScorecard } from "react-icons/gr";
 import ExchangeMember from "../components/ExchangeMember";
 import UpdateRivalMember from "../components/UpdateRivalMember";
+import Goals from "../components/Goals";
 
 export default function MatchDetail() {
     let { id } = useParams()
@@ -98,6 +100,33 @@ export default function MatchDetail() {
             .catch(ex => { console.log(ex) })
     }
 
+    const onSelected = (id: number) => {
+        dispatch(onSelectedId(id))
+        dispatch(onShowGoal(true))
+    }
+    const getGoal = (id: number): GoalProps | undefined => {
+        var data: GoalProps = { matchDetailId: 0, assist: 0, goal: 0 }
+        var array = state.data.filter((v) => v.id === id).map(v => {
+            data.assist = v.assist
+            data.goal = v.goal
+            data.matchDetailId = v.id
+            return data
+        })
+        if (array.length > 0) {
+            return array[0]
+        }
+        return undefined
+    }
+
+    const onUpdateGoal = (model: GoalProps) => {
+        var array = state.data.filter((v) => v.id === state.selectedId)
+        console.log(model, array)
+        if (array.length > 0) {
+            updateDetail({ ...array[0], assist: model.assist, goal: model.goal })
+        }
+        dispatch(onShowGoal(false))
+    }
+
     return (
         <>
             {
@@ -134,6 +163,10 @@ export default function MatchDetail() {
                 state.isShowUpdateRivalMember && state.match && state.members &&
                 <UpdateRivalMember match={state.match} onSubmit={(data) => { onConfirmRivalMember(data) }} show={state.isShowUpdateRivalMember} members={state.members} onClose={() => dispatch(onShowUpdateRivalMember(false))} />
             }
+            {
+                state.isShowGoal &&
+                <Goals initial={getGoal(state.selectedId)} onSubmit={(value) => onUpdateGoal(value)} show={state.isShowGoal} onClose={() => dispatch(onShowGoal(false))} />
+            }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
                     <OverlayTrigger overlay={<Tooltip>Update Team Member</Tooltip>}>
@@ -157,7 +190,10 @@ export default function MatchDetail() {
                         <th>Member</th>
                         <th>Is paid</th>
                         <th>Is Skip</th>
+                        <th>Goal</th>
+                        <th>Assist</th>
                         <th>Modified Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -168,7 +204,14 @@ export default function MatchDetail() {
                                 <td>{value.memberName}</td>
                                 <td><Form.Check onChange={(e) => { updateDetail({ ...state.data[index], isPaid: e.target.checked }) }} checked={value.isPaid} type="switch" /></td>
                                 <td><Form.Check onChange={(e) => { updateDetail({ ...state.data[index], isSkip: e.target.checked }) }} checked={value.isSkip} type="switch" /></td>
+                                <td>{value.goal}</td>
+                                <td>{value.assist}</td>
                                 <td>{value.modifiedDate && moment(value.modifiedDate).format()}</td>
+                                <td>
+                                    <OverlayTrigger overlay={<Tooltip>Goals</Tooltip>}>
+                                        <Button className="me-2" disabled={isInvalidRivals()} variant="secondary" onClick={() => { onSelected(value.id) }}><GrScorecard /></Button>
+                                    </OverlayTrigger>
+                                </td>
                             </tr>
                         )
                     }

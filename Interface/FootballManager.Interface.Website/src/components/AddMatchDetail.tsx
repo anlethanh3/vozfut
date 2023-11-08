@@ -5,7 +5,7 @@ import { MemberProps } from '../slices/memberSlice';
 
 export default function AddMatchDetail(props: { show: boolean, members: MemberProps[], matchId: number, onSubmit: (model: MatchDetailProps) => void, onClose: () => void }) {
     const { matchId, members, show, onSubmit, onClose } = props
-    const [detail, setDetail] = useState<MatchDetailProps>({ id: 0, matchId: matchId, memberId: 0, isPaid: false, isSkip: false })
+    const [detail, setDetail] = useState<MatchDetailProps>({ id: 0, matchId: matchId, memberId: 0, isPaid: false, isSkip: false,assist:0,goal:0 })
     const onValid = () => {
         onSubmit(detail)
     }

@@ -17,6 +17,8 @@ export interface MatchDetailProps {
   isSkip: boolean,
   createdDate?: string,
   modifiedDate?: string,
+  goal: number,
+  assist: number,
   isDeleted?: boolean,
 }
 
@@ -30,6 +32,12 @@ export interface ExchangeMemberProps {
   matchId: number,
   memberInId: number,
   memberOutId: number,
+}
+
+export interface GoalProps {
+  matchDetailId: number,
+  goal: number,
+  assist: number,
 }
 
 export interface UpdateRivalMemberProps {
@@ -62,10 +70,12 @@ export interface State {
   isShowExchange: boolean,
   rolling: RollingProps[] | undefined,
   isShowAdd: boolean,
-  isShowUpdateRivalMember:boolean,
+  isShowUpdateRivalMember: boolean,
   members: MemberProps[],
   match: MatchProps | undefined,
-  search: { name: string }
+  search: { name: string },
+  selectedId: number,
+  isShowGoal: boolean,
 }
 export const initialState: State = {
   data: [],
@@ -78,8 +88,10 @@ export const initialState: State = {
   isShowExchange: false,
   members: [],
   match: undefined,
-  isShowUpdateRivalMember:false,
+  isShowUpdateRivalMember: false,
   search: { name: '' },
+  selectedId: 0,
+  isShowGoal: false,
 }
 
 export const fetchAsync = createAsyncThunk(
@@ -240,7 +252,13 @@ export const matchSlice = createSlice({
     },
     onShowUpdateRivalMember: (state, action: PayloadAction<boolean>) => {
       state.isShowUpdateRivalMember = action.payload
-    }
+    },
+    onSelectedId: (state, action: PayloadAction<number>) => {
+      state.selectedId = action.payload
+    },
+    onShowGoal: (state, action: PayloadAction<boolean>) => {
+      state.isShowGoal = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -378,7 +396,7 @@ export const matchSlice = createSlice({
   },
 });
 
-export const { onCloseError, onShowRivals, onShowAdd, onShowExchange,onShowUpdateRivalMember } = matchSlice.actions;
+export const { onCloseError, onShowRivals, onShowAdd, onShowExchange, onShowUpdateRivalMember, onSelectedId, onShowGoal } = matchSlice.actions;
 
 export const selectState = (state: RootState) => state.matchDetail
 
