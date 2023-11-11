@@ -76,6 +76,7 @@ export interface State {
   search: { name: string },
   selectedId: number,
   isShowGoal: boolean,
+  isShowFlip: boolean,
 }
 export const initialState: State = {
   data: [],
@@ -92,6 +93,7 @@ export const initialState: State = {
   search: { name: '' },
   selectedId: 0,
   isShowGoal: false,
+  isShowFlip: false,
 }
 
 export const fetchAsync = createAsyncThunk(
@@ -259,6 +261,9 @@ export const matchSlice = createSlice({
     onShowGoal: (state, action: PayloadAction<boolean>) => {
       state.isShowGoal = action.payload
     },
+    onShowFlip: (state, action: PayloadAction<boolean>) => {
+      state.isShowFlip = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -396,7 +401,7 @@ export const matchSlice = createSlice({
   },
 });
 
-export const { onCloseError, onShowRivals, onShowAdd, onShowExchange, onShowUpdateRivalMember, onSelectedId, onShowGoal } = matchSlice.actions;
+export const { onCloseError, onShowRivals, onShowAdd, onShowExchange, onShowUpdateRivalMember, onSelectedId, onShowGoal, onShowFlip } = matchSlice.actions;
 
 export const selectState = (state: RootState) => state.matchDetail
 

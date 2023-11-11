@@ -39,7 +39,7 @@ export default function UpdateRivalMember(props: { show: boolean, match: MatchPr
     return (<>
         <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Update Rival Member In Out</Modal.Title>
+                <Modal.Title>Add Team Member</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>

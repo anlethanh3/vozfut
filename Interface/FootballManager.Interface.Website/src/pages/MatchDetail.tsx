@@ -1,17 +1,18 @@
 import { useEffect } from "react";
 import { Button, Col, Row, Table, Alert, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import moment from 'moment';
-import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps, onShowUpdateRivalMember, UpdateRivalMemberProps, updateRivalMemberAsync, onSelectedId, onShowGoal, GoalProps } from '../slices/matchDetailSlice';
+import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps, onShowUpdateRivalMember, UpdateRivalMemberProps, updateRivalMemberAsync, onSelectedId, onShowGoal, GoalProps, onShowFlip } from '../slices/matchDetailSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useParams } from "react-router-dom";
 import Rivals from "../components/Rivals";
 import AddMatchDetail from "../components/AddMatchDetail";
 import { FaExchangeAlt, FaFutbol, } from "react-icons/fa";
-import { FaArrowsRotate } from "react-icons/fa6";
 import { GrScorecard } from "react-icons/gr";
+import { MdPersonAdd, MdFlip } from "react-icons/md";
 import ExchangeMember from "../components/ExchangeMember";
 import UpdateRivalMember from "../components/UpdateRivalMember";
 import Goals from "../components/Goals";
+import FlipMember from "../components/FlipMember";
 
 export default function MatchDetail() {
     let { id } = useParams()
@@ -167,16 +168,23 @@ export default function MatchDetail() {
                 state.isShowGoal &&
                 <Goals initial={getGoal(state.selectedId)} onSubmit={(value) => onUpdateGoal(value)} show={state.isShowGoal} onClose={() => dispatch(onShowGoal(false))} />
             }
+            {
+                state.isShowFlip &&
+                <FlipMember initial={state.members} onSubmit={() => { }} show={state.isShowFlip} onClose={() => dispatch(onShowFlip(false))} />
+            }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
-                    <OverlayTrigger overlay={<Tooltip>Update Team Member</Tooltip>}>
-                        <Button className="me-2" disabled={isInvalidRivals()} variant="danger" onClick={() => { dispatch(onShowUpdateRivalMember(true)) }}><FaArrowsRotate /></Button>
+                    <OverlayTrigger overlay={<Tooltip>Add Team Member</Tooltip>}>
+                        <Button className="me-2" disabled={isInvalidRivals()} variant="danger" onClick={() => { dispatch(onShowUpdateRivalMember(true)) }}><MdPersonAdd /></Button>
                     </OverlayTrigger>
-                    <OverlayTrigger overlay={<Tooltip>Exchange Members</Tooltip>}>
+                    <OverlayTrigger overlay={<Tooltip>In Out Members</Tooltip>}>
                         <Button className="me-2" disabled={isInvalidRivals()} variant="secondary" onClick={() => { dispatch(onShowExchange(true)) }}><FaExchangeAlt /></Button>
                     </OverlayTrigger>
                     <OverlayTrigger overlay={<Tooltip>Team Division Rivals</Tooltip>}>
-                        <Button disabled={isInvalidRivals()} variant="success" onClick={() => { rolling() }}><FaFutbol /></Button>
+                        <Button className="me-2" disabled={isInvalidRivals()} variant="success" onClick={() => { rolling() }}><FaFutbol /></Button>
+                    </OverlayTrigger>
+                    <OverlayTrigger overlay={<Tooltip>Flip Team Member</Tooltip>}>
+                        <Button variant="info" onClick={() => { dispatch(onShowFlip(true)) }}><MdFlip /></Button>
                     </OverlayTrigger>
                 </Col>
             </Row>
