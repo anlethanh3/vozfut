@@ -169,8 +169,8 @@ export default function MatchDetail() {
                 <Goals initial={getGoal(state.selectedId)} onSubmit={(value) => onUpdateGoal(value)} show={state.isShowGoal} onClose={() => dispatch(onShowGoal(false))} />
             }
             {
-                state.isShowFlip &&
-                <FlipMember initial={state.members} onSubmit={() => { }} show={state.isShowFlip} onClose={() => dispatch(onShowFlip(false))} />
+                state.isShowFlip && state.match &&
+                <FlipMember match={state.match} initial={state.members} onSubmit={() => { }} show={state.isShowFlip} onClose={() => dispatch(onShowFlip(false))} />
             }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
