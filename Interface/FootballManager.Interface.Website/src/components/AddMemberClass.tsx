@@ -1,24 +1,38 @@
-import { Button, Modal, FloatingLabel, Form } from 'react-bootstrap';
-import { useState } from 'react';
+import { Button, Modal, FloatingLabel, Form, Table } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
 import { MemberProps } from '../slices/memberSlice';
 
 export interface AddClassMemberProps {
-    memberId: number,
+    memberIds: number[],
     classId: number,
 }
 
 export default function AddMemberClass(props: { show: boolean, members: MemberProps[], onSubmit: (data: AddClassMemberProps) => void, onClose: () => void }) {
     const { show, onSubmit, onClose, members } = props
-    const [member, setMember] = useState<AddClassMemberProps>({ classId: 2, memberId: -1 })
+    const [data, setData] = useState<AddClassMemberProps>({ classId: 2, memberIds: [] })
     const onValid = () => {
-        if (member.memberId === -1 || member.classId === -1) {
+        if (data.memberIds.length === 0 || data.classId === -1) {
             return
         }
-        onSubmit(member)
+        onSubmit(data)
+    }
+
+    useEffect(() => {
+        members.forEach(i => {
+
+        })
+    }, [members])
+
+    function onSelected(id: number) {
+        let isExist = data.memberIds.includes(id)
+        if (!isExist) {
+            data.memberIds.push(id)
+            setData({ ...data, memberIds: data.memberIds })
+        }
     }
 
     return (<>
-        <Modal show={show} onHide={onClose}>
+        <Modal fullscreen show={show} onHide={onClose} backdrop="static">
             <Modal.Header closeButton>
                 <Modal.Title>Add Member Class</Modal.Title>
             </Modal.Header>
@@ -26,7 +40,7 @@ export default function AddMemberClass(props: { show: boolean, members: MemberPr
                 <Form>
                     <Form.Group className="mb-3" controlId="updateRivalMember.ClassId">
                         <FloatingLabel controlId="floatingClassId" label="Team">
-                            <Form.Select value={member.classId} onChange={(e) => setMember({ ...member, classId: parseInt(e.target.value) })}>
+                            <Form.Select value={data.classId} onChange={(e) => setData({ ...data, classId: parseInt(e.target.value) })}>
                                 <option hidden value={-1}>Select Class</option>
                                 {
                                     ["Class SSS", "Class S", "Class A"].map((value, index) =>
@@ -37,16 +51,37 @@ export default function AddMemberClass(props: { show: boolean, members: MemberPr
                         </FloatingLabel>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="updateRivalMember.MemberId">
-                        <FloatingLabel controlId="floatingMemberId" label="Member In">
-                            <Form.Select value={member.memberId} onChange={(e) => setMember({ ...member, memberId: parseInt(e.target.value) })}>
-                                <option hidden value={0}>Select Member</option>
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th>Elo</th>
+                                    <th>Choose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 {
-                                    members.map(value =>
-                                        <option key={`MemberId.id-${value.id}`} value={value.id}>{value.name}</option>
+                                    members && members.map((value, index) => {
+                                        var isChoice = false
+                                        if (data.memberIds.includes(value.id)) {
+                                            isChoice = true
+                                        }
+                                        return (
+                                            <tr key={`key-${index}`}>
+                                                <td>{index + 1}</td>
+                                                <td>{value.name}</td>
+                                                <td>+{value.elo}</td>
+                                                <td>
+                                                    <Form.Check onChange={(e) => { onSelected(value.id) }} checked={isChoice} type="switch" />
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
                                     )
                                 }
-                            </Form.Select>
-                        </FloatingLabel>
+                            </tbody>
+                        </Table>
                     </Form.Group>
                 </Form>
             </Modal.Body>

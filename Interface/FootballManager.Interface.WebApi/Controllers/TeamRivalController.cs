@@ -129,4 +129,33 @@ public class TeamRivalController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    /// <summary>
+    /// Set Squad Team Division Rivals
+    /// </summary>
+    /// <param name="id">Match Id</param>
+    /// <returns></returns>
+    [HttpPost("{id}/squad"), Authorize(Policy = "CreateTeamRival")]
+    public async Task<ActionResult> UpdateSquad(int id, [FromBody] TeamRival[] model)
+    {
+        try
+        {
+            IEnumerable<TeamRival> result;
+            var match = await unitOfWork.MatchRepository.GetAsync(id);
+            if (match is null)
+            {
+                return BadRequest("ERR_MATCH_NOT_EXIST");
+            }
+            if (match.HasTeamRival)
+            {
+                result = await unitOfWork.TeamRivalRepository.GetAsync(id);
+                return Ok(result);
+            }
+            await unitOfWork.TeamRivalRepository.SaveAsync(id, model);
+            return Ok(model);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

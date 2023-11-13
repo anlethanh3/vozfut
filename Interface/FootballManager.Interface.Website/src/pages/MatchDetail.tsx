@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Button, Col, Row, Table, Alert, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import moment from 'moment';
-import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps, onShowUpdateRivalMember, UpdateRivalMemberProps, updateRivalMemberAsync, onSelectedId, onShowGoal, GoalProps, onShowFlip } from '../slices/matchDetailSlice';
+import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps, onShowUpdateRivalMember, UpdateRivalMemberProps, updateRivalMemberAsync, onSelectedId, onShowGoal, GoalProps, onShowFlip, squadAsync } from '../slices/matchDetailSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useParams } from "react-router-dom";
 import Rivals from "../components/Rivals";
@@ -128,6 +128,13 @@ export default function MatchDetail() {
         dispatch(onShowGoal(false))
     }
 
+    const onUpdateSquad = async (model: RollingProps[], matchId: number) => {
+        dispatch(onShowFlip(false))
+        dispatch(squadAsync({ data: model, matchId: matchId })).unwrap()
+            .then(value => { rolling() })
+            .catch(ex => { })
+    }
+
     return (
         <>
             {
@@ -170,7 +177,7 @@ export default function MatchDetail() {
             }
             {
                 state.isShowFlip && state.match &&
-                <FlipMember match={state.match} initial={state.members} onSubmit={() => { }} show={state.isShowFlip} onClose={() => dispatch(onShowFlip(false))} />
+                <FlipMember match={state.match} initial={state.members} onSubmit={(data) => { onUpdateSquad(data, state.match?.id ?? 0) }} show={state.isShowFlip} onClose={() => dispatch(onShowFlip(false))} />
             }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">

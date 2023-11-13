@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ExchangeMemberProps, UpdateRivalMemberProps } from "../slices/matchDetailSlice"
+import { ExchangeMemberProps, RollingProps, UpdateRivalMemberProps } from "../slices/matchDetailSlice"
 
 const url = `${process.env.REACT_APP_API_URL}/teamrival`
 
@@ -24,5 +24,11 @@ export const exchangeMembers = async <T>(props: { signal: AbortSignal, data: Exc
 export const updateRivalMember = async <T>(props: { signal: AbortSignal, data: UpdateRivalMemberProps }) => {
     let { data, signal } = props
     let response = await axios.post<T>(`${url}/${data.matchId}/memberInOut`, data, { signal: signal })
+    return response
+}
+
+export const updateSquad = async <T>(props: { signal: AbortSignal, matchId: number, data: RollingProps[] }) => {
+    let { data, signal, matchId } = props
+    let response = await axios.post<T>(`${url}/${matchId}/squad`, data, { signal: signal })
     return response
 }

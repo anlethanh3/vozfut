@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { add, search, remove, updateNew, getMembers } from '../providers/MatchDetailApiProvider';
-import { exchangeMembers, get as getTeamRival, updateRivalMember } from '../providers/TeamRivalApiProvider';
+import { exchangeMembers, get as getTeamRival, updateRivalMember, updateSquad } from '../providers/TeamRivalApiProvider';
 import { getId as getMatch } from '../providers/MatchApiProvider';
 import { HttpStatusCode } from 'axios';
 import { MemberProps } from '../slices/memberSlice';
@@ -155,6 +155,20 @@ export const rollingAsync = createAsyncThunk(
   async (request: { id: number, }, { signal }) => {
     let { id } = request
     return getTeamRival<RollingProps[]>({ signal: signal, id: id })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Rolling data failed!")
+      })
+  }
+)
+
+export const squadAsync = createAsyncThunk(
+  'matchDetail/squad',
+  async (request: { data: RollingProps[], matchId: number }, { signal }) => {
+    let { data, matchId } = request
+    return updateSquad<RollingProps[]>({ signal: signal, data: data, matchId: matchId })
       .then(response => {
         if (response.status === HttpStatusCode.Ok) {
           return response.data
@@ -394,6 +408,24 @@ export const matchSlice = createSlice({
         state.isLoading = false
       })
       .addCase(exchangeMembersAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
+      // update squad
+      .addCase(squadAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(squadAsync.fulfilled, (state, action) => {
+        state.status = 'idle'
+        state.isLoading = false
+        let payload = action.payload
+        if (isRollingProps(payload)) {
+          state.rolling = payload
+        }
+      })
+      .addCase(squadAsync.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
         state.isLoading = false

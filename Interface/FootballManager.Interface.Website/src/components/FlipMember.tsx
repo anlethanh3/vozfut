@@ -5,6 +5,7 @@ import ReactCardFlip from 'react-card-flip';
 import shuffle from 'lodash/shuffle'
 import AddMemberClass, { AddClassMemberProps } from './AddMemberClass';
 import { MatchProps } from '../slices/matchSlice';
+import { RollingProps } from '../slices/matchDetailSlice';
 
 interface FlipMemberProps {
     isFlip: boolean,
@@ -18,18 +19,29 @@ interface FlipMemberState {
     teamId: number,
 }
 
-export default function FlipMember(props: { show: boolean, match: MatchProps, initial: MemberProps[], onSubmit: () => void, onClose: () => void }) {
+export default function FlipMember(props: { show: boolean, match: MatchProps, initial: MemberProps[], onSubmit: (data: RollingProps[]) => void, onClose: () => void }) {
     const { show, onSubmit, onClose, initial, match } = props
     const [state, setState] = useState<FlipMemberState>({ data: [[], [], []], isShowAdd: false, teamId: 0 })
     const onValid = () => {
-        onSubmit()
+        let list: RollingProps[] = []
+        for (let index = 0; index < match.teamCount; index++) {
+            let list1: MemberProps[] = []
+            let sum = 0
+            state.data.forEach(i => {
+                i.filter(x => x.teamId === index).forEach(i => {
+                    sum += i.member.elo
+                    list1.push({ id: i.member.id, name: i.member.name, elo: i.member.elo })
+                })
+            })
+            list.push({ eloSum: sum, players: list1 })
+        }
+        onSubmit(list)
     }
 
     const onFlipItem = (data: FlipMemberProps) => {
         data.isFlip = true
         data.teamId = state.teamId
         state.teamId += 1
-        console.log(state.teamId, match.teamCount)
         if (state.teamId >= match.teamCount) {
             state.teamId = 0
         }
@@ -120,16 +132,18 @@ export default function FlipMember(props: { show: boolean, match: MatchProps, in
     }
 
     function onAddMemberClass(data: AddClassMemberProps) {
-        let array = initial.filter(i => i.id === data.memberId);
+        let array = initial.filter(i => data.memberIds.includes(i.id))
         if (array.length <= 0) {
             return
         }
-        let member = array[0]
+
         let list: FlipMemberProps[][] = []
         state.data.forEach(i => {
-            list.push(i.filter(k => k.member.id !== member.id))
+            list.push(i.filter(k => !data.memberIds.includes(k.member.id)))
         })
-        list[data.classId].push({ isFlip: false, member: member, teamId: -1 })
+        array.forEach(i => {
+            list[data.classId].push({ isFlip: false, member: i, teamId: -1 })
+        })
         list[data.classId] = shuffle(list[data.classId])
         setState({ ...state, isShowAdd: false, data: list })
     }
@@ -139,9 +153,9 @@ export default function FlipMember(props: { show: boolean, match: MatchProps, in
             state.isShowAdd &&
             <AddMemberClass members={initial} onSubmit={(data) => { onAddMemberClass(data) }} onClose={() => { setShowAdd(false) }} show={state.isShowAdd} />
         }
-        <Modal show={show} fullscreen onHide={onClose}>
+        <Modal show={show} fullscreen size='xl' onHide={onClose} backdrop="static">
             <Modal.Header closeButton>
-                <Modal.Title>Flip Member: Turn Team {state.teamId+1} pick</Modal.Title>
+                <Modal.Title>Flip Member: Turn Team {state.teamId + 1} pick</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {
@@ -152,9 +166,9 @@ export default function FlipMember(props: { show: boolean, match: MatchProps, in
                 <Button variant="secondary" onClick={onClose}>
                     Close
                 </Button>
-                <Button onClick={() => { setShowAdd(true) }}>Add Member to Class</Button>
+                <Button variant='info' onClick={() => { setShowAdd(true) }}>Add Member to Class</Button>
                 <Button variant="primary" onClick={onValid}>
-                    Update
+                    Save Team Squad
                 </Button>
             </Modal.Footer>
         </Modal>
