@@ -28,6 +28,8 @@ export default function AddMemberClass(props: { show: boolean, members: MemberPr
         if (!isExist) {
             data.memberIds.push(id)
             setData({ ...data, memberIds: data.memberIds })
+        } else {
+            setData({ ...data, memberIds: data.memberIds.filter(i => i !== id) })
         }
     }
 

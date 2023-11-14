@@ -193,7 +193,7 @@ public class MatchDetailRepository : IMatchDetailRepository
         var members = entityDbContext.Members.Where(x => !x.IsDeleted).OrderBy(x => x.Name).ToList();
         var details = entityDbContext.MatchDetails.Where(x => !x.IsDeleted && x.MatchId == id).ToList();
 
-        var result = members.Where(member => details.Any(x => x.MemberId == member.Id)).OrderBy(c => c.Name);
+        var result = members.Where(member => details.Any(x => x.MemberId == member.Id && x.IsPaid)).OrderBy(c => c.Name);
         return result;
     }
 }

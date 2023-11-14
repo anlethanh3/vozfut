@@ -37,15 +37,17 @@ export default function Login(props: { show: boolean, onSubmit: (profile: Profil
     }
 
     const onAuthenticate = (login: LoginRequestProps) => {
+        let date = new Date()
+        date.setDate(date.getDate() + 7)
         dispatch(loginAsync(login)).unwrap()
             .then((token) => {
                 axios.defaults.headers.common['Authorization'] = `${token.tokenType} ${token.accessToken}`
-                setCookie(key.token, token,)
+                setCookie(key.token, token, { expires: date })
                 return dispatch(profileAsync(token)).unwrap()
             })
             .then((profile) => {
                 setTimeout(() => {
-                    setCookie(key.profile, profile)
+                    setCookie(key.profile, profile, { expires: date })
                     onSubmit(profile)
                 }, 1000)
             })
