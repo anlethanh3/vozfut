@@ -83,14 +83,14 @@ public class UserController : ControllerBase
             new Claim(ClaimTypes.Role, user.IsAdmin?"Admin":"User"),
             new Claim("Permissions", user.Permissions),
         };
-
-        // generate token that is valid for 1 hour
+        var tokenExpireIn = TimeSpan.FromDays(7);
+        // generate token that is valid for 7 days
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? string.Empty);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(1),
+            Expires = DateTime.UtcNow.AddDays(tokenExpireIn.Days),
             Audience = configuration["Jwt:Audience"],
             Issuer = configuration["Jwt:Issuer"],
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -100,7 +100,7 @@ public class UserController : ControllerBase
         {
             AccessToken = tokenHandler.WriteToken(token),
             TokenType = "Bearer",
-            ExpiredIn = TimeSpan.FromDays(7).TotalSeconds,
+            ExpiredIn = tokenExpireIn.TotalSeconds,
         };
         return Ok(result);
     }
