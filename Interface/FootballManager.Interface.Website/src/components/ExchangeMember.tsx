@@ -16,14 +16,14 @@ export default function ExchangeMember(props: { show: boolean, members: MemberPr
     return (<>
         <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Exchange Members</Modal.Title>
+                <Modal.Title>Swap Member</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
                     <Form.Group className="mb-3" controlId="addMatch.MemberIn">
-                        <FloatingLabel controlId="floatingMemberIn" label="Member In">
+                        <FloatingLabel controlId="floatingMemberIn" label="Member 1">
                             <Form.Select value={exchange.memberInId} onChange={(e) => setMatch({ ...exchange, memberInId: parseInt(e.target.value) })}>
-                                <option hidden value={0}>Select a Member In</option>
+                                <option hidden value={0}>Select a Member 1</option>
                                 {
                                     members.map(value =>
                                         <option key={`MemberIn.id-${value.id}`} value={value.id}>{value.name}</option>
@@ -33,9 +33,9 @@ export default function ExchangeMember(props: { show: boolean, members: MemberPr
                         </FloatingLabel>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="addMatch.MemberOut">
-                        <FloatingLabel controlId="floatingMemberOut" label="Member Out">
+                        <FloatingLabel controlId="floatingMemberOut" label="Member 2">
                             <Form.Select value={exchange.memberOutId} onChange={(e) => setMatch({ ...exchange, memberOutId: parseInt(e.target.value) })}>
-                                <option hidden value={0}>Select a Player Out</option>
+                                <option hidden value={0}>Select a Member 2</option>
                                 {
                                     members.map(value =>
                                         <option key={`playerout.id-${value.id}`} value={value.id}>{value.name}</option>
@@ -51,7 +51,7 @@ export default function ExchangeMember(props: { show: boolean, members: MemberPr
                     Close
                 </Button>
                 <Button variant="primary" onClick={onValid}>
-                    Exchange
+                    Swap
                 </Button>
             </Modal.Footer>
         </Modal>

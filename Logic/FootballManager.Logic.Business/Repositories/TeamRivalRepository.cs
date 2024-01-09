@@ -145,7 +145,16 @@ public class TeamRivalRepository : ITeamRivalRepository
                 item.EloSum += memberIn.Elo - player.Elo;
                 item.Players.RemoveAt(index);
                 item.Players.Insert(index, memberIn);
-                break;
+                continue;
+            }
+            index = item.Players.FindIndex(x => x.Id == memberIn.Id);
+            if (index != -1)
+            {
+                var player = item.Players[index];
+                item.EloSum += memberOut.Elo - player.Elo;
+                item.Players.RemoveAt(index);
+                item.Players.Insert(index, memberOut);
+                continue;
             }
         }
         var _ = await SaveAsync(model.MatchId, result);

@@ -8,8 +8,8 @@ export default function RivalSchedule(props: { data: RivalScheduleProps, match: 
     function teamColors(teamCount: number) {
         if (teamCount < 3) {
             return [
-                { color: 'secondary', name: 'Yellow' },
                 { color: 'dark', name: 'White' },
+                { color: 'secondary', name: 'Yellow' },
             ]
         }
         if (teamCount < 4) {

@@ -184,7 +184,7 @@ export default function MatchDetail() {
                     <OverlayTrigger overlay={<Tooltip>Add Team Member</Tooltip>}>
                         <Button className="me-2" disabled={isInvalidRivals()} variant="danger" onClick={() => { dispatch(onShowUpdateRivalMember(true)) }}><MdPersonAdd /></Button>
                     </OverlayTrigger>
-                    <OverlayTrigger overlay={<Tooltip>In Out Members</Tooltip>}>
+                    <OverlayTrigger overlay={<Tooltip>Swap Members</Tooltip>}>
                         <Button className="me-2" disabled={isInvalidRivals()} variant="secondary" onClick={() => { dispatch(onShowExchange(true)) }}><FaExchangeAlt /></Button>
                     </OverlayTrigger>
                     <OverlayTrigger overlay={<Tooltip>Team Division Rivals</Tooltip>}>
