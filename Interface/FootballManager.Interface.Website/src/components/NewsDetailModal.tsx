@@ -19,7 +19,7 @@ export default function NewsDetailModal(props: { show: boolean, model: NewsProps
             {
                 uris.map((item, index) => {
                     return <Carousel.Item key={`image-${index}`} >
-                        <Image src={`https://drive.google.com/uc?export=view&id=${item}`} fluid />
+                        <Image src={`https://lh3.google.com/u/0/d/${item}`} fluid />
                     </Carousel.Item>
                 }
                 )

@@ -24,7 +24,7 @@ export default function NavMenu() {
     }, [])
 
     function imageUri(imageId: string) {
-        return `https://drive.google.com/uc?export=view&id=${imageId}`
+        return `https://lh3.google.com/u/0/d/${imageId}`
     }
 
     function showProfile() {
