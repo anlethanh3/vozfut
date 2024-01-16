@@ -1,12 +1,42 @@
+import '../scss/custom.scss';
 import Modal from 'react-bootstrap/Modal';
 import { Container, ListGroup, Row, Col, Badge, Alert, Button } from 'react-bootstrap';
 import { RivalScheduleProps, RollingProps } from '../slices/matchDetailSlice';
 import { MatchProps } from '../slices/matchSlice';
-import '../scss/custom.scss';
 import { useCallback, useRef } from 'react';
 import { toPng, } from 'html-to-image';
 import RivalSchedule from './RivalSchedule';
-
+export function teamColors(teamCount: number) {
+    if (teamCount < 3) {
+        return [
+            { color: 'dark', name: 'White' },
+            { color: 'secondary', name: 'Yellow' },
+        ]
+    }
+    if (teamCount < 4) {
+        return [
+            { color: 'secondary', name: 'Yellow' },
+            { color: 'primary', name: 'Blue' },
+            { color: 'dark', name: 'White' },
+        ]
+    }
+    if (teamCount < 5) {
+        return [
+            { color: 'danger', name: 'Red' },
+            { color: 'primary', name: 'Blue' },
+            { color: 'dark', name: 'White' },
+            { color: 'secondary', name: 'Yellow' },
+        ]
+    }
+    return [
+        { color: 'primary', name: 'Blue' },
+        { color: 'danger', name: 'Red' },
+        { color: 'secondary', name: 'Banana' },
+        { color: 'dark', name: 'White' },
+        { color: 'banana', name: 'Yellow' },
+        { color: 'orange', name: 'Orange' },
+    ]
+}
 export default function Rivals(props: { show: boolean, rivals: RollingProps[], onSubmit: (rivals: RollingProps[]) => void, onClose: () => void, match: MatchProps | undefined }) {
     const { show, rivals, onClose, onSubmit, match } = props
     const ref = useRef<HTMLDivElement>(null);
@@ -26,27 +56,7 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
             })
     }, [ref])
 
-    function teamColors(teamCount: number) {
-        if (teamCount < 3) {
-            return [
-                { color: 'dark', name: 'White' },
-                { color: 'secondary', name: 'Yellow' },
-            ]
-        }
-        if (teamCount < 4) {
-            return [
-                { color: 'secondary', name: 'Yellow' },
-                { color: 'primary', name: 'Blue' },
-                { color: 'dark', name: 'White' },
-            ]
-        }
-        return [
-            { color: 'danger', name: 'Red' },
-            { color: 'primary', name: 'Blue' },
-            { color: 'dark', name: 'White' },
-            { color: 'secondary', name: 'Yellow' },
-        ]
-    }
+    
     function Team(): JSX.Element {
         let items: JSX.Element[] = []
         let infos = teamColors(match?.teamCount ?? 3)

@@ -189,9 +189,15 @@ public class TeamRivalRepository : ITeamRivalRepository
 
         if (model.IsIn)
         {
-            member.Elo = model.IsGK ? 0 : member.Elo;
-            item.EloSum += member.Elo;
-            item.Players.Add(member);
+            var newMember = new Member{
+                Elo=model.IsGK ? 0 : member.Elo,
+                Id=member.Id,
+                Name=member.Name,
+                RealName=member.RealName,
+                Description=member.Description,
+            };
+            item.EloSum += newMember.Elo;
+            item.Players.Add(newMember);
         }
         else
         {

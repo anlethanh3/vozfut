@@ -1,31 +1,9 @@
 import { Container, ListGroup, Row, Col, ListGroupItem, Alert } from 'react-bootstrap';
 import { RivalMatchProps, RivalScheduleProps } from '../slices/matchDetailSlice';
 import { MatchProps } from '../slices/matchSlice';
-
+import { teamColors } from './Rivals';
 export default function RivalSchedule(props: { data: RivalScheduleProps, match: MatchProps }) {
     const { data, match } = props
-
-    function teamColors(teamCount: number) {
-        if (teamCount < 3) {
-            return [
-                { color: 'dark', name: 'White' },
-                { color: 'secondary', name: 'Yellow' },
-            ]
-        }
-        if (teamCount < 4) {
-            return [
-                { color: 'secondary', name: 'Yellow' },
-                { color: 'primary', name: 'Blue' },
-                { color: 'dark', name: 'White' },
-            ]
-        }
-        return [
-            { color: 'danger', name: 'Red' },
-            { color: 'primary', name: 'Blue' },
-            { color: 'dark', name: 'White' },
-            { color: 'secondary', name: 'Yellow' },
-        ]
-    }
 
     function Match(props: { list: RivalMatchProps[], teamCount: number, isHome: boolean, startIndex: number }): JSX.Element {
         let { list, isHome, teamCount, startIndex } = props

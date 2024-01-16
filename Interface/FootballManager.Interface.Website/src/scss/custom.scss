@@ -1,4 +1,19 @@
 $warning: lime;
 $secondary: orange;
+$banana:yellow;
+$orange:orange;
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
 
-@import "../../node_modules/bootstrap";
+:root{
+    --bs-banana-border-subtle: #{var(--bs-dark-bg-subtle)};
+    --bs-banana-bg-subtle: #{tint-color($yellow,70%)};
+
+    --bs-orange-border-subtle: #{var(--bs-secondary-bg-subtle)};
+    --bs-orange-bg-subtle: #{tint-color($orange, 40%)};
+ }
+$theme-colors: map-merge($theme-colors, (
+    'banana' : shade-color($banana, 50%),
+    'orange' : shade-color($orange, 50%),
+));
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";

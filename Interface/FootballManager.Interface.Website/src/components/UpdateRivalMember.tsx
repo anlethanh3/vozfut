@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { UpdateRivalMemberProps } from '../slices/matchDetailSlice';
 import { MemberProps } from '../slices/memberSlice';
 import { MatchProps } from '../slices/matchSlice';
+import { teamColors } from './Rivals';
 
 export default function UpdateRivalMember(props: { show: boolean, match: MatchProps | undefined, members: MemberProps[], onSubmit: (data: UpdateRivalMemberProps) => void, onClose: () => void }) {
     const { show, onSubmit, onClose, members, match } = props
@@ -14,27 +15,6 @@ export default function UpdateRivalMember(props: { show: boolean, match: MatchPr
         onSubmit(member)
     }
     let infos = teamColors(match?.teamCount ?? 3)
-    function teamColors(teamCount: number) {
-        if (teamCount < 3) {
-            return [
-                { color: 'secondary', name: 'Orange' },
-                { color: 'warning', name: 'Banana' },
-            ]
-        }
-        if (teamCount < 4) {
-            return [
-                { color: 'secondary', name: 'Orange' },
-                { color: 'primary', name: 'Blue' },
-                { color: 'warning', name: 'Banana' },
-            ]
-        }
-        return [
-            { color: 'danger', name: 'Red' },
-            { color: 'primary', name: 'Blue' },
-            { color: 'warning', name: 'Banana' },
-            { color: 'secondary', name: 'Orange' },
-        ]
-    }
 
     return (<>
         <Modal show={show} onHide={onClose}>
