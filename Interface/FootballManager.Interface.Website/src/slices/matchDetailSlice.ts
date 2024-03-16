@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { add, search, remove, updateNew, getMembers } from '../providers/MatchDetailApiProvider';
-import { exchangeMembers, get as getTeamRival, updateRivalMember, updateSquad } from '../providers/TeamRivalApiProvider';
+import { exchangeMembers, get as getTeamRival, updateRivalMember, updateSquad, updateWinner } from '../providers/TeamRivalApiProvider';
 import { getId as getMatch } from '../providers/MatchApiProvider';
 import { HttpStatusCode } from 'axios';
 import { MemberProps } from '../slices/memberSlice';
 import { MatchProps } from './matchSlice';
+import { UpdateWinnerProp } from '../components/UpdateWinner';
 
 export interface MatchDetailProps {
   id: number,
@@ -63,7 +64,7 @@ export interface RivalScheduleProps {
 
 export interface State {
   data: MatchDetailProps[],
-  status: "loading" | "idle" | "failed",
+  status: "loading" | "idle" | "failed" | "success",
   error: string | undefined,
   isLoading: boolean,
   isShowRivals: boolean,
@@ -77,6 +78,7 @@ export interface State {
   selectedId: number,
   isShowGoal: boolean,
   isShowFlip: boolean,
+  isShowWin: boolean,
 }
 export const initialState: State = {
   data: [],
@@ -94,6 +96,7 @@ export const initialState: State = {
   selectedId: 0,
   isShowGoal: false,
   isShowFlip: false,
+  isShowWin: false,
 }
 
 export const fetchAsync = createAsyncThunk(
@@ -169,6 +172,20 @@ export const squadAsync = createAsyncThunk(
   async (request: { data: RollingProps[], matchId: number }, { signal }) => {
     let { data, matchId } = request
     return updateSquad<RollingProps[]>({ signal: signal, data: data, matchId: matchId })
+      .then(response => {
+        if (response.status === HttpStatusCode.Ok) {
+          return response.data
+        }
+        return new Error("Rolling data failed!")
+      })
+  }
+)
+
+export const updateWinnerAsync = createAsyncThunk(
+  'matchDetail/updateWinner',
+  async (request: { number: number, matchId: number, teamId: number }, { signal }) => {
+    let { number, matchId, teamId } = request
+    return updateWinner<boolean>({ signal: signal, teamId: teamId, number: number, matchId: matchId })
       .then(response => {
         if (response.status === HttpStatusCode.Ok) {
           return response.data
@@ -278,6 +295,9 @@ export const matchSlice = createSlice({
     onShowFlip: (state, action: PayloadAction<boolean>) => {
       state.isShowFlip = action.payload
     },
+    onShowWin: (state, action: PayloadAction<boolean>) => {
+      state.isShowWin = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -430,10 +450,25 @@ export const matchSlice = createSlice({
         state.error = action.error.message
         state.isLoading = false
       })
+      // update winner
+      .addCase(updateWinnerAsync.pending, (state) => {
+        state.status = 'loading'
+        state.isLoading = true
+      })
+      .addCase(updateWinnerAsync.fulfilled, (state, action) => {
+        state.status = 'success'
+        state.isLoading = false
+        let payload = action.payload
+      })
+      .addCase(updateWinnerAsync.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+        state.isLoading = false
+      })
   },
 });
 
-export const { onCloseError, onShowRivals, onShowAdd, onShowExchange, onShowUpdateRivalMember, onSelectedId, onShowGoal, onShowFlip } = matchSlice.actions;
+export const { onCloseError, onShowRivals, onShowAdd, onShowExchange, onShowUpdateRivalMember, onSelectedId, onShowGoal, onShowFlip, onShowWin } = matchSlice.actions;
 
 export const selectState = (state: RootState) => state.matchDetail
 

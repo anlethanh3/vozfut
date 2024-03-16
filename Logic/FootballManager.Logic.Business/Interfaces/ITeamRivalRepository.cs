@@ -10,5 +10,6 @@ public interface ITeamRivalRepository
     public Task<TeamRivalSchedule> GetMatchScheduleAsync(int id);
     public Task<bool> ExchangeMemberAsync(ExchangeMemberRequest model);
     public Task<bool> MemberInOutAsync(MemberInOutRequest model);
+    public Task<bool> UpdateWinnerAsync(WinnerUpdateRequest model);
     public Task<bool> SaveAsync(int matchId, IEnumerable<TeamRival> teams);
 }

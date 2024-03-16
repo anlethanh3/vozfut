@@ -15,3 +15,10 @@ public class MemberInOutRequest
     public bool IsIn { get; set; }
     public bool IsGK { get; set; }
 }
+
+public class WinnerUpdateRequest
+{
+    public int MatchId { get; set; }
+    public int TeamId { get; set; }
+    public int Number { get; set; }
+}

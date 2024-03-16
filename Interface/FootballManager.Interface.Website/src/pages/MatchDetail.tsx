@@ -1,18 +1,19 @@
 import { useEffect } from "react";
 import { Button, Col, Row, Table, Alert, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import moment from 'moment';
-import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps, onShowUpdateRivalMember, UpdateRivalMemberProps, updateRivalMemberAsync, onSelectedId, onShowGoal, GoalProps, onShowFlip, squadAsync } from '../slices/matchDetailSlice';
+import { selectState, fetchAsync, rollingAsync, onCloseError, onShowRivals, fetchMembersAsync, onShowAdd, MatchDetailProps, addMatchDetailAsync, deleteMatchDetailAsync, fetchMatchAsync, updateMatchDetailAsync, RollingProps, onShowExchange, exchangeMembersAsync, ExchangeMemberProps, onShowUpdateRivalMember, UpdateRivalMemberProps, updateRivalMemberAsync, onSelectedId, onShowGoal, GoalProps, onShowFlip, squadAsync, onShowWin, updateWinnerAsync } from '../slices/matchDetailSlice';
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { useParams } from "react-router-dom";
-import Rivals from "../components/Rivals";
+import Rivals, { teamColors } from "../components/Rivals";
 import AddMatchDetail from "../components/AddMatchDetail";
-import { FaExchangeAlt, FaFutbol, } from "react-icons/fa";
+import { FaExchangeAlt, FaFutbol, FaTrophy, } from "react-icons/fa";
 import { GrScorecard } from "react-icons/gr";
 import { MdPersonAdd, MdFlip } from "react-icons/md";
 import ExchangeMember from "../components/ExchangeMember";
 import UpdateRivalMember from "../components/UpdateRivalMember";
 import Goals from "../components/Goals";
 import FlipMember from "../components/FlipMember";
+import UpdateWinner, { UpdateWinnerProp } from "../components/UpdateWinner";
 
 export default function MatchDetail() {
     let { id } = useParams()
@@ -135,6 +136,13 @@ export default function MatchDetail() {
             .catch(ex => { })
     }
 
+    const onUpdateTeamWinner = async (data: UpdateWinnerProp) => {
+        dispatch(onShowWin(false))
+        dispatch(updateWinnerAsync({ number: data.number, teamId: data.teamId, matchId: matchId })).unwrap()
+            .then(value => { })
+            .catch(ex => { })
+    }
+
     return (
         <>
             {
@@ -179,6 +187,11 @@ export default function MatchDetail() {
                 state.isShowFlip && state.match &&
                 <FlipMember match={state.match} initial={state.members} onSubmit={(data) => { onUpdateSquad(data, state.match?.id ?? 0) }} show={state.isShowFlip} onClose={() => dispatch(onShowFlip(false))} />
             }
+            {
+                state.isShowWin && state.match &&
+                <UpdateWinner initial={teamColors(state.match?.teamCount ?? 2)} onSubmit={(data) => { onUpdateTeamWinner(data) }} show={state.isShowWin} onClose={() => { dispatch(onShowWin(false)) }}
+                />
+            }
             <Row className="my-2">
                 <Col className="d-flex justify-content-end">
                     <OverlayTrigger overlay={<Tooltip>Add Team Member</Tooltip>}>
@@ -189,6 +202,9 @@ export default function MatchDetail() {
                     </OverlayTrigger>
                     <OverlayTrigger overlay={<Tooltip>Team Division Rivals</Tooltip>}>
                         <Button className="me-2" disabled={isInvalidRivals()} variant="success" onClick={() => { rolling() }}><FaFutbol /></Button>
+                    </OverlayTrigger>
+                    <OverlayTrigger overlay={<Tooltip>Winner</Tooltip>}>
+                        <Button className="me-2" variant="primary" onClick={() => { dispatch(onShowWin(true)) }}><FaTrophy /></Button>
                     </OverlayTrigger>
                     <OverlayTrigger overlay={<Tooltip>Flip Team Member</Tooltip>}>
                         <Button variant="info" onClick={() => { dispatch(onShowFlip(true)) }}><MdFlip /></Button>

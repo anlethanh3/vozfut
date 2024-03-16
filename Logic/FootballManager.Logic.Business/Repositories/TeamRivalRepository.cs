@@ -189,12 +189,13 @@ public class TeamRivalRepository : ITeamRivalRepository
 
         if (model.IsIn)
         {
-            var newMember = new Member{
-                Elo=model.IsGK ? 0 : member.Elo,
-                Id=member.Id,
-                Name=member.Name,
-                RealName=member.RealName,
-                Description=member.Description,
+            var newMember = new Member
+            {
+                Elo = model.IsGK ? 0 : member.Elo,
+                Id = member.Id,
+                Name = member.Name,
+                RealName = member.RealName,
+                Description = member.Description,
             };
             item.EloSum += newMember.Elo;
             item.Players.Add(newMember);
@@ -261,5 +262,32 @@ public class TeamRivalRepository : ITeamRivalRepository
 
         var result = match.TeamCount > 3 ? list[1] : list[0];
         return result;
+    }
+
+    public async Task<bool> UpdateWinnerAsync(WinnerUpdateRequest model)
+    {
+        var match = await matchRepository.GetAsync(model.MatchId);
+        if (match is null)
+        {
+            throw new Exception("ERR_MATCH_NOT_EXIST");
+        }
+        if (!match.HasTeamRival)
+        {
+            throw new Exception("ERR_MATCH_NO_TEAM_RIVAL");
+        }
+        var result = JsonConvert.DeserializeObject<TeamRival[]>(match.TeamRivals);
+        if (result is null)
+        {
+            throw new Exception("ERR_MATCH_DETAIL_TEAM_RIVAL_NOT_EXIST");
+        }
+        foreach (var item in result[model.TeamId].Players)
+        {
+            var member = await memberRepository.GetAsync(item.Id);
+            if (member is not null){
+                member.ChampionCount += model.Number;
+                await memberRepository.UpdateAsync(member);
+            }
+        }
+        return true;
     }
 }

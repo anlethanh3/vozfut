@@ -66,7 +66,7 @@ public class MatchController : ControllerBase
     public async Task<ActionResult> Search(SearchPagingRequest request)
     {
         var matches = await unitOfWork.MatchRepository.SearchAsync(request.Name);
-        var result = matches.Skip(request.PageIndex * request.PageSize).Take(request.PageSize).OrderByDescending(x => x.ModifiedDate);
+        var result = matches.Skip(request.PageIndex * request.PageSize).Take(request.PageSize);
         return Ok(new Paging<IEnumerable<Match>>
         {
             Data = result,

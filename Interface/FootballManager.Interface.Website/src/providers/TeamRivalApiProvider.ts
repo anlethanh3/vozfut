@@ -32,3 +32,9 @@ export const updateSquad = async <T>(props: { signal: AbortSignal, matchId: numb
     let response = await axios.post<T>(`${url}/${matchId}/squad`, data, { signal: signal })
     return response
 }
+
+export const updateWinner = async <T>(props: { signal: AbortSignal, matchId: number, teamId: number, number: number }) => {
+    let { number, signal, matchId, teamId } = props
+    let response = await axios.post<T>(`${url}/winner`, { teamId, number, matchId }, { signal: signal })
+    return response
+}

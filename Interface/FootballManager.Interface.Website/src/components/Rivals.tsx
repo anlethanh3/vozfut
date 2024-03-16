@@ -6,7 +6,11 @@ import { MatchProps } from '../slices/matchSlice';
 import { useCallback, useRef } from 'react';
 import { toPng, } from 'html-to-image';
 import RivalSchedule from './RivalSchedule';
-export function teamColors(teamCount: number) {
+export interface TeamColorProp {
+    color: string,
+    name: string,
+}
+export function teamColors(teamCount: number): TeamColorProp[] {
     if (teamCount < 3) {
         return [
             { color: 'dark', name: 'White' },
@@ -56,7 +60,7 @@ export default function Rivals(props: { show: boolean, rivals: RollingProps[], o
             })
     }, [ref])
 
-    
+
     function Team(): JSX.Element {
         let items: JSX.Element[] = []
         let infos = teamColors(match?.teamCount ?? 3)

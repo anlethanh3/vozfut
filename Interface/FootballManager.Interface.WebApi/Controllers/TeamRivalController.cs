@@ -157,5 +157,22 @@ public class TeamRivalController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
+    }/// <summary>
+    /// Update team winner
+    /// </summary>
+    /// <param name="model">Winner champion count</param>
+    /// <returns>true: success, false: failure</returns>
+    [HttpPost("winner"), Authorize(Roles = "Admin")]
+    public async Task<ActionResult> MemberInOut([FromBody] WinnerUpdateRequest model)
+    {
+        try
+        {
+            var result = await unitOfWork.TeamRivalRepository.UpdateWinnerAsync(model);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

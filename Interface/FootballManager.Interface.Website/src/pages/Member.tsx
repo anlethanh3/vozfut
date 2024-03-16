@@ -159,7 +159,7 @@ export default function Member() {
                                 <td>{value.realName}</td>
                                 <td>{value.name}</td>
                                 <td>{value.description}</td>
-                                <td><ChampionStars championCount={value?.championCount ?? 0} /></td>
+                                <td className="col-sm-1"><ChampionStars championCount={value?.championCount ?? 0} /></td>
                                 <td className="col-sm-1">+{value.elo}</td>
                                 <td className="col-sm-1">{value.speed}</td>
                                 <td className="col-sm-1">{value.stamina}</td>
