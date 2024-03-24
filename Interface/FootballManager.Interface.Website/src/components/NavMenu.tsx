@@ -129,8 +129,9 @@ export default function NavMenu() {
                             <CustomLink route='/'>Home</CustomLink>
                             <CustomLink route="match">Match</CustomLink>
                             <CustomLink route="member">Member</CustomLink>
-                            <CustomLink route="donate">Donate</CustomLink>
-                            <CustomLink route="history">History</CustomLink>
+                            {/* <CustomLink route="club">Club Info</CustomLink> */}
+                            {/* <CustomLink route="donate">Donate</CustomLink> */}
+                            <CustomLink route="scoreboard">Scoreboard</CustomLink>
                         </Nav>
                         <Nav>
                             <Profile />

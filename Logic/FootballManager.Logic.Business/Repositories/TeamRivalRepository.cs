@@ -283,9 +283,16 @@ public class TeamRivalRepository : ITeamRivalRepository
         foreach (var item in result[model.TeamId].Players)
         {
             var member = await memberRepository.GetAsync(item.Id);
-            if (member is not null){
+            if (member is not null)
+            {
                 member.ChampionCount += model.Number;
                 await memberRepository.UpdateAsync(member);
+                var matchDetail = await matchDetailRepository.GetAsync(model.MatchId, member.Id);
+                if (matchDetail is not null)
+                {
+                    matchDetail.IsWinner = true;
+                    await matchDetailRepository.UpdateAsync(matchDetail);
+                }
             }
         }
         return true;

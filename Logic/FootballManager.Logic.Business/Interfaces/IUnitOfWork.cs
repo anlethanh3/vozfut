@@ -9,4 +9,5 @@ public interface IUnitOfWork
     IUserRepository UserRepository { get; set; }
     ITeamRivalRepository TeamRivalRepository { get; set; }
     INewsRepository NewsRepository { get; set; }
+    IScoreboardRepository ScoreboardRepository { get; set; }
 }

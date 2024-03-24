@@ -2,13 +2,14 @@ import './App.css';
 import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Layout from './components/Layout';
-import History from './pages/History';
+import Scoreboard from './pages/Scoreboard';
 import Match from './pages/Match';
 import ErrorPage from './pages/ErrorPage';
 import Member from './pages/Member';
 import Donate from './pages/Donate';
 import Home from './pages/Home';
 import MatchDetail from './pages/MatchDetail';
+import Club from './pages/Club';
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -16,9 +17,10 @@ function App() {
         <Route index element={<Home />} />
         <Route path="match" element={<Match />} />
         <Route path="match/:id" element={<MatchDetail />} />
-        <Route path="donate" element={<Donate />} />
+        {/* <Route path="donate" element={<Donate />} /> */}
         <Route path="member" element={<Member />} />
-        <Route path="history" element={<History />} />
+        <Route path="scoreboard" element={<Scoreboard />} />
+        <Route path="club" element={<Club />} />
         <Route path='*' element={<ErrorPage />} />
       </Route>
     )

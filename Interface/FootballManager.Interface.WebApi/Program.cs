@@ -23,9 +23,11 @@ builder.Services.AddTransient<IMatchDetailRepository, MatchDetailRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<ITeamRivalRepository, TeamRivalRepository>();
 builder.Services.AddTransient<INewsRepository, NewsRepository>();
+builder.Services.AddTransient<IScoreboardRepository, ScoreboardRepository>();
 // Database context
 builder.Services.AddTransient<IDatabaseContext, DapperDbContext>();
 builder.Services.AddTransient<IMatchDetailContext, MatchDetailContext>();
+builder.Services.AddTransient<IScoreboardContext, ScoreboardContext>();
 builder.Services.AddDbContext<EntityDbContext>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 // Add services to the container.

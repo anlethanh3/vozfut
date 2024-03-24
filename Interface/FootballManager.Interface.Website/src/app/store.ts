@@ -4,6 +4,7 @@ import memberReducer from '../slices/memberSlice'
 import matchReducer from '../slices/matchSlice'
 import matchDetailReducer from '../slices/matchDetailSlice'
 import newsReducer from '../slices/newsSlice'
+import scoreboardReducer from '../slices/scoreboardSlice'
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     match: matchReducer,
     matchDetail: matchDetailReducer,
     news: newsReducer,
+    scoreboard: scoreboardReducer,
   },
 });
 

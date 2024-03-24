@@ -10,6 +10,7 @@ public class UnitOfWork : IUnitOfWork
     public required IUserRepository UserRepository { get; set; }
     public required ITeamRivalRepository TeamRivalRepository { get; set; }
     public required INewsRepository NewsRepository { get; set; }
+    public required IScoreboardRepository ScoreboardRepository { get; set; }
 
     public UnitOfWork(
         IMemberRepository memberRepository,
@@ -17,7 +18,8 @@ public class UnitOfWork : IUnitOfWork
         IMatchDetailRepository matchDetailRepository,
         IUserRepository userRepository,
         ITeamRivalRepository teamRivalRepository,
-        INewsRepository newsRepository)
+        INewsRepository newsRepository,
+        IScoreboardRepository scoreboardRepository)
     {
         MemberRepository = memberRepository;
         MatchRepository = matchRepository;
@@ -25,5 +27,6 @@ public class UnitOfWork : IUnitOfWork
         UserRepository = userRepository;
         TeamRivalRepository = teamRivalRepository;
         NewsRepository = newsRepository;
+        ScoreboardRepository = scoreboardRepository;
     }
 }

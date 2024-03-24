@@ -139,7 +139,7 @@ export default function MatchDetail() {
     const onUpdateTeamWinner = async (data: UpdateWinnerProp) => {
         dispatch(onShowWin(false))
         dispatch(updateWinnerAsync({ number: data.number, teamId: data.teamId, matchId: matchId })).unwrap()
-            .then(value => { })
+            .then(value => fetch())
             .catch(ex => { })
     }
 
@@ -220,7 +220,7 @@ export default function MatchDetail() {
                         <th>No</th>
                         <th>Member</th>
                         <th>Is paid</th>
-                        <th>Is Skip</th>
+                        <th>Is Winner</th>
                         <th>Goal</th>
                         <th>Assist</th>
                         <th>Modified Date</th>
@@ -234,7 +234,7 @@ export default function MatchDetail() {
                                 <td>{index + 1}</td>
                                 <td>{value.memberName}</td>
                                 <td><Form.Check onChange={(e) => { updateDetail({ ...state.data[index], isPaid: e.target.checked }) }} checked={value.isPaid} type="switch" /></td>
-                                <td><Form.Check onChange={(e) => { updateDetail({ ...state.data[index], isSkip: e.target.checked }) }} checked={value.isSkip} type="switch" /></td>
+                                <td><Form.Check checked={value.isWinner} type="switch" /></td>
                                 <td>{value.goal}</td>
                                 <td>{value.assist}</td>
                                 <td>{value.modifiedDate && moment(value.modifiedDate).format()}</td>

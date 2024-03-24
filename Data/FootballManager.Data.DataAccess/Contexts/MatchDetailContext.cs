@@ -45,7 +45,7 @@ public class MatchDetailContext : IMatchDetailContext
                 {
                     var sql = @"UPDATE [MatchDetails] SET 
                             MatchId = @MatchId, MemberId = @MemberId, 
-                            IsPaid = @IsPaid, IsSkip = @IsSkip, 
+                            IsPaid = @IsPaid, IsSkip = @IsSkip, IsWinner = @IsWinner,
                             ModifiedDate = @ModifiedDate, IsDeleted = @IsDeleted
                             WHERE Id = @Id";
                     var value = await connection.ExecuteAsync(sql, new
@@ -55,6 +55,7 @@ public class MatchDetailContext : IMatchDetailContext
                         MemberId = detail.MemberId,
                         IsPaid = detail.IsPaid,
                         IsSkip = detail.IsSkip,
+                        IsWinner = detail.IsWinner,
                         ModifiedDate = detail.ModifiedDate,
                         IsDeleted = detail.IsDeleted,
                     }, tran);

@@ -30,6 +30,7 @@ public class MatchDetailRepository : IMatchDetailRepository
             MemberId = detail.MemberId,
             IsPaid = detail.IsPaid,
             IsSkip = detail.IsSkip,
+            IsWinner = detail.IsWinner,
             Assist = detail.Assist,
             Goal = detail.Goal,
             CreatedDate = now,
@@ -80,6 +81,7 @@ public class MatchDetailRepository : IMatchDetailRepository
                 ModifiedDate = now,
                 IsDeleted = false,
                 MatchId = match.Id,
+                IsWinner = false,
                 MatchName = match.Name,
                 MemberElo = member.Elo,
                 MemberId = member.Id,
@@ -108,6 +110,7 @@ public class MatchDetailRepository : IMatchDetailRepository
                 ModifiedDate = detail.ModifiedDate,
                 IsDeleted = detail.IsDeleted,
                 MatchId = match.Id,
+                IsWinner = detail.IsWinner,
                 MatchName = match.Name,
                 MemberElo = member.Elo,
                 MemberId = member.Id,
@@ -144,6 +147,7 @@ public class MatchDetailRepository : IMatchDetailRepository
         record.IsSkip = detail.IsSkip;
         record.Goal = detail.Goal;
         record.Assist = detail.Assist;
+        record.IsWinner = detail.IsWinner;
         record.ModifiedDate = DateTime.Now;
         _ = entityDbContext.SaveChanges();
         return true;
@@ -162,6 +166,7 @@ public class MatchDetailRepository : IMatchDetailRepository
                 MemberId = detail.MemberId,
                 IsPaid = detail.IsPaid,
                 IsSkip = detail.IsSkip,
+                IsWinner = detail.IsWinner,
                 CreatedDate = now,
                 ModifiedDate = now,
                 Assist = 0,
@@ -177,6 +182,7 @@ public class MatchDetailRepository : IMatchDetailRepository
         record.IsPaid = detail.IsPaid;
         record.IsSkip = detail.IsSkip;
         record.Goal = detail.Goal;
+        record.IsWinner = detail.IsWinner;
         record.Assist = detail.Assist;
         record.ModifiedDate = DateTime.Now;
         _ = entityDbContext.SaveChanges();

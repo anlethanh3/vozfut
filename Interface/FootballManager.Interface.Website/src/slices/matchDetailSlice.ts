@@ -6,7 +6,6 @@ import { getId as getMatch } from '../providers/MatchApiProvider';
 import { HttpStatusCode } from 'axios';
 import { MemberProps } from '../slices/memberSlice';
 import { MatchProps } from './matchSlice';
-import { UpdateWinnerProp } from '../components/UpdateWinner';
 
 export interface MatchDetailProps {
   id: number,
@@ -16,6 +15,7 @@ export interface MatchDetailProps {
   memberName?: number,
   isPaid: boolean,
   isSkip: boolean,
+  isWinner?: boolean,
   createdDate?: string,
   modifiedDate?: string,
   goal: number,
